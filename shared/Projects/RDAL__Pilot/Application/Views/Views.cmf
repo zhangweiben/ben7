@@ -1,0 +1,10 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e1d8284c-b918-4a1c-9eb7-57d33e0e788f -->
+<metadata name="Views" path="/shared/Projects/RDAL_Pilot/Application/Views" type="CONTAINER" subtype="FOLDER" changeToken="0">
+  <security>
+    <owner user="admin" domain="composite"/>
+  </security>
+  <attribute name="creationDate" type="LONG">1428684107047</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+</metadata>
