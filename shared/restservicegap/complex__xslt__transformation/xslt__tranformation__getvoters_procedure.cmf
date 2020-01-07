@@ -1,0 +1,261 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a838d93-cc29-4da0-bfde-049c0f613306 -->
+<metadata name="xslt_tranformation_getvoters" path="/shared/restservicegap/complex_xslt_transformation/xslt_tranformation_getvoters" type="PROCEDURE" subtype="XSLT_TRANSFORM_PROCEDURE" changeToken="0">
+  <parameters>
+    <parameter name="outputs" direction="OUT" nullable="false">
+      <datatype name="outputs" type="TABLE" refId="256">
+        <element name="birth_date">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="token" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="ethnicity">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="first_name">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="gender">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="household_id">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="last_name">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="maiden_name">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="middle_name">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="oid">
+          <datatype name="DECIMAL" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="decimal" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="DECIMAL" maxDigits="32" maxFractionalDigits="0"/>
+        </element>
+        <element name="campaign_oid">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="party">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="party_date">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="token" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="prefix">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="reg_change_date">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="token" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="reg_date">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="token" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="source_voter_id">
+          <datatype name="DECIMAL" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="decimal" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="DECIMAL" maxDigits="32" maxFractionalDigits="0"/>
+        </element>
+        <element name="status">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="suffix">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="Name" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+        <element name="hobby">
+          <datatype name="VARCHAR" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="32768"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+  </security>
+  <dependency target="/shared/restservicegap/xml_getvoters/GetVoters.xml" type="TREE">
+    <datatype name="GetVotersResponse" referenceDefinitionSet="/shared/restservicegap/xml_getvoters/GetVotersDefinitions" referenceType="GetVotersResponse" subType="ELEMENT_DECL" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="ELEMENT" componentName="GetVotersResponse">
+      <schemaDatatype>
+        <datatype name="GetVotersResponse" superTypeName="anyType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" subType="ELEMENT_DECL" anonymous="true" type="TREE" refId="257">
+          <element name="Voter" maxOccurs="2147483647" minOccurs="0">
+            <datatype superTypeName="anyType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" subType="COMPLEX_TYPE" type="TREE" refId="513">
+              <element name="birth_date">
+                <datatype name="date" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="DATE"/>
+              </element>
+              <element name="ethnicity">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="first_name">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="gender">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="household_id">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="last_name">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="maiden_name">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="middle_name">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="oid">
+                <datatype name="short" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="int" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="INTEGER" minValue="-32768" maxValue="32767"/>
+              </element>
+              <element name="campaign_oid">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="party">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="party_date">
+                <datatype name="date" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="DATE"/>
+              </element>
+              <element name="prefix">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="reg_change_date">
+                <datatype name="date" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="DATE"/>
+              </element>
+              <element name="reg_date">
+                <datatype name="date" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="DATE"/>
+              </element>
+              <element name="source_voter_id">
+                <datatype name="int" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="long" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+              </element>
+              <element name="status">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="suffix">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="hobby">
+                <datatype name="string" namespace="http://www.w3.org/2001/XMLSchema" superTypeName="anySimpleType" superTypeNamespace="http://www.w3.org/2001/XMLSchema" type="STRING" maxLength="2147483647"/>
+              </element>
+            </datatype>
+          </element>
+        </datatype>
+      </schemaDatatype>
+    </datatype>
+  </dependency>
+  <attribute name="creationDate" type="LONG">1496651619166</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1496651635860</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1496651619166</attribute>
+  <attribute name="sourcePath" type="STRING">/shared/restservicegap/xml_getvoters/GetVoters.xml</attribute>
+  <attribute name="sourceType" type="SHORT">4</attribute>
+  <attribute name="transformModel" type="BYTE_ARRAY">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</attribute>
+  <attribute name="xqueryModel" type="NULL"/>
+  <attribute name="xslt" type="STRING">
+&lt;xslt:stylesheet version=&quot;2.0&quot; xmlns:csw-xform=&quot;http://www.compositesw.com/2003/xform&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xslt=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+  &lt;xslt:template match=&quot;/&quot;&gt;
+    &lt;xslt:variable name=&quot;_birth_date&quot;/&gt;
+    &lt;xslt:variable name=&quot;_ethnicity&quot;/&gt;
+    &lt;xslt:variable name=&quot;_first_name&quot;/&gt;
+    &lt;xslt:variable name=&quot;_gender&quot;/&gt;
+    &lt;xslt:variable name=&quot;_household_id&quot;/&gt;
+    &lt;xslt:variable name=&quot;_last_name&quot;/&gt;
+    &lt;xslt:variable name=&quot;_maiden_name&quot;/&gt;
+    &lt;xslt:variable name=&quot;_middle_name&quot;/&gt;
+    &lt;xslt:variable name=&quot;_oid&quot;/&gt;
+    &lt;xslt:variable name=&quot;_campaign_oid&quot;/&gt;
+    &lt;xslt:variable name=&quot;_party&quot;/&gt;
+    &lt;xslt:variable name=&quot;_party_date&quot;/&gt;
+    &lt;xslt:variable name=&quot;_prefix&quot;/&gt;
+    &lt;xslt:variable name=&quot;_reg_change_date&quot;/&gt;
+    &lt;xslt:variable name=&quot;_reg_date&quot;/&gt;
+    &lt;xslt:variable name=&quot;_source_voter_id&quot;/&gt;
+    &lt;xslt:variable name=&quot;_status&quot;/&gt;
+    &lt;xslt:variable name=&quot;_suffix&quot;/&gt;
+    &lt;xslt:variable name=&quot;_hobby&quot;/&gt;
+    &lt;xslt:element name=&quot;results&quot;&gt;
+      &lt;xslt:for-each select=&quot;GetVotersResponse&quot;&gt;
+        &lt;xslt:for-each select=&quot;Voter&quot;&gt;
+          &lt;xslt:variable name=&quot;_birth_date&quot; select=&quot;birth_date&quot;/&gt;
+          &lt;xslt:variable name=&quot;_ethnicity&quot; select=&quot;ethnicity&quot;/&gt;
+          &lt;xslt:variable name=&quot;_first_name&quot; select=&quot;first_name&quot;/&gt;
+          &lt;xslt:variable name=&quot;_gender&quot; select=&quot;gender&quot;/&gt;
+          &lt;xslt:variable name=&quot;_household_id&quot; select=&quot;household_id&quot;/&gt;
+          &lt;xslt:variable name=&quot;_last_name&quot; select=&quot;last_name&quot;/&gt;
+          &lt;xslt:variable name=&quot;_maiden_name&quot; select=&quot;maiden_name&quot;/&gt;
+          &lt;xslt:variable name=&quot;_middle_name&quot; select=&quot;middle_name&quot;/&gt;
+          &lt;xslt:variable name=&quot;_oid&quot; select=&quot;oid&quot;/&gt;
+          &lt;xslt:variable name=&quot;_campaign_oid&quot; select=&quot;campaign_oid&quot;/&gt;
+          &lt;xslt:variable name=&quot;_party&quot; select=&quot;party&quot;/&gt;
+          &lt;xslt:variable name=&quot;_party_date&quot; select=&quot;party_date&quot;/&gt;
+          &lt;xslt:variable name=&quot;_prefix&quot; select=&quot;prefix&quot;/&gt;
+          &lt;xslt:variable name=&quot;_reg_change_date&quot; select=&quot;reg_change_date&quot;/&gt;
+          &lt;xslt:variable name=&quot;_reg_date&quot; select=&quot;reg_date&quot;/&gt;
+          &lt;xslt:variable name=&quot;_source_voter_id&quot; select=&quot;source_voter_id&quot;/&gt;
+          &lt;xslt:variable name=&quot;_status&quot; select=&quot;status&quot;/&gt;
+          &lt;xslt:variable name=&quot;_suffix&quot; select=&quot;suffix&quot;/&gt;
+          &lt;xslt:variable name=&quot;_hobby&quot; select=&quot;hobby&quot;/&gt;
+          &lt;xslt:element name=&quot;result&quot;&gt;
+            &lt;xslt:element name=&quot;birth_date&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_birth_date&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;ethnicity&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_ethnicity&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;first_name&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_first_name&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;gender&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_gender&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;household_id&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_household_id&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;last_name&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_last_name&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;maiden_name&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_maiden_name&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;middle_name&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_middle_name&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;oid&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_oid&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;campaign_oid&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_campaign_oid&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;party&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_party&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;party_date&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_party_date&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;prefix&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_prefix&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;reg_change_date&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_reg_change_date&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;reg_date&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_reg_date&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;source_voter_id&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_source_voter_id&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;status&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_status&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;suffix&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_suffix&quot;/&gt;
+            &lt;/xslt:element&gt;
+            &lt;xslt:element name=&quot;hobby&quot;&gt;
+              &lt;xslt:value-of select=&quot;$_hobby&quot;/&gt;
+            &lt;/xslt:element&gt;
+          &lt;/xslt:element&gt;
+        &lt;/xslt:for-each&gt;
+      &lt;/xslt:for-each&gt;
+    &lt;/xslt:element&gt;
+  &lt;/xslt:template&gt;
+&lt;/xslt:stylesheet&gt;</attribute>
+</metadata>
