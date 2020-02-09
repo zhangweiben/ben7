@@ -1,0 +1,242 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="validategenerateViews" path="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/validategenerateViews" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="sourceFolderPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="targetFolderPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="resourceNameFilter" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="generateViewsWrapper" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="statusMode" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="compareMode" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="result" type="TABLE" refId="256">
+        <element name="status">
+          <datatype name="VARCHAR" type="STRING" maxLength="20"/>
+        </element>
+        <element name="resourceType">
+          <datatype name="VARCHAR" type="STRING" maxLength="10"/>
+        </element>
+        <element name="sourceResourcePath">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="taregetResourcePath">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/validategenerateViews" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="sourceFolderPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="targetFolderPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceNameFilter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="generateViewsWrapper" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="statusMode" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="compareMode" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="status">
+            <datatype type="STRING" maxLength="20"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="10"/>
+          </element>
+          <element name="sourceResourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="taregetResourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* 
+&#x9;validategenerateViews:
+
+&#x9;This procedure is used to compare resources between a source folder and a mirror copy target folder.  This is useful when validating if the view generation
+&#x9;is working correctly across a large number of views in different folders.  
+
+&#x9;This works best when performing the following &quot;round trip&quot; scenario:
+&#x9;&#x9;1. A spreadsheet of physical to logical mappings has been established
+&#x9;&#x9;2. Generate the Formatting layer views&#x9;&#x9;&#x9;&#x9;&#x9;generateFormattingViews(1, 2, 1, 0, null, null, null, null, null, null)
+&#x9;&#x9;3. Make a copy of the Formatting layer views&#x9;&#x9;&#x9;Target=/shared/&lt;project_path&gt;/Physical/Formatting_Copy_1
+&#x9;&#x9;4. Generate the Formatting layer to a CSV file&#x9;&#x9;&#x9;generateDatasourceListCSV(C:\temp\test.csv, 1000, 1, 1, R, null, null, null, null, null, null, null,  FV, null)
+&#x9;&#x9;5. Copy test.csv to Common_Model_v3_file1.xlsx&#x9;&#x9;&#x9;Excel: C:\CompositeSoftware\BestPractices\BestPractices_v80\Common_Model_v3_file1.xlsx
+&#x9;&#x9;&#x9;&#x9;a. Open Common_Model_v3_file1.xlsx in Excel
+&#x9;&#x9;&#x9;&#x9;b. Open test.csv in Excel
+&#x9;&#x9;&#x9;&#x9;c. Select cell A2 and use the keystrokes: Ctrl-Shift-End (this will select Columns A-L and all rows except the header row
+&#x9;&#x9;&#x9;&#x9;d. Do a Ctrl-C (copy)
+&#x9;&#x9;&#x9;&#x9;e. Switch to Common_Model_v3_file1.xlsx
+&#x9;&#x9;&#x9;&#x9;f. Make sure there is no data in columns A-L and all of the rows.  If there is, then either delete it or pick a different spreadsheet: Common_Model_v3_file[1-3].xlsx
+&#x9;&#x9;&#x9;&#x9;g. Place your cursor in cell A2
+&#x9;&#x9;&#x9;&#x9;h. Do a Ctrl-V (Paste)
+&#x9;&#x9;&#x9;&#x9;i. Save the spreadsheet
+&#x9;&#x9;6. Refresh the cache of the spreadsheets: Common_Model_v3_file[1-3].xlsx
+&#x9;&#x9;&#x9;&#x9;a. Switch to Studio, Manager tab
+&#x9;&#x9;&#x9;&#x9;b. Select &quot;Cached Resources&quot;
+&#x9;&#x9;&#x9;&#x9;c. Select &quot;common_model&quot;
+&#x9;&#x9;&#x9;&#x9;d. Click Refresh Cache
+&#x9;&#x9;7. Remove the views in the Formatting layer except the &quot;/Transformations&quot; folder which is considered a source folder for transormation procedures.
+&#x9;&#x9;8. Generate the Formattin glayer views&#x9;&#x9;&#x9;&#x9;&#x9;generateFormattingViews(1, 2, 1, 0, null, null, null, null, null, null)
+&#x9;&#x9;9. Validate the view generation process&#x9;&#x9;&#x9;&#x9;&#x9;validateGenerateViews(&#x9;/shared/&lt;project_path&gt;/Physical/Formatting, 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;/shared/&lt;project_path&gt;/Physical/Formatting_Copy_1, 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;null, 1, N, C, N)
+
+&#x9;The output cursor provides a status as follows:
+&#x9;&#x9;EQUAL&#x9;&#x9;&#x9;&#x9;source resource path&#x9;&#x9;&#x9;target resource path&#x9;&#x9;-- the source and target resources are equal
+&#x9;&#x9;NOT EQUAL&#x9;&#x9;&#x9;source resource path&#x9;&#x9;&#x9;target resource path&#x9;&#x9;-- the source and target resources are not equal
+&#x9;&#x9;TARGET NOT FOUND&#x9;source resource path&#x9;&#x9;&#x9;target resource path&#x9;&#x9;-- the target resource was not found when doing a compare
+
+&#x9;Input:
+&#x9;&#x9;&#x9;-- The source folder to begin recursing through to discover TABLE or PROCEDURE resources
+&#x9;&#x9;sourceFolderPath&#x9;LONGVARCHAR,
+
+&#x9;&#x9;&#x9;-- The target (mirror copy of source) which is used to compare each resource with the source to determine if it is equal or not.
+&#x9;&#x9;targetFolderPath&#x9;LONGVARCHAR,
+
+&#x9;&#x9;&#x9;-- Pass in a resource name to filter on from the source folder.  This can be a comma separated list.  
+&#x9;&#x9;&#x9;-- The column name may not contain commas.  Do not place double quotes around the name.
+&#x9;&#x9;resourceNameFilter&#x9;VARCHAR,
+&#x9;&#x9;
+&#x9;&#x9;&#x9;-- 0           - print the output to the cursor result window.  The cursor is bound by Composite Studio &quot;Fetch Row Size&quot; and &quot;Cursor Fetch Limit&quot;
+&#x9;&#x9;&#x9;--               The cursor stops producing output when it hits those limits.  The limits are configured in Composite Studio
+&#x9;&#x9;&#x9;--                  AdministrationConfigurationStudioDataFetch Rows Size and Cursor Fetch Limit.  
+&#x9;&#x9;&#x9;--                  Modify the Cursor Fetch Limit to an arbitrary number such as 500
+&#x9;&#x9;&#x9;-- 1 (default) - print TABLE only information to console window.  Do not print to the cursor result window.  The aforementioned limits do not apply.
+&#x9;&#x9;generateViewsWrapper
+
+&#x9;&#x9;statusMode&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- status mode: A=output All status, E=output Equal status only, N=output Not equal status only
+&#x9;&#x9;compareMode&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;- compare mode: S=compare SqlText, C=compare Columns and types
+&#x9;&#x9;debug&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- Y=debug is on, N=do not debug, will print out source and target sql script when the resources are not equal.
+
+&#x9;Output:
+&#x9;&#x9;result&#x9;&#x9;&#x9;&#x9;CURSOR
+&#x9;&#x9;PUBLIC TYPE&#x9;generateViewsValidateType ROW(
+&#x9;&#x9;&#x9;status&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(20),&#x9;-- &quot;SKIPPED&quot;, &quot;EQUAL&quot;, &quot;NOT EQUAL&quot;, &quot;TARGET NOT FOUND&quot;
+&#x9;&#x9;&#x9;resourceType&#x9;&#x9;&#x9;VARCHAR(10),&#x9;-- TABLE or PROCEDURE
+&#x9;&#x9;&#x9;sourceResourcePath&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;&#x9;taregetResourcePath &#x9;LONGVARCHAR
+&#x9;&#x9;);
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/07/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;Created new
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE validategenerateViews(
+&#x9;&#x9;-- The source folder to begin recursing through to discover TABLE or PROCEDURE resources
+&#x9;&#x9;-- &#x9;e.g. /shared/BestPracticesTest/Physical/Formatting
+&#x9;IN&#x9;sourceFolderPath&#x9;&#x9;LONGVARCHAR,
+
+&#x9;&#x9;-- The target (mirror copy of source) which is used to compare each resource with the source to determine if it is equal or not.
+&#x9;&#x9;-- &#x9;e.g. /shared/BestPracticesTest/Physical/Formatting_Copy_1
+&#x9;IN&#x9;targetFolderPath&#x9;&#x9;LONGVARCHAR,
+
+&#x9;&#x9;-- Pass in a resource name to filter on from the source folder.  This can be a comma separated list.
+&#x9;&#x9;--  The column name may not contain commas.  Do not place double quotes around the name.
+&#x9;&#x9;-- 0           - print the output to the cursor.  The cursor is bound by Composite Studio &quot;Fetch Row Size&quot; and &quot;Cursor Fetch Limit&quot;
+&#x9;IN&#x9;resourceNameFilter&#x9;&#x9;VARCHAR,
+
+&#x9;&#x9;--               The cursor stops producing output when it hits those limits.  The limits are configured in Composite Studio
+&#x9;&#x9;--                  AdministrationConfigurationStudioDataFetch Rows Size and Cursor Fetch Limit.  
+&#x9;&#x9;--                  Modify the Cursor Fetch Limit to an arbitrary number such as 500
+&#x9;&#x9;-- 1 (default) - print TABLE only information to console window.  Do not print to the cursor result window.  The aforementioned limits do not apply.
+&#x9;IN  generateViewsWrapper&#x9;INTEGER,
+
+&#x9;&#x9;-- status mode:  A (default)=output All status, E=output Equal status, N=output Not equal status
+&#x9;IN &#x9;statusMode&#x9;&#x9;&#x9;&#x9;CHAR(1),
+
+&#x9;&#x9;-- compare mode: S=compare SqlText, C=compare Columns
+&#x9;IN  compareMode&#x9;&#x9;&#x9;&#x9;CHAR(1),
+
+&#x9;&#x9;-- Y=debug is on, N=do not debug
+&#x9;IN &#x9;debug&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),
+
+&#x9;OUT&#x9;result&#x9;&#x9;&#x9;&#x9;&#x9;CURSOR /shared/ASAssets/BestPractices_v81/Procedures/validategenerateViews.validategenerateViewsType
+)
+BEGIN
+&#x9;open result for 
+&#x9;&#x9;select * from /shared/ASAssets/BestPractices_v81/Procedures/validategenerateViews(
+&#x9;&#x9;&#x9;sourceFolderPath, targetFolderPath, resourceNameFilter, generateViewsWrapper, statusMode, compareMode, debug);
+END</attribute>
+  <attribute name="creationDate" type="LONG">1383393161626</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564601704163</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

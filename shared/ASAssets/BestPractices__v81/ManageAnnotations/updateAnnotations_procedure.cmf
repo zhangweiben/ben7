@@ -1,0 +1,687 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="updateAnnotations" path="/shared/ASAssets/BestPractices_v81/ManageAnnotations/updateAnnotations" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="performUpdate" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="updatePublishedResourceAnnotation" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="inSqlStatement" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="result" type="TABLE" refId="256">
+        <element name="Status">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="ResourcePath">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="ResourceType">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="ResourceAnnotation">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="PublishedResourcePath">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="PublishedResourceType">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="ColumnsUpdated">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="ColumnsNotUpdated">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/lib/resource/ResourceDefs" type="DEFINITION_SET">
+    <datatype name="Tree" type="TREE" refId="257"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getBasicResourceCursor_PROCEDURE_CURSOR" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="cursorNum" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="resourceCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="4096"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="columnName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="columnType">
+            <datatype type="STRING" maxLength="4096"/>
+          </element>
+          <element name="columnBaseType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="dataType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="paramDirection">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeBaseType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="1024"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="proprietaryModel">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="columnName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="columnType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeBaseType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getDependentResourcesDirectRecurseCursor" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="includeInitialPath" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="inLineageResourceIdList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="4096"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="40"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="40"/>
+          </element>
+          <element name="id">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="ownerDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ownerName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactLevel">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactMessage">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/updateResourceAnnotationsV2" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="annotation" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inColumnAnnotations" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="updateResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;updateAnnotations
+
+&#x9;This script is used to update resource annotations.  
+&#x9;The main objective is to update the resources and columns at the level directly below the published datasource layer in DV.  
+&#x9;This is the layer in which table columns may be updated.  This is the layer in which Business Directory will read in the column metadata. 
+&#x9;However, Business Directory gets table and procedure metadata directly from the published (LINK) resource.  Therefore, updateAnnotations
+&#x9;provides an option to push the resource metadata up to all published resources that are linked to the resource being updated.
+
+&#x9;RULES:
+&#x9;&#x9;1) If the annotation in the spreadsheet is blank with no spaces, it is considered a null indicating take no action.
+&#x9;&#x9;&#x9;The update of the annotation for that resource is not performed.
+&#x9;&#x9;2) If the annotation in the spreadsheet contains 1 or more blanks, it is considered a modification and the update
+&#x9;&#x9;&#x9;of the annotation will be performed and will blank out any existing annotation.
+&#x9;&#x9;3) If the annotation in the spreadsheet contains non-space characters, it is considered a modification and the update
+&#x9;&#x9;&#x9;of the annotation will be performed modifying the existing annotation.
+&#x9;&#x9;4) If the annotation in the spreadsheet contains multiple lines then all lines will be taken as is and and the 
+&#x9;&#x9;&#x9;resource annotation will retain those lines.
+&#x9;&#x9;5) If the PhysicalType = &apos;TABLE&apos; then the table annotation will be modified otherwise it is assumed to be a COLUMN
+&#x9;&#x9;&#x9;annotation.
+
+&#x9;INPUT:
+&#x9;&#x9;-- Perform Update: 0=do not perform update, 1=perform update
+&#x9;&#x9;IN&#x9;performUpdate&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER, 
+&#x9;&#x9;-- Update Published Resource Annotation
+&#x9;&#x9;--  0=do not push annotation to the published resource, 1=perform the update of the published (LINK) resource annotation.
+&#x9;&#x9;-- Business Directory gets table and procedure metadata directly from the published (LINK) resource.  Therefore, updateAnnotations
+&#x9;&#x9;--  provides an option to push the resource metadata up to all published resources that are linked to the resource being updated.&#x9;
+&#x9;&#x9;IN  updatePublishedResourceAnnotation&#x9;INTEGER, 
+&#x9;&#x9;-- The table is provided by the user but the columns must match exactly as shown.
+&#x9;&#x9;-- This strategy allows the user to store there annotations in their own datasource [excel or database] in order to manage their annotations.
+&#x9;&#x9;--&#x9;Default Select if inSqlStatement is left null. 
+&#x9;&#x9;--  select PhysicalName, PhysicalType, ResourcePath, ResourceAnnotation from /shared/ASAssets/BestPractices_v81/ManageAnnotations/Formatting/ResourceAnnotations
+&#x9;&#x9;IN  inSqlStatement&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;
+&#x9;OUTPUT:
+&#x9;&#x9;rowsProcessed&#x9;- The number of rows processed by the update of annotations. 
+&#x9;EXCEPTION:&#x9;
+&#x9;&#x9;may be thrown by CIS
+&#x9;DEPENDENCIES
+&#x9;&#x9;requires the latest resource modified on 05/15/2019
+&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/Utilities/repository/updateResourceAnnotationsV2
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CIS Version:&#x9;Reason:
+&#x9;11/14/2016&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.4&#x9;&#x9;&#x9;Created new.
+&#x9;05/24/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Modified to include in Data Abstraction Best Practices.
+&#x9;01/31/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;Provide the ability to push the resource annotation up to the published (LINK) resource so that
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Business Directory will be able to retrieve table/procedure annotations.
+&#x9;04/11/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;Added result cursor to provided a status on each table that was updated, a list of columns update and a list of columns not updated.
+&#x9;05/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;Modified to use updateResourceAnnotationsV2 which has no vector input.  Has XML input.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE updateAnnotations(
+&#x9;-- Perform Update: 0=do not perform update, 1=perform update
+&#x9;IN&#x9;performUpdate&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER, 
+&#x9;-- Update Published Resource Annotation
+&#x9;--  0=do not push annotation to published resource, 1=perform the update of the published (LINK) resource annotation.
+&#x9;-- Business Directory gets table and procedure metadata directly from the published (LINK) resource.  Therefore, updateAnnotations
+&#x9;--  provides an option to push the resource metadata up to all published resources that are linked to the resource being updated.&#x9;
+&#x9;IN  updatePublishedResourceAnnotation&#x9;INTEGER, 
+&#x9;-- The table is provided by the user but the columns must match exactly as shown.
+&#x9;-- This strategy allows the user to store there annotations in their own datasource [excel or database] in order to manage their annotations.
+&#x9;--&#x9;Default Select if inSqlStatement is left null. 
+&#x9;--  select PhysicalName, PhysicalType, ResourcePath, ResourceAnnotation from /shared/ASAssets/BestPractices_v81/ManageAnnotations/Formatting/ResourceAnnotations
+&#x9;IN  inSqlStatement&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;
+&#x9;OUT result&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PIPE (
+&#x9;&#x9;Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;&#x9;ResourcePath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;&#x9;ResourceType&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;ResourceAnnotation&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;PublishedResourcePath&#x9;&#x9;VARCHAR(4000),
+&#x9;&#x9;PublishedResourceType&#x9;&#x9;VARCHAR,
+&#x9;&#x9;ColumnsUpdated&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;ColumnsNotUpdated&#x9;&#x9;&#x9;LONGVARCHAR
+&#x9;)
+)
+BEGIN
+&#x9;DECLARE parentPath&#x9;&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourcePath;
+&#x9;DECLARE prevParentPath&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourcePath DEFAULT &apos;&apos;;
+&#x9;DECLARE rowsProcessed&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE columnAnnotations &#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE colNum&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE success&#x9;&#x9;&#x9;&#x9;&#x9;BIT;
+&#x9;DECLARE updateResponse&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE faultResponse&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE TYPE annotationType&#x9;&#x9;ROW (
+&#x9;&#x9;PhysicalName&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;PhysicalType&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;ResourcePath&#x9;&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourcePath,
+&#x9;&#x9;ResourceAnnotation&#x9;&#x9;&#x9;LONGVARCHAR
+&#x9;);
+&#x9;DECLARE annotationCursor&#x9;&#x9;CURSOR annotationType;
+&#x9;DECLARE bestPracticesRootPath &#x9;VARCHAR(4000) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.bestPracticesRootPath;
+&#x9;DECLARE formattingPath&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT bestPracticesRootPath||&apos;/ManageAnnotations/Formatting/ResourceAnnotations&apos;;
+&#x9;DECLARE defaultSqlStatement&#x9;&#x9;LONGVARCHAR DEFAULT &apos;select PhysicalName, PhysicalType, ResourcePath, ResourceAnnotation from &apos;||formattingPath;
+&#x9;DECLARE sqlStatement&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE TYPE resultType&#x9;&#x9;&#x9;ROW (
+&#x9;&#x9;Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;&#x9;ResourcePath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;&#x9;ResourceType&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;ResourceAnnotation&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;PublishedResourcePath&#x9;&#x9;VARCHAR(4000),
+&#x9;&#x9;PublishedResourceType&#x9;&#x9;VARCHAR,
+&#x9;&#x9;ColumnsUpdated&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;ColumnsNotUpdated&#x9;&#x9;&#x9;LONGVARCHAR
+&#x9;);
+&#x9;DECLARE rec&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;resultType;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+
+&#x9;if (inSqlStatement IS NOT NULL) then
+&#x9;&#x9;set sqlStatement = inSqlStatement||CHR(10)||&apos; union select &apos;&apos;END&apos;&apos;, &apos;&apos;END&apos;&apos;, &apos;&apos;/shared/END&apos;&apos;, null from /services/databases/system/DUAL&apos;;
+&#x9;else
+&#x9;&#x9;set sqlStatement = defaultSqlStatement||CHR(10)||&apos; union select &apos;&apos;END&apos;&apos;, &apos;&apos;END&apos;&apos;, &apos;&apos;/shared/END&apos;&apos;, null from /services/databases/system/DUAL&apos;;
+&#x9;end if;
+&#x9;set rowsProcessed = 0;
+
+&#x9;if (performUpdate is null) then
+&#x9;&#x9;raise ex value &apos;The input variable &quot;performUpdate&quot; may not be null.&apos;;
+&#x9;end if;
+&#x9;if (updatePublishedResourceAnnotation is null) then
+&#x9;&#x9;raise ex value &apos;The input variable &quot;updatePublishedResourceAnnotation&quot; may not be null.&apos;;
+&#x9;end if;
+&#x9;call print(&apos;INPUT:&apos;);
+&#x9;call print(&apos;performUpdate=&apos;||performUpdate);
+&#x9;call print(&apos;updatePublishedResourceAnnotation=&apos;||updatePublishedResourceAnnotation);
+&#x9;call print(&apos;sqlStatement=[&apos;||sqlStatement||&apos;]&apos;);
+&#x9;call print(&apos;&apos;);
+
+&#x9;open annotationCursor for sqlStatement;
+&#x9;for r as annotationCursor do
+&#x9;&#x9;set rowsProcessed = rowsProcessed + 1;
+&#x9;&#x9;set parentPath = r.ResourcePath;
+&#x9;&#x9;call print(&apos;prevParentPath=[&apos;||prevParentPath||&apos;]  parentPath=[&apos;||parentPath||&apos;]&apos;);
+
+&#x9;&#x9;-- When the table resource changes perform the update resource annotations.
+&#x9;&#x9;if (length(prevParentPath) &gt; 0 and prevParentPath &lt;&gt; parentPath) then
+&#x9;&#x9;&#x9;if (performUpdate &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Update the resource annotations for the resource and columns
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/updateResourceAnnotationsV2(rec.ResourcePath, rec.ResourceType, rec.ResourceAnnotation, columnAnnotations, success, updateResponse, faultResponse);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;raise ex value CAST(faultResponse AS LONGVARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;call print(&apos;Update performed for resourceType=&apos;||rec.ResourceType||&apos;  ResourcePath=&apos;||rec.ResourcePath);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Validate the resource annotations
+&#x9;&#x9;&#x9;&#x9;&#x9;if (rec.ResourceType = &apos;TABLE&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;for c as 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select columnName from /shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE(rec.ResourcePath, rec.ResourceType) 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;where columnName is not null
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;do
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (INSTR(rec.ColumnsUpdated, &apos;|&apos;||c.columnName||&apos;|&apos;) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (rec.ColumnsNotUpdated is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.ColumnsNotUpdated = &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.ColumnsNotUpdated = rec.ColumnsNotUpdated || c.columnName || &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end for;
+&#x9;&#x9;&#x9;&#x9;&#x9;elseif (rec.ResourceType = &apos;PROCEDURE&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;for c as 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select columnName from /shared/ASAssets/Utilities/repository/getBasicResourceCursor_PROCEDURE_CURSOR(rec.ResourcePath, rec.ResourceType, 1) 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;where columnName is not null
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;do
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (INSTR(rec.ColumnsUpdated, &apos;|&apos;||c.columnName||&apos;|&apos;) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (rec.ColumnsNotUpdated is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.ColumnsNotUpdated = &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.ColumnsNotUpdated = rec.ColumnsNotUpdated || c.columnName || &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end for;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Update the published linke annotation if requested
+&#x9;&#x9;&#x9;&#x9;&#x9;if (updatePublishedResourceAnnotation is not null and updatePublishedResourceAnnotation = 1) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;for d as select * from /shared/ASAssets/Utilities/repository/getDependentResourcesDirectRecurseCursor(rec.ResourcePath, rec.ResourceType, 0, null) do
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (d.resourceType = &apos;LINK&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.PublishedResourcePath = d.resourcePath;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.PublishedResourceType = d.resourceType;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/updateResourceAnnotationsV2(rec.PublishedResourcePath, rec.PublishedResourceType, rec.ResourceAnnotation, null, success, updateResponse, faultResponse);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;raise ex value CAST(faultResponse AS LONGVARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call print(&apos;Update performed for resourceType=&apos;||rec.PublishedResourceType||&apos;  ResourcePath=&apos;||rec.PublishedResourcePath);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end for;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;EXCEPTION
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.Status = CAST(CURRENT_EXCEPTION.MESSAGE AS LONGVARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (INSTR(lower(rec.Status), &apos;does not exist&apos;) &gt; 0 or INSTR(lower(rec.Status), &apos;unable to locate resource&apos;) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.Status = &apos;EXCEPTION: NOT EXIST: &apos;||rec.Status;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set rec.Status = &apos;EXCEPTION: &apos;||rec.Status;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call print(rec.Status);
+&#x9;&#x9;&#x9;&#x9;END;
+
+&#x9;&#x9;&#x9;&#x9;-- Insert into the result pipe
+&#x9;&#x9;&#x9;&#x9;insert into result values(rec);
+&#x9;&#x9;&#x9;&#x9;set rec = null;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;call print(&apos;NO update performed for resourceType=&apos;||rec.ResourceType||&apos;  ResourcePath=&apos;||rec.ResourcePath);
+&#x9;&#x9;&#x9;&#x9;set rec = null;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- prepare the table and column annotations.
+&#x9;&#x9;set rec.PublishedResourcePath = null;
+&#x9;&#x9;set rec.Status = null;
+&#x9;&#x9;if (r.PhysicalType = &apos;LINK&apos;) then
+&#x9;&#x9;&#x9;call print(&apos;LINK=&apos;||r.PhysicalName||&apos;  PhysicalType=&apos;||r.PhysicalType||&apos;  ResourcePath=&apos;||r.ResourcePath);
+&#x9;&#x9;&#x9;set rec.ResourcePath = r.ResourcePath;
+&#x9;&#x9;&#x9;set rec.ResourceType = r.PhysicalType;
+&#x9;&#x9;&#x9;set rec.ResourceAnnotation = r.ResourceAnnotation;
+&#x9;&#x9;elseif (r.PhysicalType = &apos;TABLE&apos;) then
+&#x9;&#x9;&#x9;call print(&apos;TABLE=&apos;||r.PhysicalName||&apos;  PhysicalType=&apos;||r.PhysicalType||&apos;  ResourcePath=&apos;||r.ResourcePath);
+&#x9;&#x9;&#x9;set rec.ResourcePath = r.ResourcePath;
+&#x9;&#x9;&#x9;set rec.ResourceType = r.PhysicalType;
+&#x9;&#x9;&#x9;set rec.ResourceAnnotation = r.ResourceAnnotation;
+&#x9;&#x9;elseif (r.PhysicalType = &apos;PROCEDURE&apos;) then
+&#x9;&#x9;&#x9;call print(&apos;PROCEDURE=&apos;||r.PhysicalName||&apos;  PhysicalType=&apos;||r.PhysicalType||&apos;  ResourcePath=&apos;||r.ResourcePath);
+&#x9;&#x9;&#x9;set rec.ResourcePath = r.ResourcePath;
+&#x9;&#x9;&#x9;set rec.ResourceType = r.PhysicalType;
+&#x9;&#x9;&#x9;set rec.ResourceAnnotation = r.ResourceAnnotation;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;if (r.ResourceAnnotation is not null and length(r.ResourceAnnotation) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;call print(&apos;COLUMN=&apos;||r.PhysicalName||&apos;  INCLUDE: PhysicalType=&apos;||r.PhysicalType||&apos;  ResourcePath=&apos;||r.ResourcePath||&apos;  Annotation=[&apos;||r.ResourceAnnotation||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;if (columnAnnotations is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set columnAnnotations = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;set colNum = 1;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set colNum = colNum + 1;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set columnAnnotations = 
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Repeat this &lt;resource:column&gt; for multiple columns
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;        &lt;resource:column&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;            &lt;resource:name&gt;&apos; || CAST(XMLTEXT(r.PhysicalName) AS VARCHAR) || &apos;&lt;/resource:name&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;            &lt;resource:annotation&gt;&apos; || CAST(XMLTEXT(COALESCE(r.ResourceAnnotation, &apos;&apos;)) AS LONGVARCHAR) || &apos;&lt;/resource:annotation&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;        &lt;/resource:column&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;if (rec.ColumnsUpdated is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set rec.ColumnsUpdated = &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set rec.ColumnsUpdated = rec.ColumnsUpdated || r.PhysicalName || &apos;|&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;call print(&apos;COLUMN:    NOT INCLUDE: PhysicalType=&apos;||r.PhysicalType||&apos;  ResourcePath=&apos;||r.ResourcePath||&apos;  Annotation=[null]&apos;);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;set prevParentPath = parentPath;
+&#x9;end for;
+&#x9;call print(&apos;Number of Rows Processed=&apos;||rowsProcessed);
+END</attribute>
+  <attribute name="creationDate" type="LONG">1479156504672</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564075714164</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">11/159</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/139</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">9/232</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/138</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/267</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/140</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">10/262</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/142</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/141</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">12/211</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/148</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">10/243</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">15/199</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">9/227</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">9/237</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">10/218</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1479156504672</attribute>
+</metadata>

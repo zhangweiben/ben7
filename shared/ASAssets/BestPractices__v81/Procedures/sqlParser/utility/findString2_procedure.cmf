@@ -1,0 +1,236 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="findString2" path="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/findString2" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[findString:
+&#x9;Given two input strings, this function returns an integer value representing the starting 
+&#x9;position of the first string within the second string.  The third parameter indicates which direction
+&#x9;to begin searching.  When &apos;F&apos;, begin searching forward from the beginning of the second string.
+&#x9;When &apos;R&apos;, begin search in reverse from the end of the second string.
+&#x9;&#x9;* This function is case-sensitive.
+&#x9;&#x9;* All string types, all numeric types, and all data types are accepted as input arguments.
+&#x9;&#x9;* The output is always an integer provided none of the input strings is NULL. Otherwise, NULL is returned.
+&#x9;&#x9;* If any of the arguments is NULL, the function returns NULL.
+&#x9;&#x9;* If the first argument is a blank string, the function returns 1 (one).
+&#x9;&#x9;* If the first argument is not found within the second argument, the function returns 0 (zero).
+ 
+&#x9;Input:
+&#x9;&#x9;searchString - The search string is what you are looking for.  If this value is null, then the output is null
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A blank (&apos;&apos;) non-null string for the search string always produces 1 for an output.
+&#x9;&#x9;&#x9;Values: Any text value
+&#x9;&#x9;stringToSearch - The string to search within for the search string. If this value is null, then the output is null
+&#x9;&#x9;&#x9;Values: Any text value
+&#x9;&#x9;direction - The direction which you want to search
+&#x9;&#x9;&#x9;Values: &apos;F&apos;=search forward, &apos;R&apos;=search in reverse
+&#x9;Output:
+&#x9;&#x9;pos - an integer value representing the position of the string
+&#x9;&#x9;&#x9;Values: null, or any positive integer
+
+&#x9;&#x9;Examples: 
+&#x9;  &#x9;&#x9;direction=&apos;F&apos;
+&#x9;&#x9;&#x9;&#x9;POSITION(‘it’ IN ‘case-sensitivity’),  
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 10           ^
+&#x9;&#x9;&#x9;&#x9;POSITION(‘’ IN ‘mistake’) -- a blank non-null string for the search string always produces 1 for an output.
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 1
+&#x9;&#x9;&#x9;&#x9;POSITION(‘no’ IN ’yes’)
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 0
+&#x9;  &#x9;&#x9;direction=&apos;R&apos;
+&#x9;&#x9;&#x9;&#x9;POSITION(‘it’ IN ‘case-sensitivity’)
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 14               ^
+&#x9;&#x9;&#x9;&#x9;POSITION(‘no’ IN ’yes’)
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 0
+
+&#x9;Exceptions:  none
+&#x9;Author:      Mike Tinius
+&#x9;Date:        8/17/2010
+&#x9;CSW Version: 5.1.0
+
+    Copyright (c) 2010
+    Composite Software, Inc.
+    All Rights Reserved
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="inSearchString" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inStringToSearch" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inDirection" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="startingPosition" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="inOccurrences" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="pos" direction="OUT" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <attribute name="Script" type="STRING">/* findString:
+&#x9;Given two input strings, this function returns an integer value representing the starting 
+&#x9;position of the first string within the second string.  The third parameter indicates which direction
+&#x9;to begin searching.  When &apos;F&apos;, begin searching forward from the beginning of the second string.
+&#x9;When &apos;R&apos;, begin search in reverse from the end of the second string.
+&#x9;&#x9;* This function is case-sensitive.
+&#x9;&#x9;* All string types, all numeric types, and all data types are accepted as input arguments.
+&#x9;&#x9;* The output is always an integer provided none of the input strings is NULL. Otherwise, NULL is returned.
+&#x9;&#x9;* If any of the arguments is NULL, the function returns 0 (zero).
+&#x9;&#x9;* If the first argument is a blank string, the function returns 0 (zero).
+&#x9;&#x9;* If the first argument is not found within the second argument, the function returns 0 (zero).
+ 
+&#x9;Input:
+&#x9;&#x9;searchString - The search string is what you are looking for.  If this value is null, then the output is 0
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A blank (&apos;&apos;) non-null string for the search string always produces 0 for an output.
+&#x9;&#x9;&#x9;Values: Any text value
+&#x9;&#x9;stringToSearch - The string to search within for the search string. If this value is null, then the output is null
+&#x9;&#x9;&#x9;Values: Any text value
+&#x9;&#x9;direction - The direction which you want to search
+&#x9;&#x9;&#x9;Values: &apos;F&apos;=search forward, &apos;R&apos;=search in reverse
+&#x9;&#x9;startingPosition - The starting position to begin the search.
+&#x9;&#x9;occurrences - The number of the occurrence to return
+&#x9;Output:
+&#x9;&#x9;pos - an integer value representing the position of the string
+&#x9;&#x9;&#x9;Values: 0 if not found or string values are null, or any positive integer
+
+&#x9;&#x9;Examples: 
+&#x9;  &#x9;&#x9;direction=&apos;F&apos;
+&#x9;&#x9;&#x9;&#x9;search for ‘it’  in ‘case-sensitivity’
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 10              ^
+&#x9;&#x9;&#x9;&#x9;search for ‘’ in ‘mistake’ -- a blank non-null string for the search string always produces 0 for an output.
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 0
+&#x9;&#x9;&#x9;&#x9;search for ‘no’ in ’yes’
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 0
+&#x9;  &#x9;&#x9;direction=&apos;R&apos;
+&#x9;&#x9;&#x9;&#x9;search for ‘it’ in ‘case-sensitivity’
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 14                 ^
+&#x9;&#x9;&#x9;&#x9;search for ‘no’ in ’yes’
+&#x9;&#x9;&#x9;&#x9;&#x9;Output: 0
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/11/2011&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE findString2(
+&#x9;IN inSearchString&#x9;LONGVARCHAR,&#x9;-- what you find
+&#x9;IN inStringToSearch&#x9;LONGVARCHAR,&#x9;-- what to search
+&#x9;IN inDirection&#x9;&#x9;CHAR(1),&#x9;&#x9;--&apos;F&apos;=search forward, &apos;R&apos;=search in reverse
+&#x9;IN startingPosition INTEGER, &#x9;&#x9;-- The starting position to begin the search.
+&#x9;IN inOccurrences &#x9;INTEGER, &#x9;&#x9;-- The number of occurrences to bypass
+&#x9;OUT pos&#x9;&#x9;&#x9;&#x9;INTEGER&#x9;&#x9;&#x9;-- The position of the beginning of the occurrence of the text found.  Strings always start at 1.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- returns 0 if the StringToSearch is null or string not found
+)
+BEGIN
+&#x9;DECLARE searchString&#x9;LONGVARCHAR DEFAULT inSearchString;
+&#x9;DECLARE stringToSearch&#x9;LONGVARCHAR DEFAULT inStringToSearch;
+&#x9;DECLARE direction&#x9;&#x9;CHAR(1) DEFAULT inDirection;
+&#x9;DECLARE occurrences&#x9;&#x9;INTEGER DEFAULT inOccurrences;
+&#x9;DECLARE numFound&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE len&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE num&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE begChar&#x9;&#x9;&#x9;CHAR(2);
+&#x9;DECLARE endChar&#x9;&#x9;&#x9;CHAR(2);
+&#x9;
+&#x9;if (searchString is null) then
+&#x9;&#x9;set searchString = &apos;&apos;;
+&#x9;end if;
+&#x9;if (stringToSearch is null) then
+&#x9;&#x9;set stringToSearch = &apos;&apos;;
+&#x9;end if;
+&#x9;if (direction is null) then
+&#x9;&#x9;set direction = &apos;F&apos;; -- Default is Forward search
+&#x9;end if;
+&#x9;if (occurrences is null) then
+&#x9;&#x9;set occurrences = 1; -- Default occurrences to 1 if null
+&#x9;end if;
+
+&#x9;-- This code is here because there is a bug where LENGTH(s) where s=[ ] returns 0 length even though there is a space there
+&#x9;set searchString = &apos;\&quot;&apos;||searchString||&apos;\&quot;&apos;;
+&#x9;set len = LENGTH(searchString);
+&#x9;-- Extract the true search string from the escape quoted string
+&#x9;set searchString = SUBSTRING(searchString,3,LENGTH(searchString)-4);
+&#x9;set len = len - 4; -- Get the true length by reducing for the escape quoted string
+--&#x9;call print(&apos;searchString:   len=&apos;||len ||&apos;   s=[&apos;||searchString||&apos;]&apos;);
+--&#x9;call print(&apos;stringToSearch: len=&apos;||LENGTH(stringToSearch)||&apos;   s=[&apos;||stringToSearch||&apos;]&apos;);
+
+&#x9;set pos = 0;
+&#x9;IF (UPPER(direction) = &apos;F&apos;) THEN -- Search Forward
+&#x9;&#x9;set pos = startingPosition;
+&#x9;&#x9;if (startingPosition is null or startingPosition = 0) then
+&#x9;&#x9;&#x9;set pos = 1;
+&#x9;&#x9;end if;
+&#x9;&#x9;set pos = INSTR(stringToSearch, searchString, pos, occurrences);
+&#x9;ELSE -- Search in Reverse
+&#x9;&#x9;-- not working: set pos = INSTR(stringToSearch, searchString, length(stringToSearch), occurrences);
+&#x9;&#x9;IF (len = 0) THEN
+&#x9;&#x9;&#x9;set pos = 0;
+&#x9;&#x9;ELSE
+&#x9;    &#x9;set pos = length(stringToSearch);
+&#x9;    &#x9;posLoop:
+&#x9;&#x9;&#x9;while (pos &gt; 0) do
+&#x9;&#x9;&#x9;&#x9;if (SUBSTRING(stringToSearch, pos, len) = searchString) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set numFound = numFound + 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (numFound = occurrences) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;leave posLoop;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set pos = pos - 1;
+&#x9;&#x9;&#x9;end while;
+&#x9;&#x9;END IF;
+&#x9;END IF;
+&#x9;if (pos is null) then
+&#x9;&#x9;set pos = 0;
+&#x9;end if;
+--&#x9;call print(&apos;pos=&apos;||pos);
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1513829825991</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

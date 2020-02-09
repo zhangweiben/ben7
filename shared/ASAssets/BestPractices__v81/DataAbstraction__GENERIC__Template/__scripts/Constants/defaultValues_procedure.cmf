@@ -1,0 +1,504 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="defaultValues" path="/shared/ASAssets/BestPractices_v81/DataAbstraction_GENERIC_Template/_scripts/Constants/defaultValues" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[defaultValues:
+&#x9;-- Data Virtualization Best Practices --
+
+&#x9;Provides a place to define default values for the entire project.  
+&#x9;These global default values are&#x9;used by the generation scripts as well.
+ 
+&#x9;Input: none
+&#x9;Output:
+&#x9;&#x9;bestPracticesVersion_&#x9;&#x9;&#x9;&#x9; - The Best Practices version being used in the project
+&#x9;&#x9;basePath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; - The starting full base path for this project including the folder that designates the version of the project.
+&#x9;&#x9;configureScriptsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the configure scripts folder.
+&#x9;&#x9;constantsScriptsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the constants scripts folder.
+&#x9;&#x9;compositeDatabasePath_&#x9;&#x9;&#x9;&#x9; - Identifies the composite database published folder.
+&#x9;&#x9;generationScriptsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the generation scripts folder.
+&#x9;&#x9;applicationPublishedPath_&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction client published sub-layer
+&#x9;&#x9;applicationServicesPath_&#x9;&#x9;&#x9; - Identifies the Data Abstraction Layer segment folder for Application Services sub-layer
+&#x9;&#x9;applicationViewsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the Data Abstraction Layer segment folder for Application Views sub-layer
+&#x9;&#x9;applicationViewsSubFolder_&#x9;&#x9;&#x9; - Identifies the subfolder to the Data Abstraction client views sub-layer
+&#x9;&#x9;crudPath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the Data Abstraction Layer segment folder for CRUD operations (create,retrievePK,update,delete).
+&#x9;&#x9;typeDefinitionPath_&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the type definition and constants folder.
+&#x9;&#x9;typeDefinitionProcName_&#x9;&#x9;&#x9;&#x9; - Identifies the Type Definition Default Procedure Name.
+&#x9;&#x9;businessBusinessPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction business sub-layer
+&#x9;&#x9;businessLogicalPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction logical sub-layer
+&#x9;&#x9;physicalFormattingPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction formatting sub-layer
+&#x9;&#x9;physicalFormattingTransformationPath - Identifies the path to the Data Abstraction formatting transformation sub-layer
+&#x9;&#x9;physicalMetadataPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction physical metadata sub-layer
+&#x9;&#x9;physicalViewsPath_&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction physical sub-layer
+&#x9;&#x9;genUniqueIDPath_&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the full path to the procedure to generate a unique ID
+&#x9;&#x9;debugTime_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the debug option for printing timings for generateViews procedure.
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;08/20/2010&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.1.0&#x9;&#x9;&#x9;Created new
+&#x9;04/03/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modified names to fit the layer changes
+&#x9;05/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;Updated Best Practices 7.1 with compositeDatabasePath and bestPracticesVersion
+&#x9;11/08/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.1.0&#x9;&#x9;&#x9;B.P. 8.0: Added debugTime_ output parameter.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.]]&gt;</annotation>
+  <parameters>
+    <parameter name="bestPracticesVersion_" direction="OUT" nullable="true">
+      <datatype name="DOUBLE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+    </parameter>
+    <parameter name="basePath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="scriptsPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="configureScriptsPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="constantsScriptsPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="generationScriptsPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="documentationScriptsPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="compositeDatabasePath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="applicationPublishedPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="applicationServicesPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="applicationViewsPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="applicationViewsSubFolder_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="crudPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="typeDefinitionPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="typeDefinitionProcName_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="businessBusinessPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="businessLogicalPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="physicalFormattingPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="physicalFormattingTransformationPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="physicalViewsPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="physicalMetadataPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="genUniqueIDPath_" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="debugTime_" direction="OUT" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <attribute name="Script" type="STRING">/* 
+&#x9;defaultValues:
+&#x9;-- Data Virtualization Best Practices --
+
+&#x9;Provides a place to define default values for the entire project.  
+&#x9;These global default values are&#x9;used by the generation scripts as well.
+ 
+&#x9;Input: none
+&#x9;Output:
+&#x9;&#x9;bestPracticesVersion_&#x9;&#x9;&#x9;&#x9; - The Best Practices version being used in the project
+&#x9;&#x9;-- Script Base Paths
+&#x9;&#x9;basePath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; - The starting full base path for this project including the folder that designates the version of the project.
+&#x9;&#x9;configureScriptsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the configure scripts folder.
+&#x9;&#x9;constantsScriptsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the constants scripts folder.
+&#x9;&#x9;generationScriptsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the generation scripts folder.
+&#x9;&#x9;documentationScriptsPath_            - Identifies the documentation scripts folder.
+&#x9;&#x9;-- Database Layer
+&#x9;&#x9;compositeDatabasePath_&#x9;&#x9;&#x9;&#x9; - Identifies the composite database published folder.
+&#x9;&#x9;-- Application Layer
+&#x9;&#x9;applicationPublishedPath_&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction client published sub-layer
+&#x9;&#x9;applicationServicesPath_&#x9;&#x9;&#x9; - Identifies the Data Abstraction Layer segment folder for Application Services sub-layer
+&#x9;&#x9;applicationViewsPath_&#x9;&#x9;&#x9;&#x9; - Identifies the Data Abstraction Layer segment folder for Application Views sub-layer
+&#x9;&#x9;applicationViewsSubFolder_&#x9;&#x9;&#x9; - Identifies the subfolder to the Data Abstraction client views sub-layer
+&#x9;&#x9;crudPath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the Data Abstraction Layer segment folder for CRUD operations (create,retrievePK,update,delete).
+&#x9;&#x9;typeDefinitionPath_&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the type definition and constants folder.
+&#x9;&#x9;typeDefinitionProcName_&#x9;&#x9;&#x9;&#x9; - Identifies the Type Definition Default Procedure Name.
+&#x9;&#x9;-- Business Layer
+&#x9;&#x9;businessBusinessPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction business sub-layer
+&#x9;&#x9;businessLogicalPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction logical sub-layer
+&#x9;&#x9;-- Physical Layer
+&#x9;&#x9;physicalFormattingPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction formatting sub-layer
+&#x9;&#x9;physicalFormattingTransformationPath - Identifies the path to the Data Abstraction formatting transformation sub-layer
+&#x9;&#x9;physicalMetadataPath_&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction physical metadata sub-layer
+&#x9;&#x9;physicalViewsPath_&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the path to the Data Abstraction physical sub-layer
+&#x9;&#x9;genUniqueIDPath_&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the full path to the procedure to generate a unique ID
+&#x9;&#x9;debugTime_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; - Identifies the debug option for printing timings for generateViews procedure.
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;08/20/2010&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.1.0&#x9;&#x9;&#x9;Created new
+&#x9;04/03/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modified names to fit the layer changes
+&#x9;05/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;Updated Best Practices 7.1 with compositeDatabasePath and bestPracticesVersion
+&#x9;11/08/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.1.0&#x9;&#x9;&#x9;B.P. 8.0: Added debugTime_ output parameter.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE defaultValues(
+&#x9;OUT bestPracticesVersion_&#x9;&#x9;&#x9;&#x9;&#x9;DOUBLE,
+&#x9;-- Script Base Paths
+&#x9;OUT basePath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT scriptsPath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT configureScriptsPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT constantsScriptsPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT generationScriptsPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT documentationScriptsPath_&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;-- Database Layer
+&#x9;OUT compositeDatabasePath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;-- Application Layer
+&#x9;OUT applicationPublishedPath_&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT applicationServicesPath_&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT applicationViewsPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT applicationViewsSubFolder_&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT crudPath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT typeDefinitionPath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT typeDefinitionProcName_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;-- Business Layer
+&#x9;OUT businessBusinessPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT businessLogicalPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;-- Physical Layer
+&#x9;OUT physicalFormattingPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT physicalFormattingTransformationPath_ &#x9;VARCHAR(4000),
+&#x9;OUT physicalViewsPath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT physicalMetadataPath_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT genUniqueIDPath_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT debugTime_&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1)
+)
+BEGIN
+/*
+    The starting full base path for this project including the folder that designates the version of the project.
+&#x9;The path always starts with a &apos;/&apos; and **never*** ends with a &apos;/&apos;.  For example, &apos;/shared/MyProject&apos;.
+    MyProject represents the project and R_01_01 represents the version.
+    Procedures in the L1_1_Client_Services folder will use the base path when constructing &quot;dynamic&quot; queries.
+    This is important because if the Development team decides to move these folders then this is the only value
+    that needs to change in order for all of the queries to still work.  Ultimately this will reduce work and make
+&#x9;it easier to maintain the Best Practices folders.
+
+&#x9;The one static folder is where the constants or default values are stored.  This file &quot;defaultValues&quot; will
+&#x9;always be found in &quot;basePath/constants&quot;.  However type definitions may be placed in a different folder.  
+&#x9;For ease of&#x9;location, they will be defaulted to the folder &quot;basePath/constants&quot;.
+*/
+&#x9;---------------------
+&#x9;-- Script Base Paths
+&#x9;---------------------
+&#x9;-- This is the version of the Best Practices in this project
+&#x9;DECLARE PUBLIC bestPracticesVersion&#x9;CONSTANT DOUBLE &#x9;&#x9;&#x9;DEFAULT 2019.300; -- Replace with current version of the format YYYYQn.  e.g. 2018Q1
+&#x9;-- Identifies the base path where the Best Practices scripts live
+   &#x9;DECLARE PUBLIC basePath CONSTANT VARCHAR(4000) &#x9;&#x9;&#x9;&#x9;&#x9;DEFAULT &apos;/shared/ASAssets/BestPractices_v81/DataAbstraction_GENERIC_Template&apos;; -- Replace with project path
+&#x9;-- Identifies the scripts constants folder
+    DECLARE PUBLIC scriptsPath CONSTANT VARCHAR(4000) &#x9;&#x9;&#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/&quot;_scripts&quot;&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the configuration scripts folder
+    DECLARE PUBLIC configureScriptsPath CONSTANT VARCHAR(4000)&#x9;&#x9;DEFAULT REPLACE(scriptsPath||&apos;/Configure&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the generation scripts folder
+    DECLARE PUBLIC constantsScriptsPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT REPLACE(scriptsPath||&apos;/Constants&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the generation scripts folder
+    DECLARE PUBLIC generationScriptsPath CONSTANT VARCHAR(4000) &#x9;DEFAULT REPLACE(scriptsPath||&apos;/Generate&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the documentation scripts folder
+    DECLARE PUBLIC documentationScriptsPath CONSTANT VARCHAR(4000) &#x9;DEFAULT REPLACE(scriptsPath||&apos;/Documentation&apos;,&apos;//&apos;,&apos;/&apos;);
+
+&#x9;---------------------
+&#x9;-- Database Layer
+&#x9;---------------------
+&#x9;-- Identifies the Composite Database Layer base folder for Published resources.
+    DECLARE PUBLIC compositeDatabasePath CONSTANT VARCHAR(4000) &#x9;DEFAULT &apos;/services/databases/DataAbstraction_GENERIC_Template&apos;;
+
+&#x9;---------------------
+&#x9;-- Application Layer
+&#x9;---------------------
+&#x9;-- Identifies the Data Abstraction Layer base folder for Application Published.
+    DECLARE PUBLIC applicationPublishedPath CONSTANT VARCHAR(4000) &#x9;DEFAULT REPLACE(basePath||&apos;/Application/Published&apos;,&apos;//&apos;,&apos;/&apos;);
+    -- Identifies the Data Abstraction Layer base folder for Application Services.
+    DECLARE PUBLIC applicationServicesPath CONSTANT VARCHAR(4000) &#x9;DEFAULT REPLACE(basePath||&apos;/Application/Services&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the Data Abstraction Layer base folder for Application Views.
+    DECLARE PUBLIC applicationViewsPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/Application/Views&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the subfolder to the Data Abstraction Layer Application Views sub-folder
+    DECLARE PUBLIC applicationViewsSubFolder CONSTANT VARCHAR(4000) DEFAULT REPLACE(&apos;&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the Data Abstraction Layer base folder for CRUD operations (create,retrievePK,update,delete)
+    DECLARE PUBLIC crudPath CONSTANT VARCHAR &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DEFAULT REPLACE(applicationServicesPath||&apos;/CRUD&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the type definition sub-folder path name
+    DECLARE PUBLIC typeDefinitionPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT &apos;Definitions&apos;;
+&#x9;-- Identifies the Type Definition Default Procedure Name
+&#x9;DECLARE PUBLIC typeDefinitionProcName&#x9;CONSTANT VARCHAR&#x9;&#x9;DEFAULT &apos;TypeDefinitionsGen&apos;;
+
+&#x9;---------------------
+&#x9;-- Business Layer
+&#x9;---------------------
+&#x9;-- Identifies the Data Abstraction Layer base folder for Business Views.
+    DECLARE PUBLIC businessBusinessPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/Business/Business&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the Data Abstraction Layer base folder for Logical Views.
+    DECLARE PUBLIC businessLogicalPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/Business/Logical&apos;,&apos;//&apos;,&apos;/&apos;);
+
+&#x9;---------------------
+&#x9;-- Physical Layer
+&#x9;---------------------
+&#x9;-- Identifies the Data Abstraction Layer base folder for Formatting Views.
+    DECLARE PUBLIC physicalFormattingPath CONSTANT VARCHAR(4000) &#x9;DEFAULT REPLACE(basePath||&apos;/Physical/Formatting&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the Data Abstraction Layer base folder for Formatting Transformations.
+    DECLARE PUBLIC physicalFormattingTransformationPath CONSTANT &#x9;VARCHAR(4000) &#x9;DEFAULT REPLACE(basePath||&apos;/Physical/Formatting/Transformations&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the Data Abstraction Layer base folder for Physical Metadata.
+    DECLARE PUBLIC physicalMetadataPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/Physical/Metadata&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the full path to the procedure to generate a unique ID
+    DECLARE PUBLIC genUniqueIDPath CONSTANT VARCHAR &#x9;&#x9;&#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/Physical/Metadata/SequenceGenerator/getUniqueID&apos;,&apos;//&apos;,&apos;/&apos;);
+
+-- DEPRECATED
+&#x9;-- Identifies the Data Abstraction Layer base folder for Federated Views.
+    DECLARE PUBLIC federatedViewsPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/Business/Federated&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;-- Identifies the Data Abstraction Layer base folder for Phyical Views.
+    DECLARE PUBLIC physicalViewsPath CONSTANT VARCHAR(4000) &#x9;&#x9;DEFAULT REPLACE(basePath||&apos;/Physical/Physical&apos;,&apos;//&apos;,&apos;/&apos;);
+
+&#x9;---------------------
+&#x9;-- Default Constants
+&#x9;---------------------
+    DECLARE PUBLIC notEmpty CONSTANT INTEGER DEFAULT 0;
+    DECLARE PUBLIC Empty CONSTANT INTEGER DEFAULT 1;
+    DECLARE PUBLIC isFALSE CONSTANT INTEGER DEFAULT 0;
+    DECLARE PUBLIC isTRUE CONSTANT INTEGER DEFAULT 1;
+    DECLARE PUBLIC debug CONSTANT CHAR(1) DEFAULT &apos;F&apos;;
+    DECLARE PUBLIC debugTime CONSTANT CHAR(1) DEFAULT &apos;F&apos;;&#x9;&#x9;-- debug time: Y or T=debug on or N or F=debug off
+    DECLARE PUBLIC debugException CONSTANT CHAR(1) DEFAULT &apos;F&apos;;
+  &#x9;DECLARE PUBLIC executeProcedureCode CONSTANT BIT DEFAULT 1;
+&#x9;&#x9;-- 1=Execute the code / body of the procedure
+&#x9;&#x9;-- 0=Only execute the interface and not the code
+ &#x9;DECLARE PUBLIC &quot;ON&quot; CONSTANT BIT DEFAULT 1; 
+ &#x9;DECLARE PUBLIC OFF CONSTANT BIT DEFAULT 0; 
+
+&#x9;-- For CRUD procedures:  
+&#x9;--&#x9;&#x9;true=Re-raise exceptions from the CRUD procedures so that any exception is automatically bubbled up.
+&#x9;--&#x9;&#x9;false=catch, log and return all exceptions in the msgVector
+    DECLARE PUBLIC crudRaiseExceptions CONSTANT BOOLEAN DEFAULT true; 
+    DECLARE PUBLIC ex EXCEPTION;
+
+&#x9;-- Intialize the OUT variables for use in dynamic queries.
+&#x9;set bestPracticesVersion_ = bestPracticesVersion;
+&#x9;set basePath_ = basePath;
+&#x9;set scriptsPath_ = scriptsPath;
+&#x9;set configureScriptsPath_ = configureScriptsPath;
+&#x9;set constantsScriptsPath_ = constantsScriptsPath;
+&#x9;set compositeDatabasePath_ = compositeDatabasePath;
+&#x9;set generationScriptsPath_ = generationScriptsPath;
+&#x9;set documentationScriptsPath_ = documentationScriptsPath;
+&#x9;set applicationPublishedPath_ = applicationPublishedPath;
+&#x9;set applicationServicesPath_&#x9;= applicationServicesPath;
+&#x9;set applicationViewsPath_ = applicationViewsPath;
+&#x9;set applicationViewsSubFolder_ = applicationViewsSubFolder;
+&#x9;set crudPath_ = crudPath;
+&#x9;set typeDefinitionPath_ = typeDefinitionPath;
+&#x9;set typeDefinitionProcName_ = typeDefinitionProcName;
+&#x9;set businessLogicalPath_ = businessLogicalPath;
+&#x9;set businessBusinessPath_ = businessBusinessPath;
+&#x9;set physicalFormattingPath_ = physicalFormattingPath;
+&#x9;set physicalFormattingTransformationPath_ = physicalFormattingTransformationPath;
+&#x9;set physicalMetadataPath_ = physicalMetadataPath;
+&#x9;set physicalViewsPath_ = physicalViewsPath;
+&#x9;set genUniqueIDPath_ = genUniqueIDPath;
+&#x9;set debugTime_ = debugTime;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1377564320207</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564602495700</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="public_constants" type="MAP">
+    <item>
+      <key type="STRING">configureScriptsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPqgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">applicationPublishedPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPtgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">typeDefinitionProcName</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAASBAQAAAAAAAAAEgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">constantsScriptsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPqgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">physicalFormattingTransformationPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPxAETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">OFF</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAAAABAYAAAAAAAAAAP//</value>
+    </item>
+    <item>
+      <key type="STRING">isTRUE</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAAABBAYAAAAAAAAAAf//</value>
+    </item>
+    <item>
+      <key type="STRING">bestPracticesVersion</key>
+      <value type="BYTE_ARRAY">EBcGAgAHAEQARQBDAEkATQBBAEwDEgAAAAEGDQAIADIAMAAxADkALgAzADAAMAYMAAgAMgAwADEAOQAuADMAMAAwAw4AAAAHAxAAAAAD//8=</value>
+    </item>
+    <item>
+      <key type="STRING">applicationServicesPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPtQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">Empty</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAAABBAYAAAAAAAAAAf//</value>
+    </item>
+    <item>
+      <key type="STRING">scriptsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPqwETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">debugException</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">businessBusinessPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPsgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">applicationViewsSubFolder</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">typeDefinitionPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAALBAQAAAAAAAAACwETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">compositeDatabasePath</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAA0BAQAAAAAAAAANAETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">ON</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAAABBAYAAAAAAAAAAf//</value>
+    </item>
+    <item>
+      <key type="STRING">debug</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">documentationScriptsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPrgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">crudPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPpQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">physicalViewsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPsgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">physicalFormattingPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPtAETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">physicalMetadataPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPsgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">debugTime</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">businessLogicalPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPsQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">federatedViewsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPswETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">basePath</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAABDBAQAAAAAAAAAQwETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">generationScriptsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPqQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">crudRaiseExceptions</key>
+      <value type="BYTE_ARRAY">EC8DEv///Cb//w==</value>
+    </item>
+    <item>
+      <key type="STRING">executeProcedureCode</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAAABBAYAAAAAAAAAAf//</value>
+    </item>
+    <item>
+      <key type="STRING">notEmpty</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAAAABAYAAAAAAAAAAP//</value>
+    </item>
+    <item>
+      <key type="STRING">applicationViewsPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAPsgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">isFALSE</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAAAABAYAAAAAAAAAAP//</value>
+    </item>
+    <item>
+      <key type="STRING">genUniqueIDPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAQAAAAAAAAP0AETAf//</value>
+    </item>
+  </attribute>
+  <attribute name="public_exceptions" type="STRING_ARRAY">
+    <item>ex</item>
+  </attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

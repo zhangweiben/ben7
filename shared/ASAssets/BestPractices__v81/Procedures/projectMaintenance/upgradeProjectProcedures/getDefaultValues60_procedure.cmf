@@ -1,0 +1,269 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="getDefaultValues60" path="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getDefaultValues60" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="basePath" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="defaultValuesVector" direction="OUT" nullable="true">
+      <datatype name="defaultValuesVector" type="ARRAY" maxLength="0">
+        <itemDatatype>
+          <datatype name="defaultValuesType" type="TREE" refId="257">
+            <element name="basePath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="typeDefinitionPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="typeDefinitionProcName">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="generationScriptsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientServicesPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientViewsSubFolder">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="crudPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientPublishedPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="logicalViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="federatedViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="businessViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="formattingViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="physicalMetadataPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="physicalViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="genUniqueIDPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+          </datatype>
+        </itemDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getDefaultValues60" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="basePath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="defaultValuesVector" direction="OUT">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="defaultValuesType" type="TREE" refId="257">
+              <element name="basePath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="typeDefinitionPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="typeDefinitionProcName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="generationScriptsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientServicesPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientViewsSubFolder">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="crudPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientPublishedPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="logicalViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="federatedViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="businessViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="formattingViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalMetadataPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* getDefaultValues60:
+&#x9;-- Composite Best Practices --
+&#x9;Set the defaultValuesVector with the values from the /constants/defaultValues() for Best Practices 6.0 through 6.6.
+ 
+&#x9;Input:
+&#x9;&#x9;basePath - Path to the base project directory  
+&#x9;Output:
+&#x9;&#x9;defaultValuesVector - a vector containing the default values for the project.
+
+&#x9;-- defaultValues type definition structure
+&#x9;defaultValuesType &#x9;ROW (&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- comes from the &lt;project directory&gt;/constants/defaultValues
+&#x9;&#x9;basePath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- basePath of this project directory being accessed
+&#x9;&#x9;typeDefinitionPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the type definition procedure that is generated
+&#x9;&#x9;typeDefinitionProcName&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- name of the type definition procedure that is generated
+&#x9;&#x9;generationScriptsPath&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the generation scripts are located.
+&#x9;&#x9;clientServicesPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction client services layer
+&#x9;&#x9;clientViewsPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction client views layer
+&#x9;&#x9;clientViewsSubFolder&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- subfolder to the Data Abstraction client views layer
+&#x9;&#x9;crudPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction CRUD procedures
+&#x9;&#x9;clientPublishedPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction client published layer
+&#x9;&#x9;logicalViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction logical views layer
+&#x9;&#x9;federatedViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction federated views layer
+&#x9;&#x9;businessViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction business views layer
+&#x9;&#x9;formattingViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction formatting views layer
+&#x9;&#x9;physicalMetadataPath&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical metadata layer
+&#x9;&#x9;physicalViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical views layer
+&#x9;&#x9;genUniqueIDPath&#x9;&#x9;&#x9;VARCHAR(4000)&#x9;&#x9;&#x9;-- path to the procedure that will generate a unique ID for the CRUD create procedure
+&#x9;)
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;06/15/2010&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE getDefaultValues60(
+&#x9;IN basePath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT defaultValuesVector&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getDefaultValues60.defaultValuesType)
+)
+BEGIN
+&#x9;DECLARE sqlStatement&#x9;VARCHAR(2000) DEFAULT &apos;select * from &apos;||basePath||&apos;/constants/defaultValues()&apos;;
+&#x9;-- defaultValues type definition structure
+&#x9;DECLARE PUBLIC TYPE defaultValuesType &#x9;ROW (&#x9;&#x9;-- comes from the &lt;project directory&gt;/constants/defaultValues
+&#x9;&#x9;basePath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- basePath of this project directory being accessed
+&#x9;&#x9;typeDefinitionPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the type definition procedure that is generated
+&#x9;&#x9;typeDefinitionProcName&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- name of the type definition procedure that is generated
+&#x9;&#x9;generationScriptsPath&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the generation scripts are located.
+&#x9;&#x9;clientServicesPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction client services layer
+&#x9;&#x9;clientViewsPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction client views layer
+&#x9;&#x9;clientViewsSubFolder&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- subfolder to the Data Abstraction client views layer
+&#x9;&#x9;crudPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction CRUD procedures
+&#x9;&#x9;clientPublishedPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction client published layer
+&#x9;&#x9;logicalViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction logical views layer
+&#x9;&#x9;federatedViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction federated views layer
+&#x9;&#x9;businessViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction business views layer
+&#x9;&#x9;formattingViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction formatting views layer
+&#x9;&#x9;physicalMetadataPath&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical metadata layer
+&#x9;&#x9;physicalViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical views layer
+&#x9;&#x9;genUniqueIDPath&#x9;&#x9;&#x9;VARCHAR(4000)&#x9;&#x9;&#x9;-- path to the procedure that will generate a unique ID for the CRUD create procedure
+&#x9;);
+&#x9;DECLARE curs &#x9;&#x9;&#x9;CURSOR defaultValuesType;
+
+&#x9;set defaultValuesVector = VECTOR[(null)];
+&#x9;open curs for sqlStatement;
+&#x9;for r as curs do
+&#x9;&#x9;set defaultValuesVector[1].basePath = r.basePath;
+&#x9;&#x9;set defaultValuesVector[1].typeDefinitionPath = r.typeDefinitionPath;
+&#x9;&#x9;set defaultValuesVector[1].typeDefinitionProcName = r.typeDefinitionProcName;
+&#x9;&#x9;set defaultValuesVector[1].generationScriptsPath = r.generationScriptsPath;
+&#x9;&#x9;set defaultValuesVector[1].clientServicesPath = r.clientServicesPath;
+&#x9;&#x9;set defaultValuesVector[1].clientViewsPath = r.clientViewsPath;
+&#x9;&#x9;set defaultValuesVector[1].clientViewsSubFolder = r.clientViewsSubFolder;
+&#x9;&#x9;set defaultValuesVector[1].crudPath = r.crudPath;
+&#x9;&#x9;set defaultValuesVector[1].clientPublishedPath = r.clientPublishedPath;
+&#x9;&#x9;set defaultValuesVector[1].logicalViewsPath = r.logicalViewsPath;
+&#x9;&#x9;set defaultValuesVector[1].federatedViewsPath = r.federatedViewsPath;
+&#x9;&#x9;set defaultValuesVector[1].businessViewsPath = r.businessViewsPath;
+&#x9;&#x9;set defaultValuesVector[1].formattingViewsPath = r.formattingViewsPath;
+&#x9;&#x9;set defaultValuesVector[1].physicalMetadataPath = r.physicalMetadataPath;
+&#x9;&#x9;set defaultValuesVector[1].physicalViewsPath = r.physicalViewsPath;
+&#x9;&#x9;set defaultValuesVector[1].genUniqueIDPath = r.genUniqueIDPath;
+&#x9;end for;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="impactLevel" type="INTEGER">0</attribute>
+  <attribute name="impactMessage" type="NULL"/>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:1:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="public_types" type="MAP">
+    <item>
+      <key type="STRING">defaultValuesType</key>
+      <value type="BYTE_ARRAY">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</value>
+    </item>
+  </attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

@@ -1,0 +1,1239 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="getResourcePrivileges" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getResourcePrivileges" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[getResourcePrivileges:
+
+    This procedure returns a list of user or group resource privileges for a specified resource path given various inclusion and exclusion filters.  
+&#x9;The various includePrivs... and excludePrivs... filters are applied against the combinedPrivs field.
+
+&#x9;The returned privileges per user or group are the privileges specifically given to that user or group.  In each &quot;privilegeEntry&quot;, the &quot;combinedPrivs&quot; 
+&#x9;element contains the effective privileges for that user or group based on their membership in all other groups.  In each &quot;privilegeEntry&quot;, the 
+&#x9;&quot;inheritedPrivs&quot; element only contains the privileges that were inherited due to group membership.  Logically OR&apos;ing the &quot;privs&quot; and &quot;inheritedPrivs&quot; 
+&#x9;is the same as the &quot;combinedPrivs&quot;.
+
+&#x9;A user with GRANT privilege or with READ_ALL_RESOURCES right will receive all privilege information for all users for a that resource.  Other users will 
+&#x9;only receive their own privilege information.
+
+    Dependencies:
+    =============
+    none
+
+    Input:
+        resourcePath - path to resource
+&#x9;&#x9;resourceType - type of resource (e.g. LINK, CONTAINER, TABLE, PROCEDURE, TREE, DEFINITION_SET, TRIGGER, etc.)
+&#x9;&#x9;nameTypeFilter - (optional) A filter that is set to null, USER or GROUP.
+&#x9;&#x9;domainFilter - (optional) A filter that is set to null or the domain such as composite, dynamic or an LDAP domain name.
+&#x9;&#x9;includeNameEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name =&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of names are passed in the where clause constructs &quot;OR&quot; statements where (name = &apos;name1&apos; or nanme = &apos;name2&apos;).
+&#x9;&#x9;includeNameLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of name are passed in the where clause constructs &quot;OR&quot; statements where (name LIKE &apos;name%&apos; or name LIKE &apos;myname%&apos;).
+&#x9;&#x9;excludeNameNotEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name !=&quot; to the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of name are passed in the where clause constructs &quot;AND&quot; statements where name != &apos;name&apos; AND name != &apos;myname&apos;.
+&#x9;&#x9;excludeNameNotLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name NOT LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of name are passed in the where clause constructs &quot;AND&quot; statements where name NOT LIKE &apos;name%&apos; AND name NOT LIKE &apos;myname%&apos;.
+&#x9;&#x9;includePrivsEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs =&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;OR&quot; statements where (combinedPrivs = &apos;NONE&apos; or combinedPrivs = &apos;READ&apos;).
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;includePrivsLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;OR&quot; statements where (combinedPrivs LIKE &apos;READ EXECUTE%&apos; or combinedPrivs LIKE &apos;READ%&apos;).
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;excludePrivsNotEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs !=&quot; to the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;AND&quot; statements where combinedPrivs != &apos;NONE&apos; AND combinedPrivs != &apos;READ&apos;.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;excludePrivsNotLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs NOT LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;AND&quot; statements where combinedPrivs NOT LIKE &apos;READ EXECUTE%&apos; AND combinedPrivs NOT LIKE &apos;READ%&apos;.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;includeColumnPrivs - (optional) A bit (1 or 0) that instructs whether to return column level privileges for resources such as tables that contain columns.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;1=yes include column privileges, 0=no do not include column privileges
+&#x9;&#x9;debug - (optional) A char(1) (null, Y or N) indicating whether to output debug statements like the SQL Stateement that will be executed.
+
+    Output (cursor):
+        path - Path for this resource (the same as resPath input parameter)
+        type - Type of resource (e.g. CONTAINER, PROCEDURE)
+        name - CIS username
+ &#x9;&#x9;nameType - CIS name type (USER, GROUP)
+        domain - CIS user domain
+        privs - explicitly defined privs for the user or group
+        combinedPrivs - combined (both explicit and inherited) privs for the user or group
+        inheritedPrivs - inherited (through groups) privs for the user or group
+&#x9;&#x9;-- privs
+&#x9;&#x9;p_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;p_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;p_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;p_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;p_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;p_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;p_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;p_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;p_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- GRANT
+&#x9;&#x9;-- combined privs
+&#x9;&#x9;c_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;c_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;c_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;c_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;c_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;c_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;c_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;c_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;c_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- GRANT
+&#x9;&#x9;-- inherited privs
+&#x9;&#x9;i_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;i_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;i_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;i_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;i_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;i_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;i_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;i_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;i_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT -- GRANT
+
+    Exceptions: ex
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/22/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;Created new
+&#x9;11/06/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;Fixed bug where includeNameEQ, includeNameLK, excludeNameNEQ, excludeNameNLK where forced UPPER which resulted in incorrect results.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="resourcePath" direction="IN" nullable="true">
+      <datatype name="ResourcePath" referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+    </parameter>
+    <parameter name="resourceType" direction="IN" nullable="true">
+      <datatype name="ResourceType" referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+    </parameter>
+    <parameter name="nameTypeFilter" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="domainFilter" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="privilegeEntryType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="includeNameEqualFilter" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="includeNameLikeFilter" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="excludeNameNotEqualFilter" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="excludeNameNotLikeFilter" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="includePrivsEqualFilter" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="includePrivsLikeFilter" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="excludePrivsNotEqualFilter" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="excludePrivsNotLikeFilter" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="includeColumnPrivs" direction="IN" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="result" type="TABLE" refId="256">
+        <element name="path">
+          <datatype name="ResourcePath" referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+        </element>
+        <element name="type">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="name">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="nameType">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="domain">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="privs">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="combinedPrivs">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="inheritedPrivs">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="p_N">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_R">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_W">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_E">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_S">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_U">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_I">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_D">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="p_G">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_N">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_R">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_W">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_E">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_S">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_U">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_I">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_D">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="c_G">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_N">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_R">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_W">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_E">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_S">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_U">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_I">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_D">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="i_G">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Log" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToLog" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/lib/resource/ResourceDefs" type="DEFINITION_SET">
+    <datatype name="Tree" type="TREE" refId="257"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="1024"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="proprietaryModel">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="columnName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="columnType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeBaseType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* getResourcePrivileges:
+
+    This procedure returns a list of user or group resource privileges for a specified resource path given various inclusion and exclusion filters.  
+&#x9;The various includePrivs... and excludePrivs... filters are applied against the specified privilege entry type: [privs, combinedPrivs, inheritedPrivs].
+
+&#x9;The returned privileges per user or group are the privileges specifically given to that user or group.  In each &quot;privilegeEntry&quot;, the &quot;privilegeEntryType&quot;
+&#x9;specifies what the search is executed against and therefore the returned rows are based on &quot;privs&quot;, &quot;combinedPrivs&quot; or &quot;inheritedPrivs&quot;. 
+&#x9;The &quot;privs&quot; element contains the effective privileges for that user or group based on explicit privileges being set or membership in a group.  
+&#x9;In each &quot;privilegeEntry&quot;, the &quot;inheritedPrivs&quot; element only contains the privileges that were inherited due to group membership and studio rights.  
+&#x9;Logically OR&apos;ing the &quot;privs&quot; and &quot;inheritedPrivs&quot; is the same as the &quot;combinedPrivs&quot;.
+
+&#x9;A user with GRANT privilege or with READ_ALL_RESOURCES right will receive all privilege information for all users for a that resource.  Other users will 
+&#x9;only receive their own privilege information.
+
+    Dependencies:
+    =============
+    none
+
+    Input:
+        resourcePath - path to resource
+&#x9;&#x9;resourceType - type of resource (e.g. LINK, CONTAINER, TABLE, PROCEDURE, TREE, DEFINITION_SET, TRIGGER, etc.)
+&#x9;&#x9;nameTypeFilter - (optional) A filter that is set to null, USER or GROUP.
+&#x9;&#x9;domainFilter - (optional) A filter that is set to null or the domain such as composite, dynamic or an LDAP domain name.
+&#x9;&#x9;privilegeEntryType&#x9;- [mandatory:  privs, combinedPrivs, inheritedPrivs] 1 of the selection list.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   privs=the actual privileges. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   combinedPrivs=Combination of actual privileges and inherited privileges.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   inheritedPrivs=Inherited privileges.
+&#x9;&#x9;includeNameEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name =&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of names are passed in the where clause constructs &quot;OR&quot; statements where (name = &apos;name1&apos; or nanme = &apos;name2&apos;).
+&#x9;&#x9;includeNameLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of name are passed in the where clause constructs &quot;OR&quot; statements where (name LIKE &apos;name%&apos; or name LIKE &apos;myname%&apos;).
+&#x9;&#x9;excludeNameNotEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name !=&quot; to the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of name are passed in the where clause constructs &quot;AND&quot; statements where name != &apos;name&apos; AND name != &apos;myname&apos;.
+&#x9;&#x9;excludeNameNotLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;name NOT LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of name are passed in the where clause constructs &quot;AND&quot; statements where name NOT LIKE &apos;name%&apos; AND name NOT LIKE &apos;myname%&apos;.
+&#x9;&#x9;includePrivsEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs =&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;OR&quot; statements where (combinedPrivs = &apos;NONE&apos; or combinedPrivs = &apos;READ&apos;).
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;includePrivsLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;OR&quot; statements where (combinedPrivs LIKE &apos;READ EXECUTE%&apos; or combinedPrivs LIKE &apos;READ%&apos;).
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;excludePrivsNotEqualFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs !=&quot; to the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;AND&quot; statements where combinedPrivs != &apos;NONE&apos; AND combinedPrivs != &apos;READ&apos;.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;excludePrivsNotLikeFilter - (optional) A comma separated filter list that is used to retrieve privileges where the &quot;combinedPrivs NOT LIKE&quot; the incoming string.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When a list of privs are passed in the where clause constructs &quot;AND&quot; statements where combinedPrivs NOT LIKE &apos;READ EXECUTE%&apos; AND combinedPrivs NOT LIKE &apos;READ%&apos;.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;combinedPrivs&quot; should be in this order: READ WRITE EXECUTE SELECT UPDATE INSERT DELETE GRANT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;       &quot;combinedPrivs&quot; with no settings: NONE
+&#x9;&#x9;includeColumnPrivs - (optional) A bit (1 or 0) that instructs whether to return column level privileges for resources such as tables that contain columns.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;1=yes include column privileges, 0=no do not include column privileges
+&#x9;&#x9;debug - (optional) A char(1) (null, Y or N) indicating whether to output debug statements like the SQL Stateement that will be executed.
+
+    Output (cursor):
+        path - Path for this resource (the same as resPath input parameter)
+        type - Type of resource (e.g. CONTAINER, PROCEDURE)
+        name - CIS username
+ &#x9;&#x9;nameType - CIS name type (USER, GROUP)
+        domain - CIS user domain
+        privs - explicitly defined privs for the user or group
+        combinedPrivs - combined (both explicit and inherited) privs for the user or group
+        inheritedPrivs - inherited (through groups) privs for the user or group
+&#x9;&#x9;-- privs
+&#x9;&#x9;p_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;p_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;p_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;p_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;p_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;p_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;p_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;p_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;p_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- GRANT
+&#x9;&#x9;-- combined privs
+&#x9;&#x9;c_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;c_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;c_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;c_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;c_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;c_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;c_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;c_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;c_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- GRANT
+&#x9;&#x9;-- inherited privs
+&#x9;&#x9;i_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;i_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;i_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;i_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;i_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;i_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;i_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;i_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;i_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT -- GRANT
+
+    Exceptions: ex
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/22/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;Created new
+&#x9;11/06/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;Fixed bug where includeNameEQ, includeNameLK, excludeNameNEQ, excludeNameNLK where forced UPPER which resulted in incorrect results.
+&#x9;07/11/2016&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.3&#x9;&#x9;&#x9;Added privilegeEntryType to specify what set of privileges to search on: [privs, combinedPrivs, inheritedPrivs] 
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE getResourcePrivileges(
+    IN resourcePath &#x9;&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourcePath,
+    IN resourceType &#x9;&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourceType,
+&#x9;IN nameTypeFilter &#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9;--[optional]
+&#x9;IN domainFilter&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR, &#x9;--[optional]
+&#x9;IN privilegeEntryType&#x9;&#x9;&#x9;VARCHAR,&#x9;--[mandatory:  privs, combinedPrivs, inheritedPrivs] 1 of the selection list.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;&#x9;   privs=the actual privileges. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;&#x9;   combinedPrivs=Combination of actual privileges and inherited privileges.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;&#x9;   inheritedPrivs=Inherited privileges.
+&#x9;IN includeNameEqualFilter &#x9;&#x9;LONGVARCHAR,--[optional]
+&#x9;IN includeNameLikeFilter &#x9;&#x9;LONGVARCHAR,--[optional]
+&#x9;IN excludeNameNotEqualFilter&#x9;LONGVARCHAR,--[optional]
+&#x9;IN excludeNameNotLikeFilter&#x9;&#x9;LONGVARCHAR,--[optional]
+&#x9;IN includePrivsEqualFilter&#x9;&#x9;VARCHAR, &#x9;--[optional]
+&#x9;IN includePrivsLikeFilter&#x9;&#x9;VARCHAR, &#x9;--[optional]
+&#x9;IN excludePrivsNotEqualFilter&#x9;VARCHAR, &#x9;--[optional]
+&#x9;IN excludePrivsNotLikeFilter&#x9;VARCHAR, &#x9;--[optional]
+&#x9;IN includeColumnPrivs&#x9;&#x9;&#x9;BIT,&#x9; &#x9;--[optional]
+&#x9;IN debug&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1), &#x9;--[optional]
+    OUT result &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CURSOR ResultType
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;getResourcePrivileges&apos;;
+&#x9;DECLARE debug_&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT UPPER(TRIM(NVL(debug,&apos;N&apos;)));
+&#x9;DECLARE nameType&#x9;&#x9;&#x9;VARCHAR DEFAULT UPPER(TRIM(nameTypeFilter));
+&#x9;DECLARE domainName&#x9;&#x9;&#x9;VARCHAR DEFAULT TRIM(domainFilter);
+ &#x9;DECLARE includeNameEQ&#x9;&#x9;LONGVARCHAR DEFAULT TRIM(includeNameEqualFilter);
+ &#x9;DECLARE includeNameLK&#x9;&#x9;LONGVARCHAR DEFAULT TRIM(includeNameLikeFilter);
+&#x9;DECLARE excludeNameNEQ&#x9;&#x9;LONGVARCHAR DEFAULT TRIM(excludeNameNotEqualFilter);
+&#x9;DECLARE excludeNameNLK&#x9;&#x9;LONGVARCHAR DEFAULT TRIM(excludeNameNotLikeFilter);
+
+ &#x9;DECLARE includePrivsEQ&#x9;&#x9;VARCHAR DEFAULT UPPER(TRIM(includePrivsEqualFilter));
+ &#x9;DECLARE includePrivsLK&#x9;&#x9;VARCHAR DEFAULT UPPER(TRIM(includePrivsLikeFilter));
+&#x9;DECLARE excludePrivsNEQ&#x9;&#x9;VARCHAR DEFAULT UPPER(TRIM(excludePrivsNotEqualFilter));
+&#x9;DECLARE excludePrivsNLK&#x9;&#x9;VARCHAR DEFAULT UPPER(TRIM(excludePrivsNotLikeFilter));
+
+ &#x9;DECLARE includeNameEQ2&#x9;&#x9;LONGVARCHAR;
+ &#x9;DECLARE includeNameLK2&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE excludeNameNEQ2&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE excludeNameNLK2&#x9;&#x9;LONGVARCHAR;
+
+ &#x9;DECLARE includePrivsEQ2&#x9;&#x9;VARCHAR;
+ &#x9;DECLARE includePrivsLK2&#x9;&#x9;VARCHAR;
+&#x9;DECLARE excludePrivsNEQ2&#x9;VARCHAR;
+&#x9;DECLARE excludePrivsNLK2&#x9;VARCHAR;
+
+&#x9;DECLARE basePath&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT &apos;/shared/ASAssets/Utilities&apos;;
+&#x9;DECLARE PUBLIC TYPE ResultType ROW (
+        &quot;path&quot; &#x9;&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourcePath, 
+        &quot;type&quot; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        name &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        nameType &#x9;&#x9;&#x9;VARCHAR(255), 
+        &quot;domain&quot; &#x9;&#x9;&#x9;VARCHAR(255), 
+        privs &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        combinedPrivs &#x9;&#x9;VARCHAR(255), 
+        inheritedPrivs &#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;-- privs
+&#x9;&#x9;p_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;p_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;p_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;p_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;p_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;p_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;p_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;p_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;p_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- GRANT
+&#x9;&#x9;-- combined privs
+&#x9;&#x9;c_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;c_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;c_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;c_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;c_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;c_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;c_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;c_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;c_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- GRANT
+&#x9;&#x9;-- inherited privs
+&#x9;&#x9;i_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;i_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;i_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;i_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;i_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;i_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;i_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;i_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;i_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT -- GRANT
+    );
+    DECLARE privRequest &#x9;&#x9;LONGVARCHAR;
+    DECLARE privEntries &#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE includeColumns&#x9;&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE privResponse &#x9;&#x9;XML;
+&#x9;DECLARE sqlStatement&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE whereClause&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE includeClause&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE orderByClause&#x9;&#x9;LONGVARCHAR DEFAULT &apos;ORDER BY &quot;path&quot;, &quot;type&quot;, name, nameType, &quot;domain&quot; &apos;;
+&#x9;DECLARE message&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE j&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE pos1,pos2&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE object&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE moreToDo1&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE objectList1&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE expression1&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE explen1&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE ex &#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+
+&#x9;-- Evaluate the input
+&#x9;IF (nameType is not null and LENGTH(nameType) = 0) THEN
+&#x9;&#x9;SET nameType = null;
+&#x9;END IF;
+&#x9;IF (domainName is not null and LENGTH(domainName) = 0) THEN
+&#x9;&#x9;SET domainName = null;
+&#x9;END IF;
+&#x9;IF (includeNameEQ is not null and LENGTH(includeNameEQ) = 0) THEN
+&#x9;&#x9;SET includeNameEQ = null;
+&#x9;END IF;
+&#x9;IF (includeNameLK is not null and LENGTH(includeNameLK) = 0) THEN
+&#x9;&#x9;SET includeNameLK = null;
+&#x9;END IF;
+&#x9;IF (excludeNameNEQ is not null and LENGTH(excludeNameNEQ) = 0) THEN
+&#x9;&#x9;SET excludeNameNEQ = null;
+&#x9;END IF;
+&#x9;IF (excludeNameNLK is not null and LENGTH(excludeNameNLK) = 0) THEN
+&#x9;&#x9;SET excludeNameNLK = null;
+&#x9;END IF;
+&#x9;IF (includePrivsEQ is not null and LENGTH(includePrivsEQ) = 0) THEN
+&#x9;&#x9;SET includePrivsEQ = null;
+&#x9;END IF;
+&#x9;IF (includePrivsLK is not null and LENGTH(includePrivsLK) = 0) THEN
+&#x9;&#x9;SET includePrivsLK = null;
+&#x9;END IF;
+&#x9;IF (excludePrivsNEQ is not null and LENGTH(excludePrivsNEQ) = 0) THEN
+&#x9;&#x9;SET excludePrivsNEQ = null;
+&#x9;END IF;
+&#x9;IF (excludePrivsNLK is not null and LENGTH(excludePrivsNLK) = 0) THEN
+&#x9;&#x9;SET excludePrivsNLK = null;
+&#x9;END IF;
+
+&#x9;IF (nameType is not null and LENGTH(nameType) &gt; 0) THEN
+&#x9;&#x9;IF (nameType != &apos;USER&apos; and nameType != &apos;GROUP&apos;) THEN
+&#x9;&#x9;&#x9;raise ex value &apos;The nameType provided is invalid.  The nameType must be blank or &quot;USER&quot; or &quot;GROUP&quot;.  nameType=&apos;||nameType;
+&#x9;&#x9;END IF;
+&#x9;END IF;
+&#x9;IF (domainName is not null and domainName = &apos;COMPOSITE&apos;) THEN
+&#x9;&#x9;SET domainName = LOWER(domainName);
+&#x9;END IF;
+&#x9;IF (privilegeEntryType is null) then
+&#x9;&#x9;raise ex value &apos;The input variable &quot;privilegeEntryType&quot; may not be null and must be 1 of (&apos;&apos;privs&apos;&apos;,&apos;&apos;combinedPrivs&apos;&apos;,&apos;&apos;inheritedPrivs&apos;&apos;).&apos;;
+&#x9;ELSE
+&#x9;&#x9;IF (privilegeEntryType NOT IN (&apos;privs&apos;,&apos;combinedPrivs&apos;,&apos;inheritedPrivs&apos;)) THEN
+&#x9;&#x9;&#x9;raise ex value &apos;The input variable &quot;privilegeEntryType&quot; must be 1 of (&apos;&apos;privs&apos;&apos;,&apos;&apos;combinedPrivs&apos;&apos;,&apos;&apos;inheritedPrivs&apos;&apos;).  &quot;privilegeEntryType&quot;=&apos;||privilegeEntryType;
+&#x9;&#x9;END IF;
+&#x9;END IF;
+&#x9;-- Print out debug of input
+&#x9;IF (debug_ = &apos;Y&apos;) THEN
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : nameType=[&apos;||TRIM(NVL(nameType,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : domainName=[&apos;||TRIM(NVL(domainName,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : includeNameEQ=[&apos;||TRIM(NVL(includeNameEQ,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : includeNameLK=[&apos;||TRIM(NVL(includeNameLK,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : excludeNameNEQ=[&apos;||TRIM(NVL(excludeNameNEQ,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : excludeNameNLK=[&apos;||TRIM(NVL(excludeNameNLK,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : includePrivsEQ=[&apos;||TRIM(NVL(includePrivsEQ,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : includePrivsLK=[&apos;||TRIM(NVL(includePrivsLK,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : excludePrivsNEQ=[&apos;||TRIM(NVL(excludePrivsNEQ,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : excludePrivsNLK=[&apos;||TRIM(NVL(excludePrivsNLK,&apos;  &apos;))||&apos;]&apos;);
+&#x9;END IF;
+&#x9;-- Construct privilege entry for the passed in resource and type
+&#x9;SET privEntries = &apos;
+             &lt;ns1:entry&gt;
+               &lt;ns1:path&gt;&apos; || CAST(XMLTEXT(resourcePath) AS LONGVARCHAR) || &apos;&lt;/ns1:path&gt;
+               &lt;ns1:type&gt;&apos; || CAST(XMLTEXT(resourceType) AS LONGVARCHAR) || &apos;&lt;/ns1:type&gt;
+             &lt;/ns1:entry&gt;&apos;;
+
+&#x9;-- Acquire a list of all of the columns for a view/table if the includeColumnPrivs=1
+&#x9;IF (includeColumnPrivs is not null and includeColumnPrivs = 1) THEN
+&#x9;&#x9;IF (resourceType = &apos;TABLE&apos;) THEN
+&#x9;&#x9;&#x9;FOR c AS select * from /shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE(resourcePath, resourceType) WHERE columnName is not null DO
+&#x9;&#x9;&#x9;&#x9;SET privEntries = privEntries || &apos;
+             &lt;ns1:entry&gt;
+               &lt;ns1:path&gt;&apos; || CAST(XMLTEXT(c.resourcePath||&apos;/&apos;||c.columnName) AS LONGVARCHAR) || &apos;&lt;/ns1:path&gt;
+               &lt;ns1:type&gt;COLUMN&lt;/ns1:type&gt;
+             &lt;/ns1:entry&gt;&apos;;
+&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;END IF;
+&#x9;&#x9;-- mtinius 8/2/14: This entry appears to have no affect on the invocation but is left here commented out.
+&#x9;&#x9;--SET includeColumns = &apos;
+        --   &lt;ns1:includeColumnPrivileges&gt;&apos;|| CAST(XMLTEXT(includeColumnPrivs) AS LONGVARCHAR) ||&apos;&lt;/ns1:includeColumnPrivileges&gt;&apos;;
+&#x9;END IF;
+
+&#x9;-- Construct the privilege request XML for getResourcePrivileges API call
+&#x9;SET privRequest =
+&#x9;&#x9;&apos;&lt;ns1:getResourcePrivileges xmlns:ns1=&quot;http://www.compositesw.com/services/system/admin/resource&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+           &lt;ns1:entries&gt;&apos;|| 
+&#x9;&#x9;&#x9;privEntries|| &apos;
+           &lt;/ns1:entries&gt;
+           &lt;ns1:filter&gt;&lt;/ns1:filter&gt;&apos; ||
+&#x9;&#x9;&#x9;includeColumns || &apos;
+         &lt;/ns1:getResourcePrivileges&gt;&apos;;
+
+&#x9;-- Get the privileges using the WHERE clause to limit the
+&#x9;-- results to USER privileges
+    SET sqlStatement = 
+        &apos;SELECT 
+            p.&quot;path&quot;, 
+            p.&quot;type&quot;, 
+            p.name, 
+            p.nameType, 
+            p.&quot;domain&quot;, 
+            p.privs, 
+            p.combinedPrivs, 
+            p.inheritedPrivs,
+            CASE WHEN POSITION(&apos;&apos;NONE&apos;&apos; IN p.privs) &gt; 0 THEN 1 ELSE 0 END AS p_N,
+            CASE WHEN POSITION(&apos;&apos;READ&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_R,
+            CASE WHEN POSITION(&apos;&apos;WRITE&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_W,
+            CASE WHEN POSITION(&apos;&apos;EXECUTE&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_E,
+            CASE WHEN POSITION(&apos;&apos;SELECT&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_S,
+            CASE WHEN POSITION(&apos;&apos;UPDATE&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_U,
+            CASE WHEN POSITION(&apos;&apos;INSERT&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_I,
+            CASE WHEN POSITION(&apos;&apos;DELETE&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_D,
+            CASE WHEN POSITION(&apos;&apos;GRANT&apos;&apos; IN p.privs) &gt; 0  THEN 1 ELSE 0 END AS p_G,
+
+            CASE WHEN POSITION(&apos;&apos;NONE&apos;&apos; IN p.combinedPrivs) &gt; 0 THEN 1 ELSE 0 END AS c_N,
+            CASE WHEN POSITION(&apos;&apos;READ&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_R,
+            CASE WHEN POSITION(&apos;&apos;WRITE&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_W,
+            CASE WHEN POSITION(&apos;&apos;EXECUTE&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_E,
+            CASE WHEN POSITION(&apos;&apos;SELECT&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_S,
+            CASE WHEN POSITION(&apos;&apos;UPDATE&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_U,
+            CASE WHEN POSITION(&apos;&apos;INSERT&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_I,
+            CASE WHEN POSITION(&apos;&apos;DELETE&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_D,
+            CASE WHEN POSITION(&apos;&apos;GRANT&apos;&apos; IN p.combinedPrivs) &gt; 0  THEN 1 ELSE 0 END AS c_G,
+
+            CASE WHEN POSITION(&apos;&apos;NONE&apos;&apos; IN p.inheritedPrivs) &gt; 0 THEN 1 ELSE 0 END AS i_N,
+            CASE WHEN POSITION(&apos;&apos;READ&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1 ELSE 0 END AS i_R,
+            CASE WHEN POSITION(&apos;&apos;WRITE&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1 ELSE 0 END AS i_W,
+            CASE WHEN POSITION(&apos;&apos;EXECUTE&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1 ELSE 0 END AS i_E,
+            CASE WHEN POSITION(&apos;&apos;SELECT&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1 ELSE 0 END AS i_S,
+            CASE WHEN POSITION(&apos;&apos;UPDATE&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1 ELSE 0 END AS i_U,
+            CASE WHEN POSITION(&apos;&apos;INSERT&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1 ELSE 0 END AS i_I,
+            CASE WHEN POSITION(&apos;&apos;DELETE&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1 ELSE 0 END AS i_D,
+            CASE WHEN POSITION(&apos;&apos;GRANT&apos;&apos; IN p.inheritedPrivs) &gt; 0  THEN 1  ELSE  0 END AS i_G
+        FROM      
+            &apos;||basePath||&apos;/repository/lowerLevelProcedures/getResourcePrivilegesXSLT(&apos;&apos;&apos;||privRequest||&apos;&apos;&apos;) p
+        &apos;;
+
+&#x9;/**********************************
+&#x9; * Construct the Where Clause
+&#x9; **********************************/
+&#x9;-- Construct nameType
+&#x9;IF (nameType is not null) THEN
+&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE &apos;;
+&#x9;&#x9;END IF;
+&#x9;&#x9;SET whereClause = whereClause || &apos; p.nameType = &apos;&apos;&apos;||nameType||&apos;&apos;&apos; &apos;;
+&#x9;END IF;
+
+&#x9;-- Construct domainName
+&#x9;IF (domainName is not null) THEN
+&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE &apos;;
+&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; AND &apos;;
+&#x9;&#x9;END IF;
+&#x9;&#x9;SET whereClause = whereClause || &apos; p.&quot;domain&quot; = &apos;&apos;&apos;||domainName||&apos;&apos;&apos; &apos;;
+&#x9;END IF;
+
+&#x9;-- Construct includeNameEQ equal list and/or includeNameLK like list
+&#x9;IF (includeNameEQ is not null or includeNameLK is not null) THEN
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = includeNameEQ;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;includeNameEQ object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set includeNameEQ2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE (&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSEIF (includeClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos; AND (&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; OR &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; p.name = &apos;&apos;&apos;||includeNameEQ2||&apos;&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = includeNameLK;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;includeNameLK object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set includeNameLK2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE (&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSEIF (includeClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos; AND (&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; OR &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; p.name LIKE &apos;&apos;&apos;||includeNameLK2||&apos;%&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+&#x9;&#x9;IF (includeClause is not null) THEN
+&#x9;&#x9;&#x9;SET whereClause = whereClause || includeClause || &apos;) &apos;;
+&#x9;&#x9;END IF;
+&#x9;END IF;
+
+&#x9;-- Construct excludeNameNEQ not equal list and/or excludeNameNLK not like list
+&#x9;IF (excludeNameNEQ is not null or excludeNameNLK is not null) THEN
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = excludeNameNEQ;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;excludeNameNEQ object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set excludeNameNEQ2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE &apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; AND &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; p.name != &apos;&apos;&apos;||excludeNameNEQ2||&apos;&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = excludeNameNLK;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;excludeNameNLK object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set excludeNameNLK2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE &apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; AND &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; p.name NOT LIKE &apos;&apos;&apos;||excludeNameNLK2||&apos;%&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+&#x9;END IF;
+
+&#x9;-- Construct includePrivsEQ equal list and/or includePrivsLK like list
+&#x9;IF (includePrivsEQ is not null or includePrivsLK is not null) THEN
+&#x9;&#x9;SET includeClause = null;
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = includePrivsEQ;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;includePrivsEQ object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set includePrivsEQ2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE (&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSEIF (includeClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos; AND (&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; OR &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; p.&apos;||privilegeEntryType||&apos; = &apos;&apos;&apos;||includePrivsEQ2||&apos;&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = includePrivsLK;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;includePrivsLK object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set includePrivsLK2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE (&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSEIF (includeClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = &apos; AND (&apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; OR &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET includeClause = includeClause || &apos; p.&apos;||privilegeEntryType||&apos; LIKE &apos;&apos;&apos;||includePrivsLK2||&apos;%&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+&#x9;&#x9;IF (includeClause is not null) THEN
+&#x9;&#x9;&#x9;SET whereClause = whereClause || includeClause || &apos;) &apos;;
+&#x9;&#x9;END IF;
+&#x9;END IF;
+
+&#x9;-- Construct excludePrivsNEQ not equal list and/or excludePrivsNLK not like list
+&#x9;IF (excludePrivsNEQ is not null or excludePrivsNLK is not null) THEN
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = excludePrivsNEQ;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;excludePrivsNEQ object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set excludePrivsNEQ2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE &apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; AND &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; p.&apos;||privilegeEntryType||&apos; != &apos;&apos;&apos;||excludePrivsNEQ2||&apos;&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = excludePrivsNLK;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;excludePrivsNLK object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set excludePrivsNLK2 = object;
+&#x9;&#x9;&#x9;&#x9;IF (whereClause is null) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = &apos;WHERE &apos;;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; AND &apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;SET whereClause = whereClause || &apos; p.&apos;||privilegeEntryType||&apos; NOT LIKE &apos;&apos;&apos;||excludePrivsNLK2||&apos;%&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+&#x9;END IF;
+
+&#x9;-- Combine sql statement and where clause
+&#x9;IF (whereClause is not null) THEN
+&#x9;&#x9;SET sqlStatement = sqlStatement || whereClause ||&apos; AND &quot;name&quot; is not null&apos;;
+&#x9;ELSE
+&#x9;&#x9;SET sqlStatement = sqlStatement || &apos;WHERE &quot;name&quot; is not null&apos;;
+&#x9;END IF;
+&#x9;-- Add the order by clause
+&#x9;SET sqlStatement = sqlStatement ||CHR(10)||&apos;        &apos;||orderByClause;
+
+&#x9;IF (debug_ is not null and debug_ = &apos;Y&apos;) THEN
+&#x9;&#x9;SET message = moduleName ||&apos; : &apos;||&apos;sqlStatement=&apos;||sqlStatement;
+&#x9;&#x9;CALL print(message);
+&#x9;&#x9;CALL log(message);
+&#x9;END IF;
+
+&#x9;-- Execute the SQL
+    OPEN result FOR sqlStatement;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1376679119330</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="public_types" type="MAP">
+    <item>
+      <key type="STRING">ResultType</key>
+      <value type="BYTE_ARRAY">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</value>
+    </item>
+  </attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">8/277</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/772</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Log</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/276</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/771</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/275</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/279</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/278</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/280</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/284</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/283</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/282</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/281</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+</metadata>

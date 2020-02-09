@@ -1,0 +1,190 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="test_upgradeUpdateCrudResource" path="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/test/test_upgradeUpdateCrudResource" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="success" direction="OUT" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/upgradeUpdateCrudResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="scriptsPath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="projectPath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="projectPathSrc" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="projectPathDst" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="inUpgradeVectorRow" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="upgradeType" type="TREE" refId="257">
+              <element name="bestPracticesVersionFrom">
+                <datatype name="DOUBLE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+              </element>
+              <element name="bestPracticesVersionTo">
+                <datatype name="DOUBLE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+              </element>
+              <element name="resourceAction">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="resourcePath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="resourceType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="srcResource">
+                <datatype name="srcResource" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="resourceType" referenceDefinitionSet="/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions" referenceType="resourceType" type="TREE" refId="513">
+                      <element name="path">
+                        <datatype name="VARCHAR" referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+                      </element>
+                      <element name="type">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="dstResource">
+                <datatype name="dstResource" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="resourceType" type="TREE" refId="769">
+                      <element name="path">
+                        <datatype name="VARCHAR" referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+                      </element>
+                      <element name="type">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="updateStruct">
+                <datatype name="updateStruct" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="updateType" type="TREE" refId="1025">
+                      <element name="updateAction">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="occurrence">
+                        <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+                      </element>
+                      <element name="numLines">
+                        <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+                      </element>
+                      <element name="keyTextVerify">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="searchText">
+                        <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                      </element>
+                      <element name="replaceText">
+                        <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE test_upgradeUpdateCrudResource(
+&#x9;OUT success&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER
+)
+BEGIN
+&#x9;DECLARE bestPracticesVersionCurrent&#x9;DOUBLE DEFAULT 8.1;
+&#x9;-- This is the CRUD path /shared/PROJECT/Application/Services/CRUD
+&#x9;DECLARE projectPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(2048) DEFAULT &apos;/shared/DataAbstractionSample60_v81&apos;;
+&#x9;DECLARE projectPathSrc&#x9;&#x9;&#x9;&#x9;VARCHAR(2048) DEFAULT &apos;/shared/DataAbstractionSample60&apos;;
+&#x9;DECLARE projectPathDst&#x9;&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT &apos;/shared/DataAbstractionSample60_v81&apos;;
+&#x9;DECLARE scriptsPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT projectPath||&apos;/_scripts&apos;; 
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;Y&apos;;&#x9;
+&#x9;-- This is a single row from the upgradeVector&#x9;
+&#x9;DECLARE inUpgradeVectorRow &#x9;&#x9;/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.upgradeVector;
+
+&#x9;set inUpgradeVectorRow = VECTOR[
+&#x9;(&#x9;6.0, bestPracticesVersionCurrent, &apos;updateCrud&apos;, null, null, null, VECTOR[(projectPathDst,&apos;CONTAINER&apos;)], null)
+&#x9;];
+
+
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/upgradeUpdateCrudResource(
+&#x9;&#x9;&#x9;debug,
+&#x9;&#x9;&#x9;scriptsPath,
+&#x9;&#x9;&#x9;projectPath,
+&#x9;&#x9;&#x9;projectPathSrc,
+&#x9;&#x9;&#x9;projectPathDst,
+&#x9;&#x9;&#x9;inUpgradeVectorRow,
+&#x9;&#x9;&#x9;success
+&#x9;);
+
+END</attribute>
+  <attribute name="creationDate" type="LONG">1398547371901</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560614393198</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

@@ -1,0 +1,249 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="test_GetAnsi2NativeMapping" path="/shared/ASAssets/Utilities/examples/repository/test_GetAnsi2NativeMapping" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+    (c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="cisType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="resourcePath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="result" type="TABLE" refId="256">
+        <element name="cisType">
+          <datatype name="VARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="cisNormalizedType">
+          <datatype name="VARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="cisBaseType">
+          <datatype name="VARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="cisScale">
+          <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+        </element>
+        <element name="cisPrecision">
+          <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+        </element>
+        <element name="dataTypeId">
+          <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+        </element>
+        <element name="dataTypeName">
+          <datatype name="VARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="nativeType">
+          <datatype name="VARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="nativeBaseType">
+          <datatype name="VARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="nativeScale">
+          <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+        </element>
+        <element name="nativePrecision">
+          <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/Utilities/repository/RepoUtils/GetAnsi2NativeMapping" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="cisType" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="cisType">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="cisNormalizedType">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="cisBaseType">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="cisScale">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="cisPrecision">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="dataTypeId">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="dataTypeName">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="nativeType">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="nativeBaseType">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="nativeScale">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="nativePrecision">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/extractDelimitedText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inputString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="delimiter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="occurrence" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseInputText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseOutput" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="trimText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="includeDelimiter" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="object">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* test_GetAnsi2NativeMapping:
+&#x9;This procedure is used to test the CJP &quot;RepoUtils.GetAnsi2NativeMapping&quot;
+ 
+&#x9;Input:
+    &#x9;&#x9;cisType - a CIS variable.
+&#x9;&#x9;&#x9;&#x9;e.g. If left null, it will default to a list of data types
+&#x9;&#x9;&#x9;&#x9;e.g. DECIMAL(32,2) -- your own variable definition
+
+&#x9;&#x9;&#x9;resourcePath -- The fully CIS path to a data source resource
+&#x9;&#x9;&#x9;&#x9;e.g. If left null, it will default to a path provided in the procedure
+&#x9;Output:
+&#x9;&#x9;result&#x9;- cursor output
+&#x9;Exceptions:  none
+
+&#x9;Release:&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;DV Version:&#x9;&#x9;Reason:
+&#x9;2012.3&#x9;&#x9;5/3/2012&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;2018.100&#x9;03/02/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced RegexSplit with extractDelimitedText
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE test_GetAnsi2NativeMapping(
+&#x9;IN cisType&#x9;VARCHAR,
+&#x9;IN resourcePath LONGVARCHAR,
+    OUT result PIPE (
+        cisType VARCHAR(2147483647), 
+&#x9;&#x9;cisNormalizedType VARCHAR(2147483647), 
+        cisBaseType VARCHAR(2147483647), 
+        cisScale INTEGER, 
+        cisPrecision INTEGER, 
+        dataTypeId INTEGER, 
+        dataTypeName VARCHAR(2147483647), 
+        nativeType VARCHAR(2147483647), 
+        nativeBaseType VARCHAR(2147483647), 
+        nativeScale INTEGER, 
+        nativePrecision INTEGER
+        )
+)
+BEGIN
+&#x9;DECLARE resourcePath_ LONGVARCHAR DEFAULT resourcePath; 
+ &#x9;DECLARE typeList&#x9; LONGVARCHAR DEFAULT
+&#x9;&#x9;&apos;CHAR,VARCHAR,LONGVARCHAR,XML,&apos;||
+&#x9;&#x9;&apos;DATE,TIME,TIMESTAMP,&apos;||
+&#x9;&#x9;&apos;BINARY,VARBINARY,LONGVARBINARY,BLOB,CLOB,&apos;||
+&#x9;&#x9;&apos;DECIMAL,NUMERIC,FLOAT,REAL,DOUBLE,&apos;||
+&#x9;&#x9;&apos;INT,TINYINT,SMALLINT,INTEGER,BIGINT,&apos;||
+&#x9;&#x9;&apos;BIT,BOOLEAN,&apos;||
+&#x9;&#x9;&apos;INTERVAL YEAR,INTERVAL YEAR TO MONTH,&apos;||
+&#x9;&#x9;&apos;INTERVAL MONTH,&apos;||
+&#x9;&#x9;&apos;INTERVAL DAY,INTERVAL DAY TO HOUR,INTERVAL DAY TO MINUTE,INTERVAL DAY TO SECOND,&apos;||
+&#x9;&#x9;&apos;INTERVAL HOUR,INTERVAL HOUR TO MINUTE,INTERVAL HOUR TO SECOND,&apos;||
+&#x9;&#x9;&apos;INTERVAL MINUTE,INTERVAL MINUTE TO SECOND,&apos;||
+&#x9;&#x9;&apos;INTERVAL SECOND,&apos;||
+&#x9;&#x9;&apos;&apos;;
+&#x9;DECLARE newList&#x9;&#x9;LONGVARCHAR DEFAULT typeList;
+
+&#x9;if (resourcePath_ is null) then
+&#x9;&#x9;-- Comment out the path you don&apos;t want to use
+&#x9;&#x9;-- Oracle source
+&#x9;&#x9;--set resourcePath_ = &apos;/shared/COMPOSITE_CACHE/L4_Physical_Layer/Physical_Metadata/OracleSource/COMPOSITE_CACHE&apos;;
+&#x9;&#x9;-- MySql source
+&#x9;&#x9;set resourcePath_ = &apos;/shared/examples/ds_inventory/tutorial&apos;;
+&#x9;end if;
+
+&#x9;if (cisType is not null) then
+&#x9;&#x9;set newList = cisType;
+&#x9;end if;
+&#x9;for list as select * from /shared/ASAssets/Utilities/string/extractDelimitedText(newList,&apos;,&apos;,0,0,0,0,0) do
+&#x9;&#x9;for r as 
+&#x9;&#x9;&#x9;select * from /shared/ASAssets/Utilities/repository/RepoUtils/GetAnsi2NativeMapping(resourcePath_,list.object)
+&#x9;&#x9;do
+&#x9;&#x9;&#x9;insert into result values (r);
+&#x9;&#x9;end for;
+&#x9;end for;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564749900388</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

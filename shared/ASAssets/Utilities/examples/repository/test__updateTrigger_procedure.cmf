@@ -1,0 +1,401 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="test_updateTrigger" path="/shared/ASAssets/Utilities/examples/repository/test_updateTrigger" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+    (c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="enabled" direction="IN" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="conditionType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="conditionVersion" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="actionType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+      <attribute name="Customized" type="STRING">datatype.changed</attribute>
+    </parameter>
+    <parameter name="success" direction="OUT" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="createResponse" direction="OUT" nullable="true">
+      <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+        <schemaDatatype>
+          <datatype name="XML" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="faultResponse" direction="OUT" nullable="true">
+      <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+        <schemaDatatype>
+          <datatype name="XML" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/resource/ResourceExists" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="path" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="type" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="version" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceVersion" type="STRING" maxLength="255"/>
+      </element>
+      <element name="exists" direction="OUT">
+        <datatype type="BOOLEAN"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/createResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceSubType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/updateTrigger" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="enabled" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="conditionType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="actionType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="triggerAttrVect" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="TriggerType" type="TREE" refId="257">
+              <element name="trName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="trValue">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="attributeVect" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="AttributeType" type="TREE" refId="513">
+              <element name="attrName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="attrType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="attrValue">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="769"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="769"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;Scenario 1 - Test enabling trigger only.&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;enable=1 and all other paramters=NULL
+&#x9;Scenario 2 - Test disabling trigger only.&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;enable=0 and all other paramters=NULL
+&#x9;Scenario 3 - Test Timer (recurrence restriction on) with Procedure. enabled=1, conditionType=TIMER, conditionVersion=1, actionType=PROCEDURE
+&#x9;Scenario 4 - Test Timer (recurrence restriction off) with Email. &#x9;enabled=1, conditionType=TIMER, conditionVersion=2, actionType=EMAIL
+&#x9;Scenario 5 - Test Timer (manual) with Reintrospect.  &#x9;&#x9;&#x9;&#x9;enabled=1, conditionType=TIMER, conditionVersion=2, actionType=REINTROSPECT
+&#x9;Scenario 6 - Test JMS with Statistics.  &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;enabled=1, conditionType=JMS, conditionVersion=null, actionType=STATISTICS
+&#x9;Scenario 7 - Test System Event with Procedure.  &#x9;&#x9;&#x9;&#x9;&#x9;enabled=1, conditionType=SYSTEM_EVENT, conditionVersion=null, actionType=PROCEDURE
+&#x9;Scenario 8 - Test User Defined with Reintrospect.  &#x9;&#x9;&#x9;&#x9;&#x9;enabled=1, conditionType=USER_DEFINED, conditionVersion=null, actionType=REINTROSPECT
+
+&#x9;Release:&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;DV Version:&#x9;&#x9;Reason:
+&#x9;2018.100&#x9;03/01/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced /shared/ASAssets/Utilities/repository/resourceExists with /lib/resource/ResourceExists
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE test_updateTrigger(
+&#x9;IN  enabled&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;BIT,&#x9;&#x9;-- 1=enabled, 0=disabled
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- When only performing the enable or disable for a trigger, leave *ALL* other input parameters null. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- When conditionType and actionType are NULL then no other update actions will be taken except enable/disable.
+&#x9;IN  conditionType&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR, &#x9;-- NULL or one of [TIMER|JMS|SYSTEM_EVENT|USER_DEFINED] determines the trigger condition.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- When NULL, then only perform the enable or disable of the trigger and not other updates.
+&#x9;IN  conditionVersion&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER,
+&#x9;-- Action Type
+&#x9;IN actionType&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9;-- NOT NULL and [PROCEDURE|STATISTICS|REINTROSPECT|EMAIL] - One of these determines what type of action to take.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- When NULL, then only perform the enable or disable of the trigger and not other updates.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- When conditionType is NOT NULL, there must be an actionType.
+&#x9;OUT success&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;BIT,
+&#x9;OUT createResponse &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;XML,
+&#x9;OUT faultResponse&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;XML
+)
+BEGIN
+    DECLARE resourcePath &#x9;&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/Utilities/TypeDefinitions.pathType DEFAULT &apos;/shared/ASAssets/Utilities/examples/repository/target&apos;; 
+&#x9;DECLARE resourceName&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255) DEFAULT &apos;testTRIGGER&apos;;
+&#x9;DECLARE resourceType&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255) DEFAULT &apos;TRIGGER&apos;;
+&#x9;DECLARE resourceSubType&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255) DEFAULT &apos;NONE&apos;;
+&#x9;DECLARE fullResourcePath&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/Utilities/TypeDefinitions.pathType DEFAULT resourcePath||&apos;/&apos;||resourceName;
+&#x9;DECLARE i,j&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;-- Name/Value pair list containing only the necessary &quot;Condition Type&quot; and &quot;Action Type&quot; attributes.
+&#x9;DECLARE conditionAttrVect&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/Utilities/repository/updateTrigger.TriggerType);
+&#x9;DECLARE actionAttrVect&#x9;&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/Utilities/repository/updateTrigger.TriggerType);
+&#x9;DECLARE triggerAttrVect&#x9;&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/Utilities/repository/updateTrigger.TriggerType) DEFAULT VECTOR[(null)];
+&#x9;DECLARE attributeVect&#x9;&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions.AttributeVectorType;
+&#x9;DECLARE resourceExists &#x9;&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+
+&#x9;-- CONDITION TYPE:
+&#x9;IF (conditionType = &apos;TIMER&apos;) THEN
+&#x9;-- Set the timer and recurrence restriciton
+&#x9;  IF (conditionVersion = 1) THEN
+&#x9;&#x9;SET conditionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;timerStartTime&apos;, &apos;2014-10-18 00:00:00&apos;), &#x9;&#x9;&#x9;-- The timestamp the trigger should start.    Format = YYYY-MM-DD HH24:MM:SS
+&#x9;&#x9;(&apos;timerPeriod&apos;, &apos;MINUTE&apos;), &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- One of [MINUTE|HOUR|DAY|WEEK|MONTH|YEAR]
+&#x9;&#x9;(&apos;timerPeriodQty&apos;, &apos;5&apos;), &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Quantity of the period
+&#x9;&#x9;(&apos;timerRecurringDay&apos;, &apos;SUN, MON, TUE, WED, THU, FRI, SAT&apos;),&#x9;&#x9;-- NULL or a list of one or more items: [SUN, MON, TUE, WED, THU, FRI, SAT].  May be space or comma delimited.
+&#x9;&#x9;(&apos;timerFromTimeInADay&apos;, &apos;10:00:00&apos;),&#x9;&#x9;&#x9;&#x9;-- NULL or The time of day to start the trigger.  Format = HH24:MM:SS
+&#x9;&#x9;(&apos;timerEndTimeInADay&apos;, &apos;22:00:00&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or The time of day to end the trigger.   Format = HH24:MM:SS
+&#x9;&#x9;(&apos;timerIsCluster&apos;, &apos;1&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or 0=not once per cluster, 1=only once per cluster
+
+&#x9;&#x9;(&apos;maxEventsQueued&apos;, &apos;1&apos;),
+&#x9;&#x9;(&apos;annotation&apos;, &apos;test annotation&apos;)
+&#x9;&#x9;];
+&#x9;&#x9;SET attributeVect = VECTOR[
+&#x9;&#x9;(&apos;lastModifiedUserName&apos;,&apos;STRING&apos;,&apos;user1&apos;),
+&#x9;&#x9;(&apos;lastModifiedUserDomain&apos;,&apos;STRING&apos;,&apos;composite&apos;)
+&#x9;&#x9;];
+&#x9;  END IF;
+&#x9;-- Set the timer to periodic but don&apos;t set the recurrence restriction
+&#x9;  IF (conditionVersion = 2) THEN
+&#x9;&#x9;SET conditionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;timerStartTime&apos;, &apos;2014-10-18 00:00:00&apos;), &#x9;&#x9;&#x9;-- The timestamp the trigger should start.    Format = YYYY-MM-DD HH24:MM:SS
+&#x9;&#x9;(&apos;timerPeriod&apos;, &apos;HOUR&apos;), &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- One of [MINUTE|HOUR|DAY|WEEK|MONTH|YEAR]
+&#x9;&#x9;(&apos;timerPeriodQty&apos;, &apos;5&apos;), &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Quantity of the period
+&#x9;&#x9;(&apos;timerRecurringDay&apos;, &apos;&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or a list of one or more items: [SUN, MON, TUE, WED, THU, FRI, SAT].  May be space or comma delimited.
+&#x9;&#x9;(&apos;timerFromTimeInADay&apos;, &apos;&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or The time of day to start the trigger.  Format = HH24:MM:SS
+&#x9;&#x9;(&apos;timerEndTimeInADay&apos;, &apos;&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or The time of day to end the trigger.   Format = HH24:MM:SS
+&#x9;&#x9;(&apos;timerIsCluster&apos;, &apos;0&apos;)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or 0=not once per cluster, 1=only once per cluster
+&#x9;&#x9;];
+&#x9;  END IF;
+&#x9;-- Set the timer to manual when no timestamp is set
+&#x9;  IF (conditionVersion = 3) THEN
+&#x9;&#x9;SET conditionAttrVect = VECTOR[
+&#x9;&#x9;--(&apos;timerStartTime&apos;, &apos;2014-10-18 00:00:00&apos;), &#x9;&#x9;-- The timestamp the trigger should start.    Format = YYYY-MM-DD HH24:MM:SS
+&#x9;&#x9;(&apos;timerPeriod&apos;, &apos;HOUR&apos;), &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- One of [MINUTE|HOUR|DAY|WEEK|MONTH|YEAR]
+&#x9;&#x9;(&apos;timerPeriodQty&apos;, &apos;5&apos;), &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Quantity of the period
+&#x9;&#x9;--(&apos;timerRecurringDay&apos;, &apos;&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or a list of one or more items: [SUN, MON, TUE, WED, THU, FRI, SAT].  May be space or comma delimited.
+&#x9;&#x9;--(&apos;timerFromTimeInADay&apos;, &apos;&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or The time of day to start the trigger.  Format = HH24:MM:SS
+&#x9;&#x9;--(&apos;timerEndTimeInADay&apos;, &apos;&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or The time of day to end the trigger.   Format = HH24:MM:SS
+&#x9;&#x9;(&apos;timerIsCluster&apos;, &apos;0&apos;)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- NULL or 0=not once per cluster, 1=only once per cluster
+&#x9;&#x9;];
+&#x9;  END IF;
+&#x9;END IF;
+&#x9;IF (conditionType = &apos;JMS&apos;) THEN
+&#x9;&#x9;SET conditionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;jmsDestination&apos;, &apos;jmsDest&apos;),
+&#x9;&#x9;(&apos;jmsSelector&apos;, &apos;jmsSelector&apos;),
+&#x9;&#x9;(&apos;jmsConnection&apos;, &apos;jmsConnection&apos;)
+&#x9;&#x9;];
+&#x9;END IF;
+&#x9;IF (conditionType = &apos;SYSTEM_EVENT&apos;) THEN
+&#x9;&#x9;SET conditionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;systemEventName&apos;, &apos;DataSourceUp&apos;)
+&#x9;&#x9;];
+&#x9;END IF;
+&#x9;IF (conditionType = &apos;USER_DEFINED&apos;) THEN
+&#x9;&#x9;SET conditionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;userDefinedName&apos;, &apos;CustomEvent&apos;)
+&#x9;&#x9;];
+&#x9;END IF;
+
+&#x9;-- ACTION TYPE:
+&#x9;IF (actionType = &apos;PROCEDURE&apos;) THEN
+&#x9;&#x9;SET actionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;procedurePath&apos;, &apos;/shared/ASAssets/Utilities/examples/repository/target/proc1&apos;),
+&#x9;&#x9;(&apos;procedureParams&apos;, &apos;10&apos;),
+&#x9;&#x9;(&apos;procedureExhaustCursors&apos;, &apos;0&apos;)
+&#x9;&#x9;];
+&#x9;END IF;
+&#x9;IF (actionType = &apos;STATISTICS&apos;) THEN
+&#x9;&#x9;SET actionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;statisticsDSPath&apos;, &apos;/shared/ASAssets/Utilities/examples/repository/source/ds_inventory&apos;)
+&#x9;&#x9;];
+&#x9;END IF;
+&#x9;IF (actionType = &apos;REINTROSPECT&apos;) THEN
+&#x9;&#x9;SET actionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;reintrospectDSPath&apos;, &apos;/shared/ASAssets/Utilities/examples/repository/source/ds_inventory&apos;),-- The path to the datasource to reintrospect
+&#x9;&#x9;(&apos;reintrospectEmailTo&apos;, &apos;to@gmail.com&apos;),&#x9;&#x9;&#x9;-- The TO to send email for reintrospection
+&#x9;&#x9;(&apos;reintrospectEmailCC&apos;, &apos;cc@gamil.com&apos;),&#x9;&#x9;&#x9;-- The CC to send email for reintrospection
+&#x9;&#x9;(&apos;reintrospectEmailBCC&apos;, &apos;bcc@gmail.com&apos;),&#x9;&#x9;&#x9;-- The BCC to send email for reintrospection
+&#x9;&#x9;(&apos;reintrospectEmailReplyTo&apos;, &apos;replyto@gmail.com&apos;),&#x9;-- The REPLYTO to send email for reintrospection
+&#x9;&#x9;(&apos;reintrospectEmailSubject&apos;, &apos;Test Re-introspect&apos;),&#x9;-- The subject line to send email for reintrospection
+&#x9;&#x9;(&apos;reintrospectEmailContent&apos;, &apos;Test content&apos;),&#x9;&#x9;-- The content to send email for reintrospection
+&#x9;&#x9;(&apos;reintrospectEmailSkipNoResults&apos;, &apos;1&apos;),&#x9;&#x9;&#x9;-- The skip if no results flag to send email for reintrospection
+&#x9;&#x9;(&apos;reintrospectEmailNoCommit&apos;, &apos;1&apos;)&#x9;&#x9;&#x9;&#x9;&#x9;-- The no commit flag to send email for reintrospection
+&#x9;&#x9;];
+&#x9;END IF;
+&#x9;IF (actionType = &apos;EMAIL&apos;) THEN
+&#x9;&#x9;SET actionAttrVect = VECTOR[
+&#x9;&#x9;(&apos;execEmailResourcePath&apos;, &apos;/shared/ASAssets/Utilities/examples/repository/target/proc1&apos;),-- Path of resources (Procedure or View) to execute
+&#x9;&#x9;(&apos;execEmailResourceParam&apos;, &apos;5&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;-- Procedure parameters in a comma separated list.  Single quotes around string values.
+&#x9;&#x9;(&apos;execEmailTo&apos;, &apos;to@gmail.com&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;-- The TO to send email for execute procedure
+&#x9;&#x9;(&apos;execEmailCC&apos;, &apos;cc@gamil.com&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;-- The CC to send email for execute procedure
+&#x9;&#x9;(&apos;execEmailBCC&apos;, &apos;bcc@gmail.com&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;-- The BCC to send email for execute procedure
+&#x9;&#x9;(&apos;execEmailReplyTo&apos;, &apos;replyto@gmail.com&apos;),&#x9;&#x9;&#x9;-- The REPLYTO to send email for execute procedure
+&#x9;&#x9;(&apos;execEmailSubject&apos;, &apos;Test Email&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;-- The subject line to send email for execute procedure
+&#x9;&#x9;(&apos;execEmailContent&apos;, &apos;Test content&apos;),&#x9;&#x9;&#x9;&#x9;-- The Content to send email for execute procedure
+&#x9;&#x9;(&apos;execEmailSkipNoResults&apos;, &apos;1&apos;),&#x9;&#x9;&#x9;&#x9;&#x9;-- The skip if no results flag to send email for execute procedure
+&#x9;&#x9;(&apos;execEmailIncludeSummary&apos;, &apos;1&apos;)&#x9;&#x9;&#x9;&#x9;&#x9;-- The include summary flag to send email for execute procedure
+&#x9;&#x9;];
+&#x9;END IF;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;call /lib/resource/ResourceExists(fullResourcePath, resourceType, null, resourceExists);
+&#x9;&#x9;if (NOT resourceExists) then
+&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/createResource(resourcePath, resourceName, resourceType, resourceSubType, success, createResponse, faultResponse);
+&#x9;&#x9;END IF;
+&#x9;END;
+
+&#x9;SET i = 1;
+&#x9;WHILE (i &lt;= CARDINALITY(conditionAttrVect)) DO
+&#x9;&#x9;SET triggerAttrVect[i] = conditionAttrVect[i];
+&#x9;&#x9;SET triggerAttrVect = EXTEND(triggerAttrVect, 1);
+&#x9;&#x9;SET i = i + 1;
+&#x9;END WHILE;
+&#x9;SET j = 1;
+&#x9;WHILE (j &lt;= CARDINALITY(actionAttrVect)) DO
+&#x9;&#x9;SET triggerAttrVect[i] = actionAttrVect[j];
+&#x9;&#x9;SET triggerAttrVect = EXTEND(triggerAttrVect, 1);
+&#x9;&#x9;SET j = j + 1;
+&#x9;&#x9;SET i = i + 1;
+&#x9;END WHILE;
+&#x9;SET triggerAttrVect = TRUNCATE(triggerAttrVect, 1);
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/updateTrigger(
+&#x9;&#x9;&#x9;&#x9;fullResourcePath,
+&#x9;&#x9;&#x9;&#x9;enabled,
+&#x9;&#x9;&#x9;&#x9;conditionType,
+&#x9;&#x9;&#x9;&#x9;actionType,
+&#x9;&#x9;&#x9;&#x9;triggerAttrVect,
+&#x9;&#x9;&#x9;&#x9;attributeVect,&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;success,
+&#x9;&#x9;&#x9;&#x9;createResponse,
+&#x9;&#x9;&#x9;&#x9;faultResponse
+&#x9;&#x9;&#x9;);
+
+&#x9;END;
+
+
+END</attribute>
+  <attribute name="creationDate" type="LONG">1413739805011</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564751549753</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:1:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:2:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:3:Customized" type="STRING">datatype.changed</attribute>
+  <attribute name="p:4:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:5:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:6:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

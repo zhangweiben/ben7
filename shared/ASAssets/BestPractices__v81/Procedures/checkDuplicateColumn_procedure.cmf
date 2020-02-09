@@ -1,0 +1,359 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="checkDuplicateColumn" path="/shared/ASAssets/BestPractices_v81/Procedures/checkDuplicateColumn" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="inColumnListStr" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inNewColumnListStr" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inColumnAliasOrName" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="columnListStrOut" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="columnAliasOrName" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="dropColumn" direction="OUT" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/extractDelimitedText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inputString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="delimiter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="occurrence" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseInputText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseOutput" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="trimText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="includeDelimiter" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="object">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* checkDuplicateColumn:
+&#x9;-- Composite Best Practices --
+&#x9;Check the list of column aliases for duplicates and append a numerical value based on how many duplicates are found.
+&#x9;The original alias is always returned if no duplicated is found.  The first duuplicate is appended with 1. 
+&#x9;The second duplicated is appended with 2 and so on.
+ 
+&#x9;Input:
+&#x9;&#x9;columnListStr&#x9;&#x9;LONGVARCHAR &#x9;- Initially it is blank.  Each time through the list the following format is appended: col1|col2|
+&#x9;&#x9;newColumnListStr&#x9;LONGVARCHAR,&#x9;- Provides a listing of all new/derived column aliases. Format: alias1|alias2|&#x9;Example: a1|a2|
+&#x9;&#x9;columnAliasOrName&#x9;VARCHAR&#x9;&#x9;&#x9;- Logical column alias or physical column name. (logical alias is passed in by precedence first if present followed by column name)
+&#x9;Output:
+&#x9;&#x9;columnListStrOut&#x9;LONGVARCHAR&#x9;&#x9;- The ongoing column string with the input columnName or columnAlias.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Example: a|a1|
+&#x9;&#x9;columnAliasOut&#x9;&#x9;VARCHAR&#x9;&#x9;&#x9;- The column alias to use with an appended numerical value if required to insure all are unique
+&#x9;&#x9;dropColumn&#x9;&#x9;&#x9;BIT&#x9;&#x9;&#x9;&#x9;- 1=true=drop the duplicate column, 0=false=don&apos;t drop the column
+
+&#x9;Exceptions:  
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;10/03/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.1.0&#x9;&#x9;&#x9;Created new for B.P. 8.0.  Needed a way to handle the use case where the physical layer contains duplicate column names.
+&#x9;03/02/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced RegexSplit with extractDelimitedText
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE checkDuplicateColumn(
+&#x9;IN inColumnListStr&#x9;&#x9;LONGVARCHAR,&#x9;-- Format: co1|col2|  Example: a|a1| 
+&#x9;IN inNewColumnListStr&#x9;LONGVARCHAR,&#x9;-- Format: &#x9;alias1|alias2|&#x9;&#x9; Example: a1|a2|
+&#x9;IN inColumnAliasOrName&#x9;VARCHAR,&#x9;&#x9;-- Logical column alias or physical column name. (logical alias is passed in by precedence first if present followed by column name)
+&#x9;OUT columnListStrOut&#x9;LONGVARCHAR,&#x9;-- Output of the columnListStr with non-duplicated columns appended to the list
+&#x9;OUT columnAliasOrName&#x9;VARCHAR,&#x9;&#x9;-- The new logical column alias with a number appended if necessary to make the column unique
+&#x9;OUT dropColumn&#x9;&#x9;&#x9;BIT&#x9;&#x9;&#x9;&#x9;-- 1=true=drop the duplicate column, 0=false=don&apos;t drop the column
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;checkDuplicateColumn&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;N&apos;;
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE pos&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE colNum&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE colNumDup&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE colAliasName&#x9;&#x9;VARCHAR;
+&#x9;DECLARE colNumOut&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE columnListStr&#x9;&#x9;LONGVARCHAR DEFAULT inColumnListStr;
+&#x9;DECLARE newColumnListStr&#x9;LONGVARCHAR DEFAULT inNewColumnListStr;
+&#x9;DECLARE columnExists&#x9;&#x9;BIT;
+
+/*###############################################################
+ IN: columnListStr=[col1|col2|]
+ IN: newColumnListStr=[baseDN1|relativeDN1|]
+ IN: columnName=[col3]  columnAlias=[col3]
+ OUT: columnAliasOut=[baseDN]  colAliasEmpty=false
+dropColumn=1 colNum=1 columnAliasOut[baseDN1] colName[baseDN] = colAlias[baseDN]
+OUT: columnListStr=[col1|col2|col3|]
+###############################################################*/
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call print(moduleName||&apos; : ###############################################################&apos;);
+&#x9;&#x9;call print(moduleName||&apos; : IN: inColumnListStr=[&apos;||NVL(inColumnListStr,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;call print(moduleName||&apos; : IN: inNewColumnListStr=[&apos;||NVL(inNewColumnListStr,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;call print(moduleName||&apos; : IN: inColumnAliasOrName=[&apos;||NVL(inColumnAliasOrName,&apos;null&apos;)||&apos;]&apos;);
+&#x9;end if;
+
+&#x9;-- Initialize drop column to 0=false
+&#x9;set dropColumn = 0;
+&#x9;if (SUBSTR(inColumnAliasOrName,1,1) = &apos;&quot;&apos; and SUBSTR(inColumnAliasOrName, LENGTH(inColumnAliasOrName),1) = &apos;&quot;&apos;) then
+&#x9;&#x9;set columnAliasOrName = SUBSTR(inColumnAliasOrName,2,LENGTH(inColumnAliasOrName)-2);
+&#x9;else 
+&#x9;&#x9;set columnAliasOrName = inColumnAliasOrName;
+&#x9;end if;
+
+&#x9;if (LENGTH(newColumnListStr) &gt; 0 AND SUBSTRING(newColumnListStr, LENGTH(newColumnListStr), 1) != &apos;|&apos;) then
+&#x9;&#x9;set newColumnListStr = newColumnListStr || &apos;|&apos;;
+&#x9;end if;
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call print(moduleName||&apos; : MOD: columnListStr=[&apos;||NVL(columnListStr,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;call print(moduleName||&apos; : MOD: newColumnListStr=[&apos;||NVL(newColumnListStr,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;call print(moduleName||&apos; : MOD: columnAliasOrName=[&apos;||NVL(columnAliasOrName,&apos;null&apos;)||&apos;]&apos;);
+&#x9;end if;
+
+&#x9;-- Determine if the column alias or name exists in the list.  Format: a|a1|
+&#x9;if (columnListStr is not null and length(columnListStr) &gt; 0 and INSTR(&apos;|&apos;||columnListStr, &apos;|&apos;||columnAliasOrName||&apos;|&apos;) &gt; 0) then
+
+&#x9;&#x9;-- Since the columnAliasOrName was found in the columnListStr, iterate through the list
+&#x9;&#x9;--&#x9;to determine what field position it was found in.  Use that column number as a qualifier appended
+&#x9;&#x9;--&#x9;to the end of the columnAliasOrName name to make it unique.  Then search for that name in the 
+&#x9;&#x9;--&#x9;list.  Keep doing this until a unique identifier is created.
+&#x9;&#x9;columnListLoop:
+&#x9;&#x9;for s as 
+&#x9;&#x9;&#x9;select * from /shared/ASAssets/Utilities/string/extractDelimitedText(columnListStr,&apos;|&apos;,0,0,0,1,0) 
+&#x9;&#x9;&#x9;&#x9;where object is not null and length(object) &gt; 0
+&#x9;&#x9;do
+&#x9;&#x9;&#x9;set colNum = colNum + 1;
+&#x9;&#x9;&#x9;set colAliasName = s.object;
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call print(moduleName||&apos; : 1. colNum=&apos;||colNum||&apos; colAliasName=[&apos;||colAliasName||&apos;]&apos;);
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;if (columnAliasOrName = colAliasName) then
+&#x9;&#x9;&#x9;&#x9;set colNumDup = colNum;
+&#x9;&#x9;&#x9;&#x9;checkDuplicateColumnExists_1:
+&#x9;&#x9;&#x9;&#x9;while (true) DO
+&#x9;&#x9;&#x9;&#x9;&#x9;set colNumOut = colNumDup + 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Append a column number to the end of the column name to insure it is unique
+&#x9;&#x9;&#x9;&#x9;&#x9;set columnAliasOrName = colAliasName||CAST(colNumOut AS VARCHAR);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Search for the new column alias with an appended column number in the original columns lise
+&#x9;&#x9;&#x9;&#x9;&#x9;set columnExists = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;set colNumDup = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;checkDuplicateColumnExists_2:
+&#x9;&#x9;&#x9;&#x9;&#x9;for d as 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select * from /shared/ASAssets/Utilities/string/extractDelimitedText(inColumnListStr,&apos;|&apos;,0,0,0,1,0) 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;where object is not null and length(object) &gt; 0
+&#x9;&#x9;&#x9;&#x9;&#x9;do
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set colNumDup = colNumDup + 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- The column was found so leave this loop
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (columnAliasOrName = d.object) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnExists = 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;leave checkDuplicateColumnExists_2;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end for;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- If no column was found then we are done otherwise, increment the column number and try again.
+&#x9;&#x9;&#x9;&#x9;&#x9;if (columnExists = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;leave checkDuplicateColumnExists_1;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;end while;
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;-- Check to see if the new column alias has already been accounted for by the new columns from the spreadsheet.
+&#x9;&#x9;&#x9;if (newColumnListStr is not null and length(newColumnListStr) &gt; 0 and INSTR(&apos;|&apos;||newColumnListStr, &apos;|&apos;||columnAliasOrName||&apos;|&apos;) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set dropColumn = 1;
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call print(moduleName||&apos; : 2. dropColumn=&apos;||NVL(cast(dropColumn as varchar),&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;leave columnListLoop;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end for;
+&#x9;end if;
+
+&#x9;-- Depending on whether the column is being dropped or not, set the columnListStrOut variable
+&#x9;if (dropColumn = 0 and columnAliasOrName is not null and length(trim(columnAliasOrName)) &gt; 0) then
+&#x9;&#x9;-- When not dropping the column, append the new column alias or name and the column count to the column list
+&#x9;&#x9;set columnListStrOut = NVL(inColumnListStr,&apos;null&apos;)||columnAliasOrName||&apos;|&apos;;
+&#x9;else
+&#x9;&#x9;-- When dropping the column, just return the original column list
+&#x9;&#x9;set columnListStrOut = NVL(inColumnListStr,&apos;null&apos;);
+&#x9;end if;
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call print(moduleName||&apos; : OUT: dropColumn=&apos;||dropColumn||&apos;  colAliasName[&apos;||NVL(colAliasName,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;call print(moduleName||&apos; : OUT: columnListStr=[&apos;||NVL(columnListStrOut,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;call print(moduleName||&apos; : ###############################################################&apos;);
+&#x9;end if;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1380773659390</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1573155473170</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">na</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">aiuhmb0</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">11/147</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/72</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/73</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/92</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/74</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/75</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/165</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/164</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/90</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/91</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">10/110</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/163</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+</metadata>

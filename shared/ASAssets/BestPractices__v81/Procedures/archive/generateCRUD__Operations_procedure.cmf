@@ -1,0 +1,2050 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="generateCRUD_Operations" path="/shared/ASAssets/BestPractices_v81/Procedures/archive/generateCRUD_Operations" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="overwrite" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="copyPrivilegeMode" direction="IN" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="startingFolderVector" direction="IN" nullable="true">
+      <datatype name="startingFolderVector" type="ARRAY" maxLength="0">
+        <itemDatatype>
+          <datatype name="startingFolderExtendedType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="startingFolderExtendedType" type="TREE" refId="257">
+            <element name="groupId">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="process">
+              <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+            </element>
+            <element name="layerType">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="pathDerivation">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="sourceFolderPath">
+              <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+            </element>
+            <element name="targetFolderPath">
+              <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+            </element>
+            <element name="derivedFilterPath">
+              <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+            </element>
+            <element name="typeDefProcPath">
+              <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+            </element>
+            <element name="typeDefProcName">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+          </datatype>
+        </itemDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="ConfigParamsVector" direction="IN" nullable="true">
+      <datatype name="ConfigParamsVector" type="ARRAY" maxLength="0">
+        <itemDatatype>
+          <datatype name="ConfigParamsType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="ConfigParamsType" type="TREE" refId="257">
+            <element name="generateMode">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="outputMode">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="generateViews">
+              <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+            </element>
+            <element name="resourceCaseRule">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="columnCaseRule">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="separator">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="useAliasRule">
+              <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+            </element>
+            <element name="resourcePrefix">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="resourceSuffix">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="generateWithSourceColumn">
+              <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+            </element>
+            <element name="generateCast">
+              <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+            </element>
+            <element name="generateIndexes">
+              <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+            </element>
+            <element name="debug">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="debug2">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="debug3">
+              <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+            </element>
+            <element name="basePath">
+              <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+            </element>
+            <element name="scriptsPath">
+              <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+            </element>
+            <element name="padAmount">
+              <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+            </element>
+          </datatype>
+        </itemDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="inProjectFolderName" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="generateViewsRow" type="TABLE" refId="256">
+        <element name="datasourceName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="projectFolderName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="greatGrandParentName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="grandParentName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="parentName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="containerName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="containerType">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="columnName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="logicalColumnName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="logicalColumnType">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="logicalStatus">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="containerPath">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="duration">
+          <datatype name="IntervalDay" type="INTERVAL_DAY" intervalMode="INTERVAL_HOUR_TO_SECOND" intervalPrecision="2" fractionalSecondPrecision="6"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/resource/ResourceExists" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="path" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="type" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="version" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceVersion" type="STRING" maxLength="255"/>
+      </element>
+      <element name="exists" direction="OUT">
+        <datatype type="BOOLEAN"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/archive/crudProcedures/generateCRUD_TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="sourceResource" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="startingFolderVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="startingFolderExtendedType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="startingFolderExtendedType" type="TREE" refId="257">
+              <element name="groupId">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="process">
+                <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+              </element>
+              <element name="layerType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="pathDerivation">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="sourceFolderPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="targetFolderPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="derivedFilterPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typeDefProcPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typeDefProcName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="513">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="769">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="769"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="inConfigParamsVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="ConfigParamsType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="ConfigParamsType" type="TREE" refId="1025">
+              <element name="generateMode">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="outputMode">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="generateViews">
+                <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+              </element>
+              <element name="resourceCaseRule">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="columnCaseRule">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="separator">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="useAliasRule">
+                <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+              </element>
+              <element name="resourcePrefix">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="resourceSuffix">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="generateWithSourceColumn">
+                <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+              </element>
+              <element name="generateCast">
+                <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+              </element>
+              <element name="generateIndexes">
+                <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+              </element>
+              <element name="debug">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="debug2">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="debug3">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+              <element name="basePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="scriptsPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="padAmount">
+                <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/archive/isDerivedPathMatch" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="exactMatch" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="derivedFilterPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="sourcepath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Coordinator" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Create" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_CreateCustom" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inDebug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Delete" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Read" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_RetrievePK" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Update" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_UpdateCustom" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_isEmpty" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="crudVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenType" type="TREE" refId="257">
+              <element name="crudPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedurePath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="procedureName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="viewpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="constantspath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocpath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="typedefprocname">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="customcreatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="customupdatepath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="pkList">
+                <datatype name="pkList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="crudGenColumnType" type="TREE" refId="513">
+                      <element name="colName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="colType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="columnList">
+                <datatype name="columnList" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <reference refId="513"/>
+                  </itemDatatype>
+                </datatype>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="status" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/getPrimaryKeys" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="columnVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="crudGenColumnType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="crudGenColumnType" type="TREE" refId="257">
+              <element name="colName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="colType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="pkVector" direction="OUT">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <reference refId="257"/>
+          </itemDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/getDefaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="scriptsPath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="defaultValuesVector" direction="OUT">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="defaultValuesType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" referenceType="defaultValuesType" type="TREE" refId="257">
+              <element name="bestPracticesVersion">
+                <datatype name="DOUBLE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+              </element>
+              <element name="basePath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="scriptsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="configureScriptsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="constantsScriptsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="generationScriptsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="compositeDatabasePath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="applicationPublishedPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="applicationServicesPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="applicationViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="applicationViewsSubFolder">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="crudPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="typeDefinitionPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="typeDefinitionProcName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="businessBusinessPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="businessLogicalPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalFormattingPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalFormattingTransformationPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalMetadataPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="debugTime">
+                <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/copyResourcesPrivilegesV2" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="updatePrivilegesRecursively" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="copyPrivilegeMode" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="inCopyPrivilegeEntries" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/createAllFolders" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inSourceFolderPath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getBasicResourceCursor" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="name">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="path">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="type">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="id">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="changeid">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="version">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="introspectState">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ownerDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ownerName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactLevel">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactMessage">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="scriptText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="childCount">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="dataSourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="1024"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="proprietaryModel">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="columnName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="columnType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeBaseType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getResourceListRecursive" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="resourceTreeList" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="name">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resPath">
+            <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+          </element>
+          <element name="resType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="creationDate">
+            <datatype type="DATETIME"/>
+          </element>
+          <element name="creationDateBigint">
+            <datatype type="INTEGER"/>
+          </element>
+          <element name="creatorUserDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="creatorUserName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="lastModifiedDate">
+            <datatype type="DATETIME"/>
+          </element>
+          <element name="lastModifiedDateBigint">
+            <datatype type="INTEGER"/>
+          </element>
+          <element name="lastModifiedUserDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="lastModifiedUserName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="mode" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="folderName" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="folderPath" direction="OUT">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* generateCRUD_Operations:
+&#x9;-- Composite Best Practices --
+&#x9;Generate CRUD procedures for each view in the layer specified by the incoming layerType parameters.  CRUD stands
+&#x9;for &quot;Create, Read, Update, Delete&quot;.  The CRUD procedures only support views that map one-to-one with their physical
+&#x9;counterpart.  Views with joins are not supported.
+
+&#x9;This procedure uses the values set in /generationScripts/Configure file as a starting point for the directories to generate from.
+&#x9;The CRUD procedures are generated into the /L1_Mapping_Layer/Client_Services/CRUD folder
+ 
+&#x9;Input:
+&#x9;&#x9;Environmnet Variables set by invoking generate...Views procedures:
+&#x9;&#x9;&#x9;This is an alternative approach to setting variables without modiffying the signature of a procedure.
+
+&#x9;&#x9;overwrite - allows user to decide whether they want to overwrite an existing view or not.
+&#x9;&#x9;&#x9;-- 0=&quot;FAIL_IF_EXISTS&quot;=do not overwrite the resource.  If the resource exists, raise an exception.
+&#x9;&#x9;&#x9;-- 1=&quot;SKIP_IF_EXISTS&quot;=skip the resource if it exists and continue processing
+&#x9;&#x9;&#x9;-- 2=&quot;OVERWRITE_IF_EXISTS&quot;=do overwrite the resource if it exists.
+&#x9;&#x9;copyPrivilegeMode
+&#x9;&#x9;&#x9;-- flag indicating the mode in which to copy privileges.  Privileges are only copied from the parent when creating new resources including folders.
+&#x9;&#x9;&#x9;-- null (default) - do not set any privileges at all
+&#x9;&#x9;&#x9;-- 0 - set mode to &quot;OVERWRITE_APPEND&quot; - merges and does not update privileges for users or groups not mentioned.
+&#x9;&#x9;&#x9;-- 1 - set the mode to &quot;SET_EXACTLY&quot; - makes privileges look exactly like those provided in the call.
+&#x9;&#x9;startingFolderVector - The vector of staring folders including source, target and derived filter path
+&#x9;&#x9;ConfigParamsVector - The vector of configuration parameters.  A full description can be found in /generationScripts/Configure/ConfigureParams
+&#x9;&#x9;inProjectFolderName &#x9;&#x9;VARCHAR,
+&#x9;&#x9;&#x9;-- the name of the project folder (defaultValue.basePath)(projectName)
+&#x9;Output:
+&#x9;&#x9;-- CRUD Generation Output definition structure
+&#x9;&#x9;crudResponseType &#x9;ROW(
+&#x9;&#x9;&#x9;resourceName&#x9;&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- name of the resource to generated CRUD operations for
+&#x9;&#x9;&#x9;generated&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;&#x9;&#x9;-- Y or N - indicating whether the resource was skipped due to lack of primary keys
+&#x9;&#x9;&#x9;success&#x9;&#x9;&#x9;&#x9;&#x9;BIT,&#x9;&#x9;&#x9;&#x9;&#x9;-- 1=success, 0=fail
+&#x9;&#x9;&#x9;message&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(1000)&#x9;&#x9;&#x9;-- status message
+&#x9;&#x9;)
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;06/15/2010&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;05/22/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;Modified for Best Practices 7.1
+&#x9;10/28/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.2&#x9;&#x9;&#x9;B.P. 8.0: Added inProjectFolderName to the input parameters
+&#x9;03/01/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced /shared/ASAssets/Utilities/repository/resourceExists with /lib/resource/ResourceExists
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Modified call from copyResourcesPrivileges to copyResourcesPrivilegesV2 to remove VECTOR usage
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE generateCRUD_Operations(
+&#x9;IN overwrite&#x9;&#x9;&#x9;&#x9;INTEGER,
+&#x9;&#x9;-- 0=&quot;FAIL_IF_EXISTS&quot;=do not overwrite the resource.  If the resource exists, raise an exception.
+&#x9;&#x9;-- 1=&quot;SKIP_IF_EXISTS&quot;=skip the resource if it exists and continue processing
+&#x9;&#x9;-- 2=&quot;OVERWRITE_IF_EXISTS&quot;=do overwrite the resource if it exists.
+&#x9;IN copyPrivilegeMode&#x9;&#x9;BIT,
+&#x9;&#x9;-- flag indicating the mode in which to copy privileges.  Privileges are only copied from the parent when creating new resources including folders.
+&#x9;&#x9;-- null (default) - do not set any privileges at all
+&#x9;&#x9;-- 0 - set mode to &quot;OVERWRITE_APPEND&quot; - merges and does not update privileges for users or groups not mentioned.
+&#x9;&#x9;-- 1 - set the mode to &quot;SET_EXACTLY&quot; - makes privileges look exactly like those provided in the call.
+&#x9;IN startingFolderVector&#x9;&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.startingFolderExtendedType),
+&#x9;IN ConfigParamsVector&#x9;&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.ConfigParamsType),
+&#x9;IN inProjectFolderName &#x9;&#x9;VARCHAR,
+&#x9;&#x9;-- the name of the project folder (defaultValue.basePath)(projectName)
+    OUT result PIPE &#x9;&#x9;&#x9;/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.generateViewsRow
+/*  INSERT INTO result VALUES(&apos;&apos;, &apos;&apos;, &apos;&apos;, &apos;&apos;, typeDefProcName, &apos;PROCEDURE&apos;, &apos;GENERATED&apos;, resourcePath);
+&#x9;-- CRUD Generation results
+&#x9;DECLARE PUBLIC TYPE generateCRUDRow ROW (
+&#x9;&#x9;datasourceName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;greatGrandParentName&#x9;VARCHAR(255), 
+&#x9;&#x9;grandParentName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;parentName&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+        containerName &#x9;&#x9;&#x9;VARCHAR(255), 
+        containerType &#x9;&#x9;&#x9;VARCHAR(255), 
+        name&#x9; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalName &#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalType &#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalStatus &#x9;&#x9;&#x9;VARCHAR(4000), 
+        containerPath &#x9;&#x9;&#x9;TypeDefinitions.pathType
+&#x9;);
+*/
+)
+BEGIN
+&#x9;DECLARE indent&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT indent||&apos;generateCRUD_Operations&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1);
+&#x9;DECLARE i,j&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE Empty&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SMALLINT DEFAULT 1;
+&#x9;DECLARE notEmpty&#x9;&#x9;&#x9;&#x9;&#x9;SMALLINT DEFAULT 0;
+&#x9;DECLARE childResourceResponse&#x9;&#x9;XML;
+&#x9;DECLARE parentPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE resourcePath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE resourceType&#x9;&#x9;&#x9;&#x9;VARCHAR(255);
+&#x9;DECLARE resourceName&#x9;&#x9;&#x9;&#x9;VARCHAR(255);
+&#x9;DECLARE sqlStatement&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE childResCursor&#x9;&#x9;&#x9;&#x9;CURSOR /shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions.childResourceResponseType;
+&#x9;DECLARE generateActive&#x9;&#x9;&#x9;&#x9;BOOLEAN DEFAULT false;
+&#x9;DECLARE pkVector&#x9;&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.crudGenColumnType);
+&#x9;DECLARE columnVector&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.crudGenColumnType);
+&#x9;DECLARE crudVector&#x9;&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.crudGenType) DEFAULT VECTOR[(null)];
+&#x9;DECLARE defaultValuesVector&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.defaultValuesType);
+&#x9;DECLARE singleStartingFolderVector&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.startingFolderExtendedType) DEFAULT VECTOR[NULL];
+&#x9;DECLARE faultResponse&#x9;&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE crudOutput&#x9;&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.generateViewsRow;
+&#x9;DECLARE resourceExists&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE success&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;BIT; --1=sucess, 0=fail
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE debug2&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT ConfigParamsVector[1].debug2;
+&#x9;DECLARE isDerivedMatch&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;-- 0=fuzzy match - sourcePath + derivedFilterPath must simply be contained within resourcePath
+&#x9;-- 1=exact match - sourcePath + derivedFilterPath must match exactly in resourcePath
+&#x9;DECLARE exactMatch&#x9;&#x9;&#x9;&#x9;&#x9;SMALLINT DEFAULT 0;
+&#x9;DECLARE copyPrivilegeEntry&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE updatePrivilegesRecursively&#x9;BIT DEFAULT 1;
+--&#x9;DECLARE derivedFilterPath&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;&#x9;-- The path is derived by concatenating the partial filter path with the source path of the designated layer type.
+&#x9;&#x9;-- The layerType and the groupId are used to filter the rows from the configureStartingFolders.  The source path is
+&#x9;&#x9;--    defined in configureStartingFolders per the layerType and groupId combination.
+&#x9;&#x9;--   e.g. layerType=CP and sourceFolderPath=/shared/BestPractices/DataAbstractionSample/L1_Mapping_Layer/Client_Views
+&#x9;&#x9;--        The derivedFilterPath list=Orders_Closed,/Orders/Customers,Orders/Product
+&#x9;&#x9;--        Even though there are several other views in the /Orders folder under the Client_Views only the ones specified
+&#x9;&#x9;--&#x9;      will be generated to the Client_Published.  Views directly under the source path do not require any qualifying path except the view name.
+&#x9;&#x9;--        Lastly, a leading &apos;/&apos; is not required but may be present if desired.
+&#x9;&#x9;-- If null, generate views from all source folders as directed by the &quot;configure starting folders&quot; and the designated layer type.
+
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;BEGIN: ============================================&apos;);
+&#x9;end if;
+
+&#x9;-- Set local Configuration parameters&#x9;
+&#x9;SET debug = ConfigParamsVector[1].debug;
+&#x9;SET debug2 = ConfigParamsVector[1].debug2;
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/getDefaultValues(ConfigParamsVector[1].scriptsPath, defaultValuesVector);
+&#x9;set crudVector[1].genUniqueIDPath = defaultValuesVector[1].genUniqueIDPath;
+&#x9;set crudOutput.projectFolderName = inProjectFolderName;
+
+&#x9;-- Begin looping through the starting &quot;SOURCE&quot; folders which provides the initial context to generate the CRUD operations from
+&#x9;SET i = 1;
+&#x9;WHILE (i &lt;= CARDINALITY(startingFolderVector)) DO
+&#x9;&#x9;IF (startingFolderVector[i].process = 1 AND 
+&#x9;&#x9;&#x9;(startingFolderVector[i].sourceFolderPath IS NOT NULL AND LENGTH(&apos;|&apos;||startingFolderVector[i].sourceFolderPath||&apos;|&apos;) &gt; 2) AND
+&#x9;&#x9;&#x9;(startingFolderVector[i].targetFolderPath IS NOT NULL AND LENGTH(&apos;|&apos;||startingFolderVector[i].targetFolderPath||&apos;|&apos;) &gt; 2)) THEN
+
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos; SOURCE FOLDER=&apos;||NVL(startingFolderVector[i].sourceFolderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos; TARGET FOLDER=&apos;||NVL(startingFolderVector[i].targetFolderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;DERIVED FILTER=&apos;||NVL(startingFolderVector[i].derivedFilterPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;&apos;);
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;-- Initialize the crudPath and constants path
+&#x9;&#x9;&#x9;set crudVector[1].constantspath = defaultValuesVector[1].constantsScriptsPath;
+&#x9;&#x9;&#x9;set crudVector[1].crudPath = startingFolderVector[i].targetFolderPath;
+&#x9;&#x9;&#x9;set crudVector[1].typedefprocname = startingFolderVector[i].typeDefProcName;
+&#x9;&#x9;&#x9;set crudVector[1].typedefprocpath = startingFolderVector[i].typeDefProcPath;
+
+&#x9;&#x9;&#x9;-- Get the parent path for the CRUD path
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(crudVector[1].crudPath, &apos;E&apos;, resourceName, parentPath);
+
+&#x9;&#x9;&#x9;-- Setup the copyPrivilegeEntry for the main directories that exist under the crudPath
+&#x9;&#x9;&#x9;set copyPrivilegeEntry = 
+&#x9;&#x9;&#x9;&#x9;&apos;  &lt;resource:copyPrivilegeEntry&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;    &lt;resource:srcResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;      &lt;resource:path&gt;&apos; || CAST(XMLTEXT(parentPath) AS LONGVARCHAR) || &apos;&lt;/resource:path&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;      &lt;resource:type&gt;CONTAINER&lt;/resource:type&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;    &lt;/resource:srcResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;    &lt;resource:dstResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;      &lt;resource:path&gt;&apos; || CAST(XMLTEXT(crudVector[1].crudPath) AS LONGVARCHAR) || &apos;&lt;/resource:path&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;      &lt;resource:type&gt;CONTAINER&lt;/resource:type&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;    &lt;/resource:dstResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;  &lt;/resource:copyPrivilegeEntry&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&apos;&apos;;
+&#x9;&#x9;/*
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(&apos;&apos;, &apos;&apos;, &apos;&apos;, typeDefProcName, &apos;&apos;, &apos;PROCEDURE&apos;, &apos;GENERATED&apos;, typeDefsPath);
+&#x9;&#x9;&#x9;-- View Generation results
+&#x9;&#x9;&#x9;DECLARE PUBLIC TYPE generateViewsRow ROW (
+&#x9;&#x9;&#x9;&#x9;datasourceName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;&#x9;&#x9;greatGrandParentName&#x9;VARCHAR(255), 
+&#x9;&#x9;&#x9;&#x9;grandParentName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;&#x9;&#x9;parentName&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;&#x9;&#x9;containerName &#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;&#x9;&#x9;containerType &#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;&#x9;&#x9;columnName &#x9;&#x9;&#x9;&#x9;VARCHAR(4096), 
+&#x9;&#x9;&#x9;&#x9;logicalColumnName &#x9;&#x9;VARCHAR(4096), 
+&#x9;&#x9;&#x9;&#x9;logicalColumnType &#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;&#x9;&#x9;logicalStatus &#x9;&#x9;&#x9;VARCHAR(4000), 
+&#x9;&#x9;&#x9;&#x9;containerPath &#x9;&#x9;&#x9;VARCHAR(4000)
+&#x9;&#x9;&#x9;);
+&#x9;&#x9;*/
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Definitions **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/&apos;||defaultValuesVector[1].typeDefinitionPath;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudOutput.containerPath, success, faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;/********** Generate the Type Definitions Procedure: /Definitions/TypeDefinitions **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].typedefprocname;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].typedefprocpath||&apos;/&apos;||crudOutput.logicalColumnName;
+
+&#x9;&#x9;&#x9;-- Perform a cross-over of sourceFolderPath and TargetFolderPath for the purposes of executing generateDatasourceList
+&#x9;&#x9;&#x9;-- The reason is that generateDatasourceList uses the target folder to generate from instead of the source folder
+&#x9;&#x9;&#x9;set singleStartingFolderVector[1] = startingFolderVector[i];
+&#x9;&#x9;&#x9;set singleStartingFolderVector[1].sourceFolderPath = startingFolderVector[i].targetFolderPath;
+&#x9;&#x9;&#x9;set singleStartingFolderVector[1].targetFolderPath = startingFolderVector[i].sourceFolderPath;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;&#x9;&#x9;-- Invoke the generate CRUD Type Definitions with a subsequent call to generateDatasourceList to get the list of views in the &quot;targetFolderPath&quot;
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/archive/crudProcedures/generateCRUD_TypeDefinitions(ConfigParamsVector[1].debug2, overwrite, singleStartingFolderVector[1].targetFolderPath, singleStartingFolderVector, crudVector, ConfigParamsVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Coordinate/test **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Coordinate/test&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Create/test **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Create/test&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Create/Custom **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Create/Custom&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Read/test **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Read/test&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /RetrievePK/test **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/RetrievePK/test&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Update/Custom **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Update/Custom&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Update/test **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Update/test&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Delete/test **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Delete/test&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /isEmpty/test **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/isEmpty/test&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+
+&#x9;&#x9;&#x9;/********** Create all of the sub-folders for CRUD operations: /Utility **********/
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = &apos;/Utility&apos;;
+&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;set crudOutput.containerPath = crudVector[1].crudPath||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(crudOutput.containerPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;&#x9;if (overwrite = 2 or not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(crudVector[1].crudPath||crudOutput.logicalColumnName,success,faultResponse);
+&#x9;&#x9;&#x9;&#x9;IF (success = 1) THEN set crudOutput.logicalStatus = &apos;GENERATED&apos;; ELSE set crudOutput.logicalStatus = &apos;ERROR&apos;; END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);&#x9;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;&#x9;&#x9;-- Get the specific resource type for the target resource
+&#x9;&#x9;&#x9;set resourceType = null;
+&#x9;&#x9;&#x9;FOR resource AS SELECT * FROM /shared/ASAssets/Utilities/repository/getBasicResourceCursor(startingFolderVector[i].sourceFolderPath, resourceType) DO
+&#x9;&#x9;&#x9;&#x9;set resourceType = resource.&quot;type&quot;;
+&#x9;&#x9;&#x9;END FOR;
+
+&#x9;&#x9;&#x9;IF (resourceType is not null) THEN
+&#x9;&#x9;&#x9;  FOR list AS 
+&#x9;&#x9;&#x9;&#x9;SELECT name, resPath, resType, subType 
+&#x9;&#x9;&#x9;&#x9;FROM /shared/ASAssets/Utilities/repository/getResourceListRecursive(startingFolderVector[i].sourceFolderPath, resourceType) 
+&#x9;&#x9;&#x9;  DO
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;BEGIN: ============================================&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;NAME=&apos;||list.name);&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;PATH=&apos;||list.resPath); &#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;TYPE=&apos;||list.resType);&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;TYPE=&apos;||list.subType);&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;---------------------------------------------------&apos;);
+&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;-- Only process rows that come back from the recursive resource tree list that are actually Data Sources
+&#x9;&#x9;&#x9;&#x9;-- Folders will be derived because the full path is provided to the resource
+&#x9;&#x9;&#x9;&#x9;IF (list.resType = &apos;TABLE&apos;) THEN
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Put quotes around &quot;_folder&quot; or &quot;1_folder&quot; but in a way that it is not hard-coded if _ or 0-9 exists in the first charcater of the folder name
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Apply reserved list to path
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath(list.resPath,null,resourcePath);
+&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Provides the ability to return metadata on Composite Views (a.k.a. resource type = TABLE).
+&#x9;&#x9;&#x9;&#x9;&#x9;OPEN childResCursor FOR 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT resourceName, resourcePath, resourceType, subtype, enabled, annotation, NULL, columnName, columnType, nativeBaseType, nativeType
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM /shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE(resourcePath, list.resType);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;/* Important Note:  The FIRST ROW FOR a TABLE returns a NULL IN the columnName.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   This IS used TO determine the start OF a new TABLE.  Don&apos;t change the XSLT -- getResourceResponseXSLT_SQL_TABLE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   getResourceResponseXSLT_SQL_TABLE returns the following:
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; resourceName: RDS_T_FGRT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; resourcePath: /shared/DeutscheBank/Central/RDS3/L4_Physical_Layer/L4_1_Physical_Views/dbInstrument/RDS/RDS_T_FGRT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; resourceType: TABLE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; subtype: SQL_TABLE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; enabled: 1
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; null, --isNullable
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  tableType: VIEW
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  sqlText: [NULL]
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; columnName: FGRT_TYP
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; columnType: VARCHAR(20)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; nativeBaseType: VARCHAR2
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select--&gt; nativeType: VARCHAR2(20)&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;*/
+
+&#x9;&#x9;&#x9;&#x9;&#x9;if (debug2 = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug2, &apos;------------------------&apos;);&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug2, &apos; child resource:&apos;);&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug2, &apos;------------------------&apos;);&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Found a resource (CONTAINER or TABLE)&#x9;&#x9;&#x9;   
+&#x9;&#x9;&#x9;&#x9;&#x9;set j = 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET columnVector = VECTOR[(NULL)];
+&#x9;&#x9;&#x9;&#x9;&#x9;FOR childRes AS childResCursor DO&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (debug2 = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug2,&apos;[childRes] resourceName=&apos;||NVL(childRes.resourceName,&apos;null&apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  Type=&apos;||NVL(childRes.resourceType,&apos;null&apos;)||&apos;  Column=[&apos;||NVL(childRes.columnName,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Found a TABLE so process it and generate CRUD operations&#x9;&#x9;    &#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- The first row in the column list is always the Table name and type and tells us to begin
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (childRes.resourceType = &apos;TABLE&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourceName = childRes.resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourcePath = childRes.resourcePath;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourceType = childRes.resourceType;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Determine if the target path is a match to the derivedFilterPath
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/archive/isDerivedPathMatch(debug2, exactMatch, startingFolderVector[i].derivedFilterPath, startingFolderVector[i].sourceFolderPath, childRes.resourcePath, isDerivedMatch);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (isDerivedMatch  = 1) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set generateActive = true;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;No match to derivedFilterPath.  resourcePath=&apos;||NVL(resourcePath,&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- build the list of columns
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (childRes.columnName IS NOT NULL AND LENGTH(&apos;|&apos;||childRes.columnName||&apos;|&apos;) &gt; 2) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET columnVector[j].colName = childRes.columnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET columnVector[j].colType = childRes.columnType;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET columnVector = EXTEND(columnVector, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET j = j + 1;&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;END FOR;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (generateActive) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET columnVector = TRUNCATE(columnVector, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- resolve the primary key vector for this TABLE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/getPrimaryKeys(resourcePath,resourceType,columnVector,pkVector);
+&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- setup the CRUD variables vector
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].viewname = resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].viewpath = resourcePath;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].customcreatepath = crudVector[1].crudPath||&apos;/Create/Custom&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].customupdatepath = crudVector[1].crudPath||&apos;/Update/Custom&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].pkList = pkVector;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].columnList = columnVector;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Only generate CRUD operations if there is one or more primary keys for a view.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (CARDINALITY(pkVector) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--generate CRUD operations
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/Coordinate&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;save_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Coordinator(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/Create&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;create_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Create(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/Create/Custom&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;custom_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_CreateCustom(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/Read&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;get_&apos;||resourceName||&apos;_ById&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Read(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/RetrievePK&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;retrievePK_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_RetrievePK(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/Update&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;update_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Update(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/Update/Custom&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;custom_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_UpdateCustom(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/Delete&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;delete_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_Delete(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedurePath = crudVector[1].crudPath||&apos;/isEmpty&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudVector[1].procedureName = &apos;isEmpty_&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = crudVector[1].procedureName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  crudVector[1].procedurePath||&apos;/&apos;||crudOutput.logicalColumnName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/generateCRUD_isEmpty(ConfigParamsVector[1].debug2,overwrite,crudVector, crudOutput.logicalStatus);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug,&apos;No Primary keys, skipping Resource: &apos;||resourcePath);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnName = resourceName; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalColumnType = resourceType;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.containerPath =  resourcePath;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set crudOutput.logicalStatus = &apos;SKIPPED&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(crudOutput);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF; -- IF (CARDINALITY(pkVector) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- reset generate active to insure processing is turned off until another TABLE is found.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set generateActive = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF; -- IF (generateActive) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(&apos;&apos;, debug,&apos;&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;END IF; 
+&#x9;&#x9;&#x9; END FOR;
+&#x9;&#x9;   END IF;&#x9;-- IF (resourceType is not null) THEN&#x9;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+&#x9;&#x9; END IF; -- IF (startingFolderVector[i].process = 1) THEN
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Update the privileges
+&#x9;&#x9;if (updatePrivilegesRecursively is not null and copyPrivilegeMode is not null and copyPrivilegeMode = 1) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/copyResourcesPrivilegesV2(updatePrivilegesRecursively, copyPrivilegeMode, copyPrivilegeEntry, success, faultResponse);
+&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;raise ex value CAST(faultResponse as LONGVARCHAR);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9; SET i = i + 1;
+&#x9;END WHILE;   
+
+&#x9;set crudOutput = null;
+&#x9;set crudOutput.parentName = &apos;FINISHED&apos;;
+&#x9;INSERT INTO result VALUES(crudOutput);  
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:0:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:2:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:3:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:4:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

@@ -1,0 +1,112 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="generateResourceListToCSV" path="/shared/ASAssets/BestPractices_v81/ManageAnnotations/generateResourceListToCSV" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="startingPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="csvFilePath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/ManageAnnotations/Helpers/generateResourceListToCSV" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="startingPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="csvFilePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;generateResourceListToCSV
+
+&#x9;This procedure is used to generate the table and column annotations to a CSV file on the CIS server.  The user
+&#x9;is responsible for downloading the file to their local workstation to work on the annotation list.
+
+&#x9;INPUT:
+&#x9;&#x9;startingPath&#x9;LONGVARCHAR,&#x9;-- path to folder that is one level below the published data service folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Note: the startingPath may be a parent path as the procedure will recursively drill into child folder paths to find views.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- The reason for one level below the published is because this is where Business Directory gets the 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;column annotations.
+&#x9;&#x9;csvFilePath&#x9;&#x9;LONGVARCHAR,&#x9;-- /comp/compshared/DROP/&lt;your_ftp_folder&gt;/output.csv
+&#x9;OUTPUT:
+&#x9;&#x9;OUT result&#x9;&#x9;INTEGER&#x9;&#x9;&#x9;-- 0 (failure) or 1 (success)
+&#x9;EXCEPTION:&#x9;
+&#x9;&#x9;may be thrown by CIS
+&#x9;DEPENDENCIES
+&#x9;&#x9;requires the latest resource modified on 09/24/2016
+&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/Utilities/repository/updateResourceAnnotations
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CIS Version:&#x9;Reason:
+&#x9;11/14/2016&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.4&#x9;&#x9;&#x9;Created new.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE generateResourceListToCSV(
+&#x9;IN startingPath&#x9;&#x9;LONGVARCHAR,&#x9;-- path to folder that is one level below the published data service folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Note: the startingPath may be a parent path as the procedure will recursively drill into child folder paths to find views.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- The reason for one level below the published is because this is where Business Directory gets the 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;column annotations.
+&#x9;IN csvFilePath&#x9;&#x9;LONGVARCHAR,&#x9;-- /comp/compshared/DROP/&lt;your_ftp_folder&gt;/output.csv
+&#x9;OUT result&#x9;&#x9;&#x9;INTEGER
+)
+BEGIN
+&#x9;call /shared/ASAssets/BestPractices_v81/ManageAnnotations/Helpers/generateResourceListToCSV(startingPath, csvFilePath, result);
+END</attribute>
+  <attribute name="creationDate" type="LONG">1474733736807</attribute>
+  <attribute name="creatorUserDomain" type="STRING">ldap</attribute>
+  <attribute name="creatorUserId" type="INTEGER">4005</attribute>
+  <attribute name="creatorUserName" type="STRING">zkxl6un</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1513891747563</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">4005</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1474733736807</attribute>
+</metadata>

@@ -1,0 +1,334 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="test_assignParameters" path="/shared/ASAssets/Utilities/examples/repository/test_assignParameters" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+    (c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="testOption" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="parameterInput" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/rebind/assignParameters" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="parameterVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="ParameterType" type="TREE" refId="257">
+              <element name="name">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="sqlType">
+                <datatype name="sqlType" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="sqlType" type="TREE" refId="513">
+                      <element name="definition">
+                        <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                      </element>
+                      <element name="nativeType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="referencePath">
+                        <datatype name="VARCHAR" referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+                      </element>
+                      <element name="referenceTypeName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="proprietaryModel">
+                        <datatype name="VARBINARY" type="BINARY" maxLength="1024"/>
+                      </element>
+                      <element name="name">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="trailingSpaces">
+                        <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="xmlType">
+                <datatype name="xmlType" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="xmlType" type="TREE" refId="769">
+                      <element name="name">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="namespace">
+                        <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                      </element>
+                      <element name="nativeType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="schema">
+                        <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                      </element>
+                      <element name="referencePath">
+                        <datatype name="VARCHAR" referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+                      </element>
+                      <element name="proprietaryModel">
+                        <datatype name="VARBINARY" type="BINARY" maxLength="1024"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="pseudoType">
+                <datatype name="pseudoType" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="pseudoType" type="TREE" refId="1025">
+                      <element name="definition">
+                        <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="direction">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="isNullable">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="attributes">
+                <datatype name="attributes" type="ARRAY" maxLength="0">
+                  <itemDatatype>
+                    <datatype name="AttributeCompleteType" type="TREE" refId="1281">
+                      <element name="attrName">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="attrType">
+                        <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                      </element>
+                      <element name="attrValue">
+                        <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                      </element>
+                      <element name="valueList">
+                        <datatype name="valueList" type="ARRAY" maxLength="0">
+                          <itemDatatype>
+                            <datatype name="itemType" type="TREE" refId="1537">
+                              <element name="type">
+                                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+                              </element>
+                              <element name="value">
+                                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                              </element>
+                            </datatype>
+                          </itemDatatype>
+                        </datatype>
+                      </element>
+                      <element name="valueMap">
+                        <datatype name="valueMap" type="ARRAY" maxLength="0">
+                          <itemDatatype>
+                            <datatype name="entryType" type="TREE" refId="1793">
+                              <element name="key">
+                                <datatype name="key" type="ARRAY" maxLength="0">
+                                  <itemDatatype>
+                                    <reference refId="1537"/>
+                                  </itemDatatype>
+                                </datatype>
+                              </element>
+                              <element name="value">
+                                <datatype name="value" type="ARRAY" maxLength="0">
+                                  <itemDatatype>
+                                    <reference refId="1537"/>
+                                  </itemDatatype>
+                                </datatype>
+                              </element>
+                            </datatype>
+                          </itemDatatype>
+                        </datatype>
+                      </element>
+                      <element name="valueArray">
+                        <datatype name="valueArray" type="ARRAY" maxLength="0">
+                          <itemDatatype>
+                            <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+                          </itemDatatype>
+                        </datatype>
+                      </element>
+                      <element name="unset">
+                        <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+                      </element>
+                    </datatype>
+                  </itemDatatype>
+                </datatype>
+              </element>
+              <element name="annotation">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="parameterInput" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* test_assignParameters:
+&#x9;Test assignParameters.
+
+&#x9;Release:&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;DV Version:&#x9;&#x9;Reason:
+&#x9;2013.2&#x9;&#x9;04/27/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;created new for testing
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE test_assignParameters(
+&#x9;IN testOption&#x9;&#x9;&#x9;&#x9;INTEGER,
+&#x9;OUT parameterInput&#x9;&#x9;&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;DECLARE parameterVector&#x9;&#x9;&#x9;/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions.ParameterVectorType;
+
+/*
+&#x9;DECLARE PUBLIC TYPE ParameterType ROW (
+&#x9;&#x9;name&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- any name
+&#x9;&#x9;sqlType&#x9;&#x9;&#x9;&#x9;VECTOR(sqlType),&#x9;&#x9;-- 1 of sqlType, xmlType or pseudoType
+&#x9;&#x9;xmlType&#x9;&#x9;&#x9;&#x9;VECTOR(xmlType),&#x9;&#x9;-- 1 of sqlType, xmlType or pseudoType
+&#x9;&#x9;pseudoType&#x9;&#x9;&#x9;VECTOR(pseudoType),&#x9;&#x9;-- 1 of sqlType, xmlType or pseudoType
+&#x9;&#x9;direction&#x9;&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- IN, OUT, INOUT
+&#x9;&#x9;isNullable&#x9;&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- true or false
+&#x9;&#x9;attributes&#x9;&#x9;&#x9;VECTOR(AttributeCompleteType),
+&#x9;&#x9;annotation&#x9;&#x9;&#x9;LONGVARCHAR&#x9;&#x9;&#x9;&#x9;-- any text
+&#x9;);
+&#x9;DECLARE PUBLIC TYPE sqlType ROW(
+&#x9;&#x9;definition&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;nativeType&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;referencePath&#x9;&#x9;TypeDefinitions.pathType,
+&#x9;&#x9;referenceTypeName&#x9;VARCHAR(255),
+&#x9;&#x9;proprietaryModel&#x9;VARBINARY,
+&#x9;&#x9;name&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;trailingSpaces&#x9;&#x9;BIT&#x9;&#x9;
+&#x9;);
+&#x9;DECLARE PUBLIC TYPE xmlType ROW(
+&#x9;&#x9;name&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;namespace&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;nativeType&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;&quot;schema&quot;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;referencePath&#x9;&#x9;TypeDefinitions.pathType,
+&#x9;&#x9;proprietaryModel&#x9;VARBINARY
+&#x9;);
+&#x9;DECLARE PUBLIC TYPE pseudoType ROW(
+&#x9;&#x9;definition&#x9;&#x9;&#x9;LONGVARCHAR
+&#x9;);
+*/
+&#x9;-- SQL Type Parameter
+&#x9;if (testOption = 1) then
+&#x9;&#x9;set parameterVector = VECTOR[
+&#x9;&#x9;(&#x9;&apos;param1&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- name
+&#x9;&#x9;&#x9;VECTOR[(&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- sqlType
+&#x9;&#x9;&#x9;&#x9;&apos;INTEGER&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;-- definition
+&#x9;&#x9;&#x9;&#x9;&apos;INTEGER&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;-- nativeType
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- referencePath
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- referenceTypeName
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- proprietaryModel
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- name
+&#x9;&#x9;&#x9;&#x9;null&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- trailingSpaces
+&#x9;&#x9;&#x9;)],&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- xmlType
+&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- pseudoType
+&#x9;&#x9;&#x9;&apos;IN&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- direction
+&#x9;&#x9;&#x9;&apos;IS_NULLABLE&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;-- isNullable
+&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- attributes
+&#x9;&#x9;&#x9;null&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- annotation
+&#x9;&#x9;),
+&#x9;&#x9;(&#x9;&apos;result&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- name
+&#x9;&#x9;&#x9;VECTOR[(&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- sqlType
+&#x9;&#x9;&#x9;&#x9;&apos;CURSOR (ProductName VARCHAR(50), ProductID INTEGER, ProductDescription VARCHAR(255))&apos;,-- definition
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- nativeType
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- referencePath
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- referenceTypeName
+&#x9;&#x9;&#x9;&#x9;&apos;CjxkYXRhdHlwZSBuYW1lPSJyZXN1bHQiIHR5cGU9IlRBQkxFIiByZWZJZD0iMSI+CiAgPGVsZW1l&amp;#xD; bnQgbmFtZT0iUHJvZHVjdE5hbWUiPgogICAgPGRhdGF0eXBlIG5hbWU9IlZBUkNIQVIiIHR5cGU9&amp;#xD; IlNUUklORyIgbWF4TGVuZ3RoPSI1MCIvPgogIDwvZWxlbWVudD4KICA8ZWxlbWVudCBuYW1lPSJQ&amp;#xD; cm9kdWN0SUQiPgogICAgPGRhdGF0eXBlIG5hbWU9IklOVEVHRVIiIHR5cGU9IklOVEVHRVIiIG1p&amp;#xD; blZhbHVlPSItMjE0NzQ4MzY0OCIgbWF4VmFsdWU9IjIxNDc0ODM2NDciLz4KICA8L2VsZW1lbnQ+&amp;#xD; CiAgPGVsZW1lbnQgbmFtZT0iUHJvZHVjdERlc2NyaXB0aW9uIj4KICAgIDxkYXRhdHlwZSBuYW1l&amp;#xD; PSJWQVJDSEFSIiB0eXBlPSJTVFJJTkciIG1heExlbmd0aD0iMjU1Ii8+CiAgPC9lbGVtZW50Pgo8&amp;#xD; L2RhdGF0eXBlPg==&apos;,-- proprietaryModel
+&#x9;&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- name
+&#x9;&#x9;&#x9;&#x9;null&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- trailingSpaces
+&#x9;&#x9;&#x9;)],&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- xmlType
+&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- pseudoType
+&#x9;&#x9;&#x9;&apos;OUT&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- direction
+&#x9;&#x9;&#x9;&apos;IS_NULLABLE&apos;,&#x9;&#x9;&#x9;&#x9;&#x9;-- isNullable
+&#x9;&#x9;&#x9;null,&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- attributes
+&#x9;&#x9;&#x9;&apos;out cursor annotation&apos;&#x9;&#x9;&#x9;-- annotation
+&#x9;&#x9;)];
+/*
+&#x9;&#x9;&#x9;&lt;resource:parameters&gt;
+&#x9;&#x9;&#x9;&#x9;&lt;resource:parameter&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:name&gt;desiredProduct&lt;/resource:name&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:dataType&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;common:sqlType xmlns:common=&quot;http://www.compositesw.com/services/system/util/common&quot;&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;common:definition&gt;INTEGER&lt;/common:definition&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;common:name&gt;INTEGER&lt;/common:name&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/common:sqlType&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/resource:dataType&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:direction&gt;IN&lt;/resource:direction&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:isNullable&gt;IS_NULLABLE&lt;/resource:isNullable&gt;
+&#x9;&#x9;&#x9;&#x9;&lt;/resource:parameter&gt;
+&#x9;&#x9;&#x9;&#x9;&lt;resource:parameter&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:name&gt;result&lt;/resource:name&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:dataType&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;common:sqlType xmlns:common=&quot;http://www.compositesw.com/services/system/util/common&quot;&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;common:definition&gt;CURSOR (ProductName VARCHAR(50), ProductID INTEGER, ProductDescription VARCHAR(255))&lt;/common:definition&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;common:name&gt;result&lt;/common:name&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;common:proprietaryModel&gt;CjxkYXRhdHlwZSBuYW1lPSJyZXN1bHQiIHR5cGU9IlRBQkxFIiByZWZJZD0iMSI+CiAgPGVsZW1l&amp;#xD; bnQgbmFtZT0iUHJvZHVjdE5hbWUiPgogICAgPGRhdGF0eXBlIG5hbWU9IlZBUkNIQVIiIHR5cGU9&amp;#xD; IlNUUklORyIgbWF4TGVuZ3RoPSI1MCIvPgogIDwvZWxlbWVudD4KICA8ZWxlbWVudCBuYW1lPSJQ&amp;#xD; cm9kdWN0SUQiPgogICAgPGRhdGF0eXBlIG5hbWU9IklOVEVHRVIiIHR5cGU9IklOVEVHRVIiIG1p&amp;#xD; blZhbHVlPSItMjE0NzQ4MzY0OCIgbWF4VmFsdWU9IjIxNDc0ODM2NDciLz4KICA8L2VsZW1lbnQ+&amp;#xD; CiAgPGVsZW1lbnQgbmFtZT0iUHJvZHVjdERlc2NyaXB0aW9uIj4KICAgIDxkYXRhdHlwZSBuYW1l&amp;#xD; PSJWQVJDSEFSIiB0eXBlPSJTVFJJTkciIG1heExlbmd0aD0iMjU1Ii8+CiAgPC9lbGVtZW50Pgo8&amp;#xD; L2RhdGF0eXBlPg==&lt;/common:proprietaryModel&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/common:sqlType&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/resource:dataType&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:direction&gt;OUT&lt;/resource:direction&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;&lt;resource:isNullable&gt;IS_NULLABLE&lt;/resource:isNullable&gt;
+&#x9;&#x9;&#x9;&#x9;&lt;/resource:parameter&gt;
+&#x9;&#x9;&#x9;&lt;/resource:parameters&gt;
+*/
+&#x9;end if;
+
+&#x9;call /shared/ASAssets/Utilities/repository/rebind/assignParameters(parameterVector, parameterInput);
+
+END</attribute>
+  <attribute name="creationDate" type="LONG">1382029188068</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564752710885</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

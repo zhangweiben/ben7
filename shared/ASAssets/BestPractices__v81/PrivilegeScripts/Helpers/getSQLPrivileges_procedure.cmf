@@ -1,0 +1,323 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="getSQLPrivileges" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getSQLPrivileges" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="datasource" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Environment_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Organization" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Project" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="SubProject" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Sheet_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Resource_Path" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="Resource_Type" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Name_" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Name_Type" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Domain_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="sqlStatement" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="fromClause" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="2048"/>
+    </parameter>
+    <parameter name="whereClause" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="scriptType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="scriptMapping" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE getSQLPrivileges(
+&#x9;IN datasource&#x9;&#x9;VARCHAR(255),&#x9;-- REQUIRED FILTER: EXCEL or DB_[LLE,PROD], The source of the privileges
+    IN Environment_Name VARCHAR(255), &#x9;-- REQUIRED FILTER: The Composite server environment in which to get/update privileges for: [DEV, TEST, UAT, PROD]
+&#x9;IN Organization&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the organization such as IM or SS
+&#x9;IN Project&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the project that is hosted on CIS for this &quot;Env Type&quot;.  This provides a filter for only applying privileges for the given project.
+&#x9;IN SubProject&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the sub-project that is hosted on CIS for this &quot;Env Type&quot;.  This provides a filter for only applying privileges for the given sub-project.  If left blank, all rows for the sub-projects will be updated.
+    IN Sheet_Name &#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The name of the Excel spreadsheet in which to get/update privileges from: [Privileges_initialize, Privileges_shared, Privileges_databases, Privileges_webservices]
+    IN Resource_Path &#x9;LONGVARCHAR,&#x9;-- OPTIONAL FILTER: The resource path in which to get/update privileges.  It may contain a wildcard &quot;%&quot;.  It may be a comma-separated list of paths.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9; IMPORTANT: If columns or paths contain commas they must be encoded with the value &quot;_002C&quot; prior to be passed into this procedure.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;&#x9;&#x9;This procedure will decode each path from &quot;_002C&quot; to &quot;,&quot; before search for privileges.
+&#x9;IN Resource_Type &#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The resource type in which to get/update privileges.  It is always upper case. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--  This will only be used when no &quot;Resource_Path&quot; or a single &quot;Resource_Path&quot; is provided.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--  It is not used when a list of &quot;Resource_Path&quot; entries are provided.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;E.g. DATA_SOURCE - a published datasource or physical metadata datasource.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; CONTAINER - a folder path, a catalog or schema path.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; COLUMN - a column from a table
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; LINK - a published table or procedure.  If it resides in the path /services and points to a TABLE or PROCEDURE then it is a LINK.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; TABLE - a view in the /shared path.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; PROCEDURE a procedure in the /shared path.
+    IN Name_ &#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The user/group name in which to get/update privileges.
+    IN Name_Type&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: Valid values are USER or GROUP
+    IN Domain_Name &#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The domain name in which to get/update privileges.
+&#x9;IN debug&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- OPTIONAL: Y=debug on, N=debug off
+    OUT sqlStatement&#x9;LONGVARCHAR,
+&#x9;OUT fromClause&#x9;&#x9;VARCHAR(2048),
+&#x9;OUT whereClause&#x9;&#x9;LONGVARCHAR
+    )
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;getSQLPrivileges&apos;;
+&#x9;DECLARE scriptPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE i,j&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE message&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE resPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE pos1,pos2&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE object&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE moreToDo1&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE objectList1&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE expression1&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE explen1&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+
+&#x9;-- Get the datasource to script mapping.  Pass in the datasource type and return the path the view or script
+&#x9;--   that connects to the specific spreadsheet or database.
+&#x9;CALL /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping(&apos;P&apos;, datasource, scriptPath);
+&#x9;set fromClause = &apos;FROM &apos; ||scriptPath;
+&#x9;set sqlStatement = &apos;SELECT * &apos;||fromClause || CHR(10);
+
+&#x9;if (Environment_Name is not null and LENGTH(TRIM(Environment_Name)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;ENVIRONMENT_NAME IS NOT NULL
+           AND PROJECT_NAME IS NOT NULL
+           AND ENVIRONMENT_NAME = &apos;&apos;&apos; || TRIM(Environment_Name) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (Organization is not null and LENGTH(TRIM(Organization)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;ORGANIZATION_NAME = &apos;&apos;&apos; || TRIM(Organization) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (Project is not null and LENGTH(TRIM(Project)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;PROJECT_NAME = &apos;&apos;&apos; || TRIM(Project) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (SubProject is not null and LENGTH(TRIM(SubProject)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;SUBPROJECT_NAME = &apos;&apos;&apos; || TRIM(SubProject) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (Sheet_Name is not null and LENGTH(TRIM(Sheet_Name)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;UPPER(sheetName) like &apos;&apos;%&apos; || UPPER(TRIM(Sheet_Name)) || &apos;%&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (Resource_Path is not null and LENGTH(TRIM(Resource_Path)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE (&apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND (&apos;;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;set i = 0;
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = Resource_Path;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = REPLACE(TRIM(object), &apos;_002C&apos;, &apos;,&apos;) ;
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set resPath = object;
+
+&#x9;&#x9;&#x9;&#x9;if (i &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           OR &apos;;&#x9;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;%&apos; IN resPath) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;RESOURCE_PATH like &apos;&apos;&apos; || TRIM(resPath) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;RESOURCE_PATH = &apos;&apos;&apos; || TRIM(resPath) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set i = i + 1;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+
+&#x9;&#x9;set whereClause = whereClause || &apos;)&apos;;
+&#x9;end if;
+&#x9;if (i &lt;= 1 and Resource_Type is not null and LENGTH(TRIM(Resource_Type)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;RESOURCE_TYPE = &apos;&apos;&apos; || TRIM(Resource_Type) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (Name_ is not null and LENGTH(TRIM(Name_)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (Domain_Name is not null and LENGTH(Domain_Name) &gt; 0 and LOWER(Domain_Name) = &apos;composite&apos;) then
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;NAME = &apos;&apos;&apos; || TRIM(LOWER(Name_)) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;NAME = &apos;&apos;&apos; || TRIM(Name_) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;if (Name_Type is not null and LENGTH(TRIM(Name_Type)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (Domain_Name is not null and LENGTH(Domain_Name) &gt; 0 and LOWER(Domain_Name) = &apos;composite&apos;) then
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;NAME_TYPE = &apos;&apos;&apos; || TRIM(Name_Type) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;NAME_TYPE = &apos;&apos;&apos; || TRIM(Name_Type) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;if (Domain_Name is not null and LENGTH(TRIM(Domain_Name)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+           AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (LOWER(Domain_Name) = &apos;composite&apos;) then
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;DOMAIN_NAME = &apos;&apos;&apos; || TRIM(LOWER(Domain_Name)) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;DOMAIN_NAME = &apos;&apos;&apos; || TRIM(Domain_Name) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;end if;
+&#x9;end if;
+
+&#x9;if (whereClause is not null) then
+&#x9;&#x9;set sqlStatement = sqlStatement || whereClause;
+&#x9;&#x9;set whereClause = TRIM(whereClause);
+&#x9;end if;
+
+&#x9;set sqlStatement = sqlStatement || &apos;
+    ORDER BY ORGANIZATION_NAME, sheetName, ENVIRONMENT_NAME, PROJECT_NAME, RESOURCE_PATH, ORDER_PRECEDENCE, RECURSE_CHILD DESC, REVOKE_ALL DESC&apos;;
+
+END</attribute>
+  <attribute name="creationDate" type="LONG">1387113466371</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+  <attribute name="transactionCached" type="STRING">false</attribute>
+</metadata>

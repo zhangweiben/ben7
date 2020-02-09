@@ -1,0 +1,85 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="readme" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Metadata/DDL/readme" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters></parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <attribute name="Script" type="STRING">/*
+&#x9;The following items need to be done in order to implement a new database container type.
+&#x9;1. Convert the Oracle DDL syntax to &lt;NEW_DB_TYPE&gt; for Tables, Constraints, Sequences and Triggers
+&#x9;&#x9;Make sure the table names and column names are upper case and exactly the same as Oracle.  
+&#x9;&#x9;No differences.  Use double quotes around names to insure exactness.
+&#x9;2. Configure the &lt;NEW_DB_TYPE&gt; LLE and PROD database connections
+&#x9;&#x9;Composite_Resource_Privileges_DB_LLE_&lt;NEW_DB_TYPE&gt;
+&#x9;&#x9;Composite_Resource_Privileges_DB_PROD_&lt;NEW_DB_TYPE&gt;
+&#x9;3. Execute the DDL packages in order
+&#x9;4. Introspect the datasources
+&#x9;5. Create Formatting layer views: /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/&lt;NEW_DB_TYPE&gt;
+&#x9;&#x9;a. Copy the views from Oracle and paste into the &lt;NEW_DB_TYPE&gt; folder
+&#x9;&#x9;b. Rebind to the appropriate datasource tablename which should be &quot;exactly&quot; the same as Oracle.
+&#x9;6. For the following procedure, add the dynamic mappings for &lt;NEW_DB_TYPE&gt;:
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/constants/getPrivilegeDatasourceToScriptMapping
+&#x9;7. Test all of the procedure using datasource=DB_LLE_&lt;NEW_DB_TYPE&gt; and DB_PROD_&lt;NEW_DB_TYPE&gt; in the order shown below:
+&#x9;&#x9;General Maintenance Tables
+&#x9;&#x9;-------------------------
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_01... through modify_08...
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/performSupportingTableMaintenance
+
+&#x9;&#x9;Privileges
+&#x9;&#x9;-----------
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/loadNewPrivileges_EXCEL
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/get_Composite_Resource_Privileges
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/updatePrivilegesDriver
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/validatePrivilegesDriver
+
+&#x9;&#x9;Groups
+&#x9;&#x9;-----------
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/loadNewGroups_EXCEL
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/get_Composite_Resource_Groups
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/updateGroupsDriver
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/validateGroupsDriver
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/deleteGroupsDriver
+
+&#x9;&#x9;Users
+&#x9;&#x9;-----------
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/loadNewUsers_EXCEL
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/get_Composite_Resource_Users
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/updateUsersDriver
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/validateUsersDriver
+&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/deleteUsersDriver
+*/
+PROCEDURE readme()
+BEGIN
+END</attribute>
+  <attribute name="creationDate" type="LONG">1495225919437</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1513891747563</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1495225919437</attribute>
+</metadata>

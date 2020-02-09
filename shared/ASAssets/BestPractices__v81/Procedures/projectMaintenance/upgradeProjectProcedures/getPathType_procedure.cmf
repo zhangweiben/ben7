@@ -1,0 +1,487 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="getPathType" path="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathType" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="layerType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="src_or_target" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="inResourcePath" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="defaultValues60" direction="IN" nullable="true">
+      <datatype name="defaultValues60" type="ARRAY" maxLength="0">
+        <itemDatatype>
+          <datatype name="defaultValuesType" referenceDefinitionSet="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getDefaultValues60" referenceType="defaultValuesType" type="TREE" refId="257">
+            <element name="basePath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="typeDefinitionPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="typeDefinitionProcName">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="generationScriptsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientServicesPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientViewsSubFolder">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="crudPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="clientPublishedPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="logicalViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="federatedViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="businessViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="formattingViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="physicalMetadataPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="physicalViewsPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+            <element name="genUniqueIDPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+          </datatype>
+        </itemDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="inVariableVector" direction="IN" nullable="true">
+      <datatype name="inVariableVector" type="ARRAY" maxLength="0">
+        <itemDatatype>
+          <datatype name="inVariableVector" type="TREE" refId="257">
+            <element name="pathType">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="baseFolderName">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="remainderPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+          </datatype>
+        </itemDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="outVariableVector" direction="OUT" nullable="true">
+      <datatype name="outVariableVector" type="ARRAY" maxLength="0">
+        <itemDatatype>
+          <datatype name="outVariableVector" type="TREE" refId="257">
+            <element name="pathType">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="baseFolderName">
+              <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+            </element>
+            <element name="remainderPath">
+              <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+            </element>
+          </datatype>
+        </itemDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="pathType" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="baseFolderName" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="remainderPath" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="variableVectorIdx" direction="OUT" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getDefaultValues60" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="basePath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="defaultValuesVector" direction="OUT">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="defaultValuesType" type="TREE" refId="257">
+              <element name="basePath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="typeDefinitionPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="typeDefinitionProcName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="generationScriptsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientServicesPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientViewsSubFolder">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="crudPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="clientPublishedPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="logicalViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="federatedViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="businessViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="formattingViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalMetadataPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="physicalViewsPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+              <element name="genUniqueIDPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="pathType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="variableVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="variableVector" type="TREE" refId="257">
+              <element name="pathType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="baseFolderName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="remainderPath">
+                <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="baseFolderName" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="remainderPath" direction="OUT">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="idx" direction="OUT">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE getPathType(
+&#x9;IN &#x9;layerType&#x9;&#x9;&#x9;VARCHAR,
+&#x9;IN  src_or_target&#x9;&#x9;VARCHAR,
+&#x9;IN&#x9;inResourcePath&#x9;&#x9;VARCHAR(4000),
+&#x9;IN&#x9;defaultValues60&#x9;&#x9;VECTOR(/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getDefaultValues60.defaultValuesType),
+&#x9;IN &#x9;inVariableVector&#x9;VECTOR(ROW(pathType VARCHAR, baseFolderName VARCHAR, remainderPath VARCHAR(4000))),
+&#x9;OUT outVariableVector&#x9;VECTOR(ROW(pathType VARCHAR, baseFolderName VARCHAR, remainderPath VARCHAR(4000))),
+&#x9;OUT pathType&#x9;&#x9;&#x9;VARCHAR,
+&#x9;OUT baseFolderName&#x9;&#x9;VARCHAR,
+&#x9;OUT remainderPath&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT variableVectorIdx&#x9;INTEGER
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;getPathType&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;N&apos;;
+&#x9;DECLARE resourcePath&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT REPLACE(inResourcePath||&apos;/&apos;, &apos;//&apos;,&apos;/&apos;);
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE variableRemainderPath&#x9;VARCHAR(4000);
+&#x9;DEclARE variableBaseFolderName&#x9;VARCHAR;
+
+&#x9;set outVariableVector = inVariableVector;
+/* &#x9;OLD 6.0-6.6 Name&#x9;&#x9;NEW 7.0 and higher names
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;compositeDatabasePath     &#x9;&#x9;&#x9;&#x9;-- Identifies the composite database published folder.
+&#x9;clientPublishedPath&#x9;&#x9;applicationPublishedPath  &#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction client published layer
+&#x9;clientViewsPath&#x9;&#x9;&#x9;applicationViewsPath &#x9;  &#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction client views layer
+&#x9;businessViewsPath&#x9;&#x9;businessBusinessPath &#x9;  &#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction business views layer
+&#x9;federatedViewsPath&#x9;&#x9;federatedViewsPath&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction federated views layer (deprecated)
+&#x9;logicalViewsPath&#x9;&#x9;businessLogicalPath &#x9;  &#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction logical views layer
+&#x9;formattingViewsPath&#x9;&#x9;physicalFormattingPath    &#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction formatting views layer
+&#x9;&#x9; &#x9;&#x9;&#x9;&#x9;&#x9;physicalFormattingTransformationPath   &#x9;-- Identifies the path to the Data Abstraction formatting transformation sub-layer
+&#x9;physicalMetadataPath&#x9;physicalMetadataPath &#x9;&#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction physical metadata layer 
+&#x9;crudPath&#x9;&#x9;&#x9;&#x9;crudPath&#x9;&#x9;&#x9;&#x9; &#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction CRUD procedures 
+&#x9;physicalViewsPath&#x9;&#x9;physicalViewsPath &#x9; &#x9;  &#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction physical views layer (deprecated)
+*/&#x9;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    layerType&apos;||NVL(layerType,&apos;null&apos;)||&apos;  src_or_target=&apos;||NVL(src_or_target,&apos;null&apos;)||&apos;  inResourcePath=&apos;||NVL(inResourcePath,&apos;null&apos;));
+
+&#x9;&#x9;if (POSITION(defaultValues60[1].clientPublishedPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CP_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;applicationPublishedPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].clientPublishedPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].clientViewsPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CV_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;applicationViewsPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].clientViewsPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].businessViewsPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;BV_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;businessBusinessPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].businessViewsPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].federatedViewsPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;EV_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;federatedViewsPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].federatedViewsPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].logicalViewsPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;LV_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;businessLogicalPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].logicalViewsPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].formattingViewsPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;FV_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;physicalFormattingPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].formattingViewsPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].physicalViewsPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;PV_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;physicalViewsPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].physicalViewsPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].physicalMetadataPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;if (layerType = &apos;CR&apos; and src_or_target = &apos;T&apos;) then
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;CR_FOLDER&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set pathType = &apos;PM_FOLDER&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;physicalMetadataPath&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].physicalMetadataPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (POSITION(defaultValues60[1].crudPath||&apos;/&apos; IN resourcePath) &gt; 0) then
+&#x9;&#x9;&#x9;set pathType = &apos;CT_FOLDER&apos;;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;CT_FOLDER&apos;;
+&#x9;&#x9;&#x9;set remainderPath = TRIM(REPLACE(inResourcePath, defaultValues60[1].crudPath, &apos; &apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/upgradeProjectProcedures/getPathTypeVariable(pathType, outVariableVector, variableBaseFolderName, variableRemainderPath, variableVectorIdx);
+&#x9;&#x9;&#x9;if (remainderPath IS NOT NULL AND LENGTH(&apos;|&apos;||remainderPath||&apos;|&apos;) &gt; 2 and remainderPath != variableRemainderPath) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].remainderPath = remainderPath;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].remainderPath=&apos;||NVL(remainderPath,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (baseFolderName IS NOT NULL AND LENGTH(&apos;|&apos;||baseFolderName||&apos;|&apos;) &gt; 2 and baseFolderName != variableBaseFolderName) then
+&#x9;&#x9;&#x9;&#x9;set outVariableVector[variableVectorIdx].baseFolderName = baseFolderName;
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    pathType=&apos;||pathType||&apos;  set outVariableVector[&apos;||NVL(cast(variableVectorIdx as varchar),&apos;null&apos;)||&apos;].baseFolderName=&apos;||NVL(baseFolderName,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (pathType is null) then
+&#x9;&#x9;&#x9;set pathType = &apos;passthru&apos;;
+&#x9;&#x9;&#x9;if (SUBSTRING(resourcePath,LENGTH(resourcePath),1) = &apos;/&apos;) then
+&#x9;&#x9;&#x9;&#x9;set resourcePath = SUBSTRING(resourcePath,1,LENGTH(resourcePath) - 1);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set baseFolderName = &apos;&apos;&apos;&apos;||resourcePath||&apos;&apos;&apos;&apos;;
+&#x9;&#x9;end if;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:1:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:2:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:3:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:4:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="p:5:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

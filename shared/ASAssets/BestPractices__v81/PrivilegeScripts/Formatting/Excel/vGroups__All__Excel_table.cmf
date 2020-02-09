@@ -1,0 +1,323 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="vGroups_All_Excel" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vGroups_All_Excel" type="TABLE" subtype="SQL_TABLE" changeToken="0" tableType="VIEW">
+  <annotation>&lt;![CDATA[Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <columns>
+    <column name="rownum" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="sheetRownum" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="datasource" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="sheetName" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Organization" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Project" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="SubProject" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="GroupName" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Description" nullable="true">
+      <datatype type="STRING" maxLength="4000"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Domain" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Env Type" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Access" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Unlock" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Config_R" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Config_M" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Resources_R" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Resources_M" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Status_R" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Status_M" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Users_R" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Users_M" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="IsActive" nullable="true">
+      <datatype type="STRING" minLength="1" maxLength="1" trailingSpaces="false"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+  </columns>
+  <indexes></indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ SELECT"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Metadata/Privileges_DS_EXCEL/Resource_Privileges_LOAD_DB.xlsx/Group_List" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="Organization">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Project">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="SubProject">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="GroupName">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Description">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Domain">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Env Type">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Access">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Unlock">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Config_R">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Config_M">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Resources_R">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Resources_M">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Status_R">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Status_M">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Users_R">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Users_M">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="SQL" type="STRING">SELECT
+&#x9;&#x9;&#x9;&#x9;CAST(null as INTEGER)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;rownum, 
+&#x9;&#x9;&#x9;&#x9;CAST(null as INTEGER)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;sheetRownum, 
+&#x9;&#x9;&#x9;&#x9;CAST(&apos;EXCEL&apos; as VARCHAR(255)) &#x9;&#x9;&#x9;&#x9;&#x9;datasource,
+&#x9;&#x9;&#x9;&#x9;CAST(&apos;Group_List&apos; as VARCHAR(255)) &#x9;&#x9;&#x9;&#x9;sheetName,
+&#x9;&#x9;&#x9;&#x9;CAST(TRIM(Organization) AS VARCHAR(255))&#x9;&#x9;Organization,
+&#x9;&#x9;&#x9;&#x9;CAST(TRIM(Project) as VARCHAR(255))&#x9;&#x9;&#x9;&#x9;Project,
+&#x9;&#x9;&#x9;&#x9;CAST(TRIM(SubProject) as VARCHAR(255)) &#x9;&#x9;&#x9;SubProject, 
+&#x9;&#x9;&#x9;&#x9;CAST(CASE
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN GroupName IS NOT NULL AND LENGTH(TRIM(GroupName)) &gt; 0 AND &quot;Domain&quot; IS NOT NULL AND LOWER(TRIM(&quot;Domain&quot;)) = &apos;composite&apos; THEN LOWER(GroupName)
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE TRIM(GroupName)
+&#x9;&#x9;&#x9;&#x9;END AS VARCHAR(255))&#x9; &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;GroupName,
+&#x9;&#x9;&#x9;&#x9;CAST(TRIM(Description) as VARCHAR(4000)) &#x9;&#x9;Description,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &quot;Domain&quot; IS NULL OR LENGTH(TRIM(&quot;Domain&quot;)) = 0 or LOWER(TRIM(&quot;Domain&quot;)) = &apos;composite&apos; THEN &apos;composite&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE TRIM(&quot;Domain&quot;)
+&#x9;&#x9;&#x9;&#x9;END AS VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Domain&quot;,
+&#x9;&#x9;&#x9;&#x9;CAST(UPPER(TRIM(&quot;Env Type&quot;)) as VARCHAR(255))&#x9;&quot;Env Type&quot;,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Access IS NULL OR LENGTH(TRIM(Access)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Access)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Access)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Access)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Access,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Unlock IS NULL OR LENGTH(TRIM(Unlock)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Unlock)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Unlock)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Unlock)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Unlock,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Config_R IS NULL OR LENGTH(TRIM(Config_R)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Config_R)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Config_R)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Config_R)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Config_R,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Config_M IS NULL OR LENGTH(TRIM(Config_M)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Config_M)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Config_M)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Config_M)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Config_M,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Resources_R IS NULL OR LENGTH(TRIM(Resources_R)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Resources_R)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Resources_R)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Resources_R)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Resources_R,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Resources_M IS NULL OR LENGTH(TRIM(Resources_M)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Resources_M)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Resources_M)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Resources_M)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Resources_M,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Status_R IS NULL OR LENGTH(TRIM(Status_R)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Status_R)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Status_R)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Status_R)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Status_R,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Status_M IS NULL OR LENGTH(TRIM(Status_M)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Status_M)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Status_M)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Status_M)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Status_M,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Users_R IS NULL OR LENGTH(TRIM(Users_R)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Users_R)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Users_R)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Users_R)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Users_R,
+&#x9;&#x9;&#x9;&#x9;CAST(CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN Users_M IS NULL OR LENGTH(TRIM(Users_M)) = 0 THEN NULL
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Users_M)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Users_M)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN UPPER(TRIM(Users_M)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;&#x9;&#x9;    ELSE NULL
+&#x9;&#x9;&#x9;&#x9;END as VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Users_M,
+&#x9;&#x9;&#x9;&#x9;&apos;Y&apos;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IsActive&#x9;&#x9;&#x9;&#x9;
+FROM (
+&#x9;&#x9;&#x9;&#x9;SELECT Organization, Project, SubProject, GroupName, Description, &quot;Domain&quot;, &quot;Env Type&quot;, 
+&#x9;&#x9;&#x9;&#x9;&#x9;Access, Unlock, Config_R, Config_M, Resources_R, Resources_M, Status_R, Status_M, Users_R, Users_M
+&#x9;&#x9;&#x9;&#x9;&#x9;FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Metadata/Privileges_DS_EXCEL/&quot;Resource_Privileges_LOAD_DB.xlsx&quot;/Group_List
+) G
+WHERE Organization IS NOT NULL and LENGTH(TRIM(Organization)) &gt; 0
+  AND Project IS NOT NULL AND LENGTH(TRIM(Project)) &gt; 0
+  AND GroupName IS NOT NULL AND LENGTH(TRIM(GroupName)) &gt; 0</attribute>
+  <attribute name="creationDate" type="LONG">1415631558624</attribute>
+  <attribute name="creatorUserDomain" type="STRING">ldap</attribute>
+  <attribute name="creatorUserName" type="STRING">zkxl6un</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+</metadata>

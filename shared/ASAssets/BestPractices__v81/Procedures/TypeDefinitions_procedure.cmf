@@ -1,0 +1,599 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="TypeDefinitions" path="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters></parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* TypeDefinitions:
+&#x9;-- Data Virtualization Best Practices --
+&#x9;Common public type definitions shared by all procedures
+ 
+&#x9;Input: none
+&#x9;Output: none
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;06/15/2010&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+&#x9;04/01/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;v7.0 - removed sourceName VARCHAR from TYPE startingFolderType
+&#x9;05/10/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;v7.1 - added upgrade project vector
+&#x9;06/06/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;v8.2 - added additional generateCast() options.
+&#x9;01/24/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.1: Added the ability to handle columnCaseRule, resourcePrefix and resourceSuffix. 
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE TypeDefinitions()
+BEGIN
+&#x9;-- LogIdentifierType
+&#x9;DECLARE PUBLIC TYPE&#x9;LogIdentifierType&#x9;VARCHAR(1000);
+
+&#x9;/*
+&#x9; * The CommonModelV2Row type is a one-one match with the Common Model Excel Spreadsheet.
+&#x9; * This row type is used for generating the .csv file associated with the Excel Spreadsheet
+&#x9; * This will allow a user to stay synchronized with what is actually created in the Formatting Views
+&#x9; * and what is in the Common Model spreadsheets.   There is still a manual step to copy the generated
+&#x9; * .csv file to the Excel (.xls/.xlsx) spreadsheet.
+&#x9; */
+&#x9;DECLARE PUBLIC TYPE CommonModelV2Row ROW (
+&#x9;&#x9;&quot;Data Source&quot; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the data source in composite (data lineage-used resources)
+&#x9;&#x9;&quot;Project Folder Name&quot; &#x9;&#x9;VARCHAR(255), -- The project folder name is the last name found in the defaultValues.basePath for a project.
+--[NOT CURRENTLY IMPLEMENTED] Published&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- Indicates whether this element is published in composite (data lineage-dependent resources)
+&#x9;&#x9;&quot;Great Grand Parent Name&quot;&#x9;VARCHAR(255), -- The name of the great grand parent container (data source name)
+&#x9;&#x9;&quot;Grand Parent Name&quot;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the grand parent container (catalog name)
+&#x9;&#x9;&quot;Parent Name&quot; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the parent container - parent to the parent (a.k.a. grand parent)
+&#x9;&#x9;&quot;Container Name&quot; &#x9;&#x9;&#x9;VARCHAR(255), -- The name of the container - parent to the resource
+&#x9;&#x9;&quot;Physical Name&quot;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The physical column name (a.k.a. source column name)
+&#x9;&#x9;&quot;Physical Type&quot;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The physical type (a.k.a. source column native type)
+&#x9;&#x9;&quot;Logical Name&quot;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The logical column name (a.k.a. table/view alias)
+&#x9;&#x9;&quot;Logical Type&quot; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The logical column type
+&#x9;&#x9;&quot;Logical Transformation&quot;&#x9;LONGVARCHAR,  -- The logical column transformation excluding outer cast statement
+&#x9;&#x9;&quot;Logical Definition&quot;&#x9;&#x9;LONGVARCHAR,  -- The logical resource definition (a.k.a. view/table/column annotation)
+&#x9;&#x9;&quot;Logical Path&quot;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,  -- The logical Path (this is not dumped to the spreadsheet)
+&#x9;&#x9;Duration&#x9;&#x9;&#x9;&#x9;&#x9;INTERVAL HOUR TO SECOND -- The time it takes to process a view
+&#x9;);
+
+&#x9;DECLARE PUBLIC TYPE DataSourceRowV2Row ROW (
+&#x9;&#x9;DataSource &#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the data source in composite (data lineage-used resources)
+&#x9;&#x9;ProjectFolderName&#x9;&#x9;&#x9;VARCHAR(255), -- The project folder name is the last name found in the defaultValues.basePath for a project.
+--[NOT CURRENTLY IMPLEMENTED] Published&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- Indicates whether this element is published in composite (data lineage-dependent resources)
+&#x9;&#x9;GreatGrandParentName&#x9;&#x9;VARCHAR(255), -- The name of the great grand parent container (data source name)
+&#x9;&#x9;GrandParentName&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the grand parent container (catalog name)
+&#x9;&#x9;ParentName &#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the parent container - (schema name)
+&#x9;&#x9;ContainerName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the container - parent to the resource (table name)
+&#x9;&#x9;PhysicalName&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The physical column name (a.k.a. column name)
+&#x9;&#x9;NativeType&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The native  type (a.k.a. table/view alias)
+&#x9;&#x9;LogicalName&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The logical column name (a.k.a. table/view alias)
+&#x9;&#x9;LogicalType &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The logical column type
+&#x9;&#x9;LogicalTransformation&#x9;&#x9;LONGVARCHAR,  -- The logical column transformation excluding outer cast statement
+&#x9;&#x9;LogicalDefinition&#x9;&#x9;&#x9;LONGVARCHAR,  -- The logical resource definition (a.k.a. view/table/column annotation)
+&#x9;&#x9;LogicalPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,  -- The logical resource (view) path
+&#x9;&#x9;Duration&#x9;&#x9;&#x9;&#x9;&#x9;INTERVAL HOUR TO SECOND -- The time it takes to process a view
+&#x9;);
+
+&#x9;DECLARE PUBLIC TYPE SqlScriptV2Row ROW (
+&#x9;&#x9;derivedColumn&#x9;&#x9;&#x9;&#x9;BIT,&#x9;&#x9;  -- Determine whether this column is derived or not. 1=derived, 0=not derived
+&#x9;&#x9;sourceAlias &#x9;&#x9;&#x9;&#x9;VARCHAR(4000),-- The physical/source view (alias) name (a.k.a. table name) 
+&#x9;&#x9;sourceColumn &#x9;&#x9;&#x9;&#x9;VARCHAR(4000),-- The physical/source column name
+&#x9;&#x9;columnAlias &#x9;&#x9;&#x9;&#x9;VARCHAR(4000),-- The logical column (alias) name
+&#x9;&#x9;columnType&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4096),-- The logical column type
+&#x9;&#x9;sourceExpression &#x9;&#x9;&#x9;LONGVARCHAR,  -- Complete source expression as defined in the view
+&#x9;&#x9;sourceExpressionNoCast&#x9;&#x9;LONGVARCHAR,  -- Source expression with no outer cast 
+&#x9;&#x9;sourceColumnList&#x9;&#x9;&#x9;LONGVARCHAR,  -- List of physical/source columns used in the expression
+&#x9;&#x9;functionList&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,  -- List of functions used by the view
+&#x9;&#x9;sourcePath &#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR   -- Path to the source view (parent view)
+&#x9;);
+
+&#x9;DECLARE PUBLIC TYPE DataSourceRow ROW (
+&#x9;&#x9;projectFolderName&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;greatGrandParentName&#x9;VARCHAR(255), 
+&#x9;&#x9;grandParentName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;parentName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;containerName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;resourceName &#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;logicalName &#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;resourceType&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;nativeType&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;containerPath &#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;compositeTransformation&#x9;LONGVARCHAR,
+&#x9;&#x9;annotation&#x9;&#x9;&#x9;&#x9;LONGVARCHAR
+&#x9;);
+
+&#x9;-- View Generation results
+&#x9;DECLARE PUBLIC TYPE generateViewsRow ROW (
+&#x9;&#x9;datasourceName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;projectFolderName&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;greatGrandParentName&#x9;VARCHAR(255), 
+&#x9;&#x9;grandParentName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;parentName&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+        containerName &#x9;&#x9;&#x9;VARCHAR(255), 
+        containerType &#x9;&#x9;&#x9;VARCHAR(255), 
+        columnName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalColumnName &#x9;&#x9;VARCHAR(255), 
+        logicalColumnType &#x9;&#x9;VARCHAR(255), 
+        logicalStatus &#x9;&#x9;&#x9;VARCHAR(4000), 
+        containerPath &#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;duration&#x9;&#x9;&#x9;&#x9;INTERVAL HOUR TO SECOND
+&#x9;);
+&#x9;-- CRUD Generation results
+&#x9;DECLARE PUBLIC TYPE generateCRUDRow ROW (
+&#x9;&#x9;datasourceName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;projectFolderName&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;greatGrandParentName&#x9;VARCHAR(255), 
+&#x9;&#x9;grandParentName&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;parentName&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+        containerName &#x9;&#x9;&#x9;VARCHAR(255), 
+        containerType &#x9;&#x9;&#x9;VARCHAR(255), 
+        name&#x9; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalName &#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalType &#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalStatus &#x9;&#x9;&#x9;VARCHAR(4000), 
+        containerPath &#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;duration&#x9;&#x9;&#x9;&#x9;INTERVAL HOUR TO SECOND
+&#x9;);
+
+ &#x9;-- List of columns for generateDatasourceList
+&#x9;DECLARE PUBLIC TYPE columnListRow ROW (
+        resourceName &#x9;&#x9;&#x9;VARCHAR(255), 
+        resourcePath &#x9;&#x9;&#x9;VARCHAR(4096), 
+        resourceType &#x9;&#x9;&#x9;VARCHAR(255), 
+        subtype &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        enabled &#x9;&#x9;&#x9;&#x9;BIT, 
+&#x9;&#x9;annotation &#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;explicitlyDesigned &#x9;&#x9;BIT, 
+        tableType &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        sqlText &#x9;&#x9;&#x9;&#x9;VARCHAR(2147483647), 
+        proprietaryModel &#x9;&#x9;VARCHAR(2147483647), 
+        columnName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        columnType &#x9;&#x9;&#x9;&#x9;VARCHAR(4096),
+        nativeBaseType &#x9;&#x9;&#x9;VARCHAR(255), 
+        nativeType &#x9;&#x9;&#x9;&#x9;VARCHAR(255)
+        );
+
+&#x9;-- View and CRUD Generation starting folders type definition
+&#x9;DECLARE PUBLIC TYPE startingFolderType ROW (
+&#x9;&#x9;groupId&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;process &#x9;&#x9;&#x9;BIT,
+&#x9;&#x9;layerType&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;pathDerivation &#x9;&#x9;CHAR(1),
+&#x9;&#x9;sourceFolderPath &#x9;LONGVARCHAR,
+&#x9;&#x9;targetFolderPath &#x9;LONGVARCHAR
+&#x9;);
+
+&#x9;-- View and CRUD Generation starting folders type definition
+&#x9;DECLARE PUBLIC TYPE startingFolderExtendedType ROW (
+&#x9;&#x9;groupId&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;process &#x9;&#x9;&#x9;BIT,
+&#x9;&#x9;layerType&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;pathDerivation &#x9;&#x9;CHAR(1),
+&#x9;&#x9;sourceFolderPath &#x9;LONGVARCHAR,
+&#x9;&#x9;targetFolderPath &#x9;LONGVARCHAR,
+&#x9;&#x9;derivedFilterPath&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- This is a comma separate list that corresponds to the groupId comma separated list.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- The path is derived by concatenating the partial filter path with the source path of the designated layer type.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- The layerType and the groupId are used to filter the rows from the configureStartingFolders.  The source path is
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    defined in configureStartingFolders per the layerType and groupId combination.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--   e.g. layerType=CP and sourceFolderPath=/shared/BestPractices/DataAbstractionSample/L1_Mapping_Layer/Client_Views
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--        The derivedFilterPath list=Orders_Closed,/Orders/Customers,Orders/Product
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--        Even though there are several other views in the /Orders folder under the Client_Views only the ones specified
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;      will be generated to the Client_Published.  Views directly under the source path do not require any qualifying path except the view name.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--        Lastly, a leading &apos;/&apos; is not required but may be present if desired.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If null, generate views from all source folders as directed by the &quot;configure starting folders&quot; and the designated layer type.
+&#x9;&#x9;typeDefProcPath&#x9;&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- path to where the type definition procedure is stored
+&#x9;&#x9;typeDefProcName&#x9;&#x9;VARCHAR(255)&#x9;&#x9;&#x9;&#x9;-- name to be used for the generation of the type definitions (Default=TypeDefinitions)
+&#x9;);
+
+&#x9;-- CRUD Generation Column Name/Type type definition structure
+&#x9;DECLARE PUBLIC TYPE crudGenColumnType&#x9;ROW (
+&#x9;&#x9;colName&#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;&#x9;&#x9;&#x9;-- name of the column from a SQL VIEW TABLE or SQL DATA_SOURCE TABLE
+&#x9;&#x9;colType&#x9;&#x9;&#x9;&#x9;VARCHAR&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- type of column using the Composite types and not the native types
+&#x9;);
+&#x9;-- CRUD Generation type definition structure
+&#x9;DECLARE PUBLIC TYPE crudGenType &#x9;&#x9;ROW (
+&#x9;&#x9;crudPath&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- path to the Data Abstraction CRUD procedures
+&#x9;&#x9;procedurePath&#x9;&#x9;LONGVARCHAR, &#x9;&#x9;&#x9;&#x9;-- path to the procedure without procedure name
+&#x9;&#x9;procedureName&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;&#x9;-- procedure name
+&#x9;&#x9;viewname &#x9;&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;&#x9;-- name of the view being processed
+&#x9;&#x9;viewpath&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- path to the view being processed
+&#x9;&#x9;constantspath&#x9;&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- path to where the type definitions and constants are stored
+&#x9;&#x9;typedefprocpath&#x9;&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- path to where the type definition procedure is stored
+&#x9;&#x9;typedefprocname&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;&#x9;-- name to be used for the generation of the type definitions (Default=TypeDefinitions)
+&#x9;&#x9;customcreatepath&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- path to where the custom create procedures are to be located
+&#x9;&#x9;customupdatepath&#x9;LONGVARCHAR,&#x9;&#x9;&#x9;&#x9;-- path to where the custom update procedures are to be located
+&#x9;&#x9;genUniqueIDPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;&#x9;-- full path with procedure name of the procedure that will generate a unique ID for a table
+&#x9;&#x9;pkList&#x9;&#x9;&#x9;&#x9;VECTOR(crudGenColumnType),&#x9;-- vector array list of primary key names and their types
+&#x9;&#x9;columnList&#x9;&#x9;&#x9;VECTOR(crudGenColumnType)&#x9;-- vector array list of columns names and their types
+&#x9;);
+&#x9;-- defaultValues type definition structure
+&#x9;DECLARE PUBLIC TYPE defaultValuesType &#x9;ROW (&#x9;&#x9;-- comes from the &lt;project directory&gt;/constants/defaultValues
+&#x9;&#x9;bestPracticesVersion&#x9;&#x9;DOUBLE,&#x9;&#x9;&#x9;&#x9;&#x9;-- The Best Practices version being used in the project
+&#x9;&#x9;basePath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- basePath of this project directory being accessed
+&#x9;&#x9;scriptsPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- scripts path [basePath/&quot;_scripts&quot;]
+&#x9;&#x9;configureScriptsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the Configure scripts are located.
+&#x9;&#x9;constantsScriptsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the Constants scripts are located.
+&#x9;&#x9;generationScriptsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the Generate scripts are located.
+&#x9;&#x9;compositeDatabasePath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the composite database is being published&#x9;
+&#x9;&#x9;applicationPublishedPath&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction application published sub-layer
+&#x9;&#x9;applicationServicesPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction application services sub-layer
+&#x9;&#x9;applicationViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction application views sub-layer
+&#x9;&#x9;applicationViewsSubFolder&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- subfolder to the Data Abstraction application views sub-layer
+&#x9;&#x9;crudPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction CRUD procedures
+&#x9;&#x9;typeDefinitionPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the type definition procedure that is generated
+&#x9;&#x9;typeDefinitionProcName&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- name of the type definition procedure that is generated
+&#x9;&#x9;businessBusinessPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction business business sub-layer
+&#x9;&#x9;businessLogicalPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction business logical sub-layer
+&#x9;&#x9;physicalFormattingPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical formatting sub-layer
+&#x9;&#x9;physicalFormattingTransformationPath VARCHAR(4000),&#x9;-- path to the Data Abstraction physical formatting transformation sub-layer
+&#x9;&#x9;physicalViewsPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical views sub-layer
+&#x9;&#x9;physicalMetadataPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical metadata sub-layer
+&#x9;&#x9;genUniqueIDPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the procedure that will generate a unique ID for the CRUD create procedure
+&#x9;&#x9;debugTime&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1)&#x9;&#x9;&#x9;&#x9;&#x9;-- print to console and log the debug time when generating views (Y=debug on, N=debug off)
+&#x9;);
+
+&#x9;-- defaultValues type definition structure
+&#x9;DECLARE PUBLIC TYPE defaultValuesTypeV2 &#x9;ROW (&#x9;&#x9;-- comes from the &lt;project directory&gt;/constants/defaultValues
+&#x9;&#x9;bestPracticesVersion&#x9;&#x9;DOUBLE,&#x9;&#x9;&#x9;&#x9;&#x9;-- The Best Practices version being used in the project
+&#x9;&#x9;basePath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- basePath of this project directory being accessed
+&#x9;&#x9;scriptsPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- scripts path [basePath/&quot;_scripts&quot;]
+&#x9;&#x9;configureScriptsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the Configure scripts are located.
+&#x9;&#x9;constantsScriptsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the Constants scripts are located.
+&#x9;&#x9;generationScriptsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the Generate scripts are located.
+&#x9;&#x9;documentationScriptsPath&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the Documentation scripts are located.&#x9;&#x9;&#x9;&#x9;**** V2: NEW FIELD ****
+&#x9;&#x9;compositeDatabasePath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to where the composite database is being published&#x9;
+&#x9;&#x9;applicationPublishedPath&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction application published sub-layer
+&#x9;&#x9;applicationServicesPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction application services sub-layer
+&#x9;&#x9;applicationViewsPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction application views sub-layer
+&#x9;&#x9;applicationViewsSubFolder&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- subfolder to the Data Abstraction application views sub-layer
+&#x9;&#x9;crudPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction CRUD procedures
+&#x9;&#x9;typeDefinitionPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the type definition procedure that is generated
+&#x9;&#x9;typeDefinitionProcName&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- name of the type definition procedure that is generated
+&#x9;&#x9;businessBusinessPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction business business sub-layer
+&#x9;&#x9;businessLogicalPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction business logical sub-layer
+&#x9;&#x9;physicalFormattingPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical formatting sub-layer
+&#x9;&#x9;physicalFormattingTransformationPath VARCHAR(4000),&#x9;-- path to the Data Abstraction physical formatting transformation sub-layer
+&#x9;&#x9;physicalViewsPath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical views sub-layer
+&#x9;&#x9;physicalMetadataPath&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the Data Abstraction physical metadata sub-layer
+&#x9;&#x9;genUniqueIDPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- path to the procedure that will generate a unique ID for the CRUD create procedure
+&#x9;&#x9;debugTime&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1)&#x9;&#x9;&#x9;&#x9;&#x9;-- print to console and log the debug time when generating views (Y=debug on, N=debug off)
+&#x9;);
+
+&#x9;-- CRUD Message type definition structure
+&#x9;DECLARE PUBLIC TYPE crudMessageType &#x9;ROW (
+&#x9;&#x9;errorCode&#x9;&#x9;&#x9;&#x9;INTEGER,&#x9;&#x9;&#x9;&#x9;-- 0=successful CRUD operation, no error, &gt;0=unscuccessful CRUD operation
+&#x9;&#x9;messageType&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- type of message being returned: SUCCESS, WARNING, PK_VIOLATION, SYSTEM_EXCEPTION
+&#x9;&#x9;message&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- error message text.
+&#x9;&#x9;errorTrace&#x9;&#x9;&#x9;&#x9;LONGVARCHAR&#x9;&#x9;&#x9;&#x9;-- error stack trace.
+&#x9;);
+
+&#x9;-- CRUD Generation Output definition structure
+&#x9;DECLARE PUBLIC TYPE crudResponseType &#x9;ROW(
+&#x9;&#x9;resourceName&#x9;&#x9;&#x9;VARCHAR(255),&#x9;&#x9;&#x9;-- name of the resource to generated CRUD operations for
+&#x9;&#x9;generated&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;&#x9;&#x9;-- Y or N - indicating whether the resource was skipped due to lack of primary keys
+&#x9;&#x9;success&#x9;&#x9;&#x9;&#x9;&#x9;BIT,&#x9;&#x9;&#x9;&#x9;&#x9;-- 1=success, 0=fail
+&#x9;&#x9;message&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(1000)&#x9;&#x9;&#x9;-- status message
+&#x9;);
+
+&#x9;-- View and CRUD Generation ConfigureParams type definition structure
+&#x9;DECLARE PUBLIC TYPE ConfigParamsType ROW ( 
+&#x9;   &#x9;generateMode&#x9;&#x9;CHAR(1),
+&#x9;   &#x9;&#x9;-- generateMode
+&#x9;&#x9;   &#x9;-- &#x9;G=Generate the resource names 
+&#x9;&#x9;   &#x9;-- &#x9;R=Retrieve the resource name,  (resources include PATH names, VIEW names AND COLUMN names)
+&#x9;   &#x9;outputMode&#x9; &#x9;&#x9;CHAR(1), -- For reporting purposes only
+&#x9;&#x9;&#x9;-- outputMode - what gets returned by the cursor
+&#x9;&#x9;&#x9;-- &#x9;A=Return All logical columns, 
+&#x9;&#x9;    -- &#x9;U=Return ONLY UNCHANGED/DROPPED columns that were NOT found.
+&#x9;&#x9;&#x9;--&#x9;&#x9;outputMode checks these status indicators:
+&#x9;&#x9;&#x9;-- &#x9;&#x9;when generateMode = &apos;G&apos; possible values are:
+&#x9;&#x9;&#x9;-- &#x9;&#x9;&#x9;GENERATED - generated the column name based on rules supplied
+&#x9;&#x9;&#x9;-- &#x9;&#x9;&#x9;UNCHANGED - remains unchanged when it cannot match to the physical resourceName and the ConfigureParams.generateWithSourceColumn=1
+&#x9;&#x9;&#x9;-- &#x9;&#x9;when generateMode = &apos;R&apos; possible values are:
+&#x9;&#x9;&#x9;-- &#x9;&#x9;&#x9;FOUND - found when it finds a match to physical name in the spreadsheet
+&#x9;&#x9;&#x9;-- &#x9;&#x9;&#x9;UNCHANGED - remains unchanged when it cannot match to the physical resourceName and the ConfigureParams.generateWithSourceColumn=1
+&#x9;&#x9;&#x9;-- &#x9;&#x9;&#x9;DROPPED - gets dropped from the list when it cannot match to the physical resourceName and the ConfigureParams.generateWithSourceColumn=0
+&#x9; &#x9;generateViews &#x9;&#x9;SMALLINT,
+&#x9;&#x9;&#x9;-- generateViews
+&#x9;&#x9;&#x9;--     0=(browse only) print out what will happen but don&apos;t perform the generation
+&#x9;&#x9;&#x9;--     1=Perform the VIEW Generation, 
+&#x9; &#x9;resourceCaseRule&#x9;CHAR(1),
+&#x9;&#x9;&#x9;-- resourceCaseRule (used when generateMode=&apos;G&apos;) 
+&#x9;&#x9;&#x9;--  TABLES/PROCEDURES only.  This caseRule is only used for tables or procedures.
+&#x9;&#x9;&#x9;-- &#x9;Assumption:  The original table name has to have separators (_) for this to work properly.
+&#x9;&#x9;&#x9;--&#x9;&#x9;     If the original word has no separators then the case rule gets applied to the single word
+&#x9;&#x9;&#x9;--&#x9;j=javaCase - 1st word part is lower case, following word parts are 1st is letter is upper and remaining word part is lower with no separators
+&#x9;&#x9;&#x9;--&#x9;C=CamelCase - 1st letter of each word part is upper case and remaining word part is lower with no separators
+&#x9;&#x9;&#x9;--&#x9;T=Title_Case - 1st letter of each word part is upper case and remaining word part is lower with separators retained
+&#x9;&#x9;&#x9;--&#x9;U=UPPER_CASE - All word parts are UPPER case with separtors retained
+&#x9;&#x9;&#x9;--&#x9;l=lower_case - All word parts are lower case with separators retained
+&#x9;&#x9;&#x9;--&#x9;O=Original_case - The word is not changed at all -- just pass it through as is
+&#x9; &#x9;columnCaseRule&#x9;&#x9;CHAR(1),
+&#x9;&#x9;&#x9;-- columnCaseRule (used when generateMode=&apos;G&apos;) 
+&#x9;&#x9;&#x9;--  COLUMNS only.  This caseRule is only used for columns.
+&#x9;&#x9;&#x9;-- &#x9;Assumption:  The original column name has to have separators (_) for this to work properly.
+&#x9;&#x9;&#x9;--&#x9;&#x9;     If the original word has no separators then the case rule gets applied to the single word
+&#x9;&#x9;&#x9;--&#x9;j=javaCase - 1st word part is lower case, following word parts are 1st is letter is upper and remaining word part is lower with no separators
+&#x9;&#x9;&#x9;--&#x9;C=CamelCase - 1st letter of each word part is upper case and remaining word part is lower with no separators
+&#x9;&#x9;&#x9;--&#x9;T=Title_Case - 1st letter of each word part is upper case and remaining word part is lower with separators retained
+&#x9;&#x9;&#x9;--&#x9;U=UPPER_CASE - All word parts are UPPER case with separtors retained
+&#x9;&#x9;&#x9;--&#x9;l=lower_case - All word parts are lower case with separators retained
+&#x9;&#x9;&#x9;--&#x9;O=Original_case - The word is not changed at all -- just pass it through as is
+&#x9; &#x9;separator&#x9;&#x9;&#x9;CHAR(1),
+&#x9;&#x9;&#x9;-- separator (used when generateMode=&apos;G&apos;)
+&#x9;&#x9;&#x9;--     1 character value such as _ or -.  Spaces are not allowed in column names.
+&#x9;&#x9;&#x9;--&#x9;Example MY_COLUMN_NAME or MY-COLUMN-NAME&#x9; &#x9;
+&#x9; &#x9;useAliasRule&#x9;&#x9;SMALLINT,
+&#x9;&#x9;&#x9;-- useAliasRule (used when generateMode=&apos;G&apos;)
+&#x9;&#x9;&#x9;-- &#x9;When generating the logical name from the data source, use the &quot;AliasNameRuleSet&quot; as a lookup procedure
+&#x9;&#x9;&#x9;--&#x9;  to match a word part against the Alias table.  For exmaple:
+&#x9;&#x9;&#x9;--&#x9;&#x9;word part=ds&#x9;&#x9;table alias=DS&#x9;&#x9;table rule=DataSource
+&#x9;&#x9;&#x9;--&#x9;0=DO NOT perform alias rule lookup at all.  Word Part is passed through
+&#x9;&#x9;&#x9;--&#x9;&#x9;result=ds
+&#x9;&#x9;&#x9;--  1=Use alias rule and MATCH CASE exactly
+&#x9;&#x9;&#x9;--&#x9;&#x9;result=ds (the original word part &apos;ds&apos; is returned as no match is found becuase &apos;ds&apos; is not equal to &apos;DS&apos;
+&#x9;&#x9;&#x9;--&#x9;2=Use alias rule and DO NOT MATCH CASE
+&#x9;&#x9;&#x9;--&#x9;&#x9;result=DataSource (UPPER(&apos;ds&apos;) = UPPER(&apos;DS&apos;), therefore DataSource is returned&#x9;
+&#x9; &#x9;resourcePrefix&#x9;&#x9;VARCHAR,
+&#x9;&#x9;&#x9;-- resourcePrefix (used when generateMode=&apos;G&apos;)
+&#x9;&#x9;&#x9;--  any set of characters used to prefix a table or procedure name.  Include underscores with the suffix if applicable.
+&#x9;&#x9;&#x9;--&#x9;Example: V_ MY_TABLE or V_MY_TABLE &#x9;
+&#x9; &#x9;resourceSuffix&#x9;&#x9;VARCHAR,
+&#x9;&#x9;&#x9;-- resourceSuffix (used when generateMode=&apos;G&apos;)
+&#x9;&#x9;&#x9;--  any set of characters used to suffix a table or procedure name.  Include underscores with the suffix if applicable.
+&#x9;&#x9;&#x9;--&#x9;Example: _APP MY_TABLE or MY_TABLE_APP &#x9;
+&#x9;&#x9;generateWithSourceColumn SMALLINT,
+&#x9;&#x9;&#x9;-- generateWithSourceColumn (used when generateMode=&apos;R&apos;)
+&#x9;&#x9;&#x9;-- &#x9;This parameter allows the user to control whether to generate the view with the original data source
+&#x9;&#x9;&#x9;--&#x9;   column or not.  It adds a level of control and flexibility into this automation process.
+&#x9;&#x9;&#x9;--&#x9;Regarding the retrieved logicalColumn from the mapping spreadsheet (when it is blank or null)
+&#x9;&#x9;&#x9;--&#x9;0=When logicalColumn is null then do NOT generate the view with the source column (no pass through)-Column is dropped
+&#x9;&#x9;&#x9;-- &#x9;1=When logicalColumn is null then generate the view with the source column (pass through)-Column remains unchanged
+&#x9;&#x9;generateCast &#x9;&#x9;SMALLINT,
+&#x9;&#x9;&#x9;-- generateCast (used when generateMode=&apos;G&apos;)
+&#x9;&#x9;&#x9;-- &#x9;This parameter allows the user to control whether to generate the cast statement around the generated
+&#x9;&#x9;&#x9;--&#x9;   column or not.  It uses the column type from the source view.
+&#x9;&#x9;&#x9;--&#x9;0=Do not generate CAST statement.  Pass through column as is.  Default behavior.
+&#x9;&#x9;&#x9;-- &#x9;1=Generate the CAST statement around the column
+&#x9;&#x9;&#x9;--&#x9;2-Generate the CAST statement around the non-index columns only (No CAST on index columns)
+&#x9;&#x9;&#x9;--&#x9;3-Generate the CAST statement around the non-index columns only and generate a &quot;display&quot; CAST column for each index column.  (No CAST o nindex columns)
+&#x9;&#x9;&#x9;--&#x9;4-Generate the CAST statement around the non-index columns and non-primary key index columns only (No CAST on primary key index columns)
+&#x9;&#x9;&#x9;--&#x9;5-Generate the CAST statement around the non-index columns and non-primary key index columns only and generate a &quot;display&quot; CAST column for each primary key index column.  (No CAST on primary key index columns)
+&#x9;&#x9;generateIndexes &#x9;SMALLINT,&#x9;
+&#x9;&#x9;&#x9;--&#x9;generateIndexes
+&#x9;&#x9;&#x9;-- &#x9;&#x9;This parameter allows the user to control whether to generate indexes on the target views 
+&#x9;&#x9;&#x9;--&#x9;&#x9;   as derived from the underlying resources
+&#x9;&#x9;&#x9;--&#x9;&#x9;0=Do not generate indexes
+&#x9;&#x9;&#x9;-- &#x9;&#x9;1=(default) Generate indexes
+&#x9; &#x9;debug&#x9;&#x9;&#x9;&#x9;CHAR(1),
+&#x9; &#x9;&#x9;-- Debug level 1: &apos;Y&apos;=print to log and console window, &apos;F&apos;=no debug output to log or console
+&#x9; &#x9;debug2&#x9;&#x9;&#x9;&#x9;CHAR(1),
+&#x9; &#x9;&#x9;-- Debug level 2: &apos;Y&apos;=print to log and console window, &apos;F&apos;=no debug output to log or console
+&#x9; &#x9;debug3&#x9;&#x9;&#x9;&#x9;CHAR(1),
+&#x9; &#x9;&#x9;-- Debug level 3: &apos;Y&apos;=print to log and console window, &apos;F&apos;=no debug output to log or console
+&#x9; &#x9;basePath&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9; &#x9;&#x9;-- Path to the base project directory.
+&#x9;&#x9;&#x9;-- Path gets SET dynamically so it is initially set to NULL.
+&#x9;&#x9;scriptsPath&#x9;&#x9;&#x9;LONGVARCHAR,
+
+&#x9; &#x9;padAmount&#x9;&#x9;&#x9;SMALLINT
+&#x9;&#x9;&#x9;-- padAmount - The amount of padding to use when printing out the columnName (in the example below padding of 30 is used)
+&#x9;&#x9;&#x9;--** View Generator ** generateViews() : resource=inventorytransactions  column=TransactionID        logical=TransactionID
+&#x9;&#x9;&#x9;--** View Generator ** generateViews() : resource=inventorytransactions  column=TransactionDate      logical=TransactionDate 
+&#x9; );
+
+
+&#x9;/* copyResourcePrivileges 
+&#x9;&#x9;&#x9;&#x9;&#x9;    &lt;resource:copyPrivilegeEntry&gt;
+&#x9; &#x9;&#x9;&#x9;&#x9;     &lt;resource:srcResource&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;        &lt;resource:path&gt;?&lt;/resource:path&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;        &lt;resource:type&gt;?&lt;/resource:type&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;      &lt;/resource:srcResource&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;      &lt;resource:dstResource&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;        &lt;resource:path&gt;?&lt;/resource:path&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;        &lt;resource:type&gt;?&lt;/resource:type&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;      &lt;/resource:dstResource&gt;
+&#x9;&#x9;&#x9;&#x9;&#x9;    &lt;/resource:copyPrivilegeEntry&gt;
+&#x9;*/
+&#x9;-- CRUD Generation Output definition structure
+/*
+&#x9;DECLARE PUBLIC TYPE resourceType &#x9;ROW(
+&#x9;&#x9;&quot;path&quot;&#x9;&#x9;TypeDefinitions.pathType,&#x9;-- Path to resource
+&#x9;&#x9;&quot;type&quot;&#x9;&#x9;VARCHAR(255)&#x9;&#x9;&#x9;&#x9;-- Resoruce type
+&#x9;);
+
+&#x9;DECLARE PUBLIC TYPE copyPrivilegeEntryType ROW(
+&#x9;&#x9;srcResource&#x9;&#x9;&#x9;VECTOR(resourceType), &#x9;-- source reource is always a vector of 1
+&#x9;&#x9;dstResource&#x9;&#x9;&#x9;VECTOR(resourceType)&#x9;-- destination resource may be an unbounded vector
+&#x9;);
+&#x9;DECLARE PUBLIC TYPE copyPrivilegeEntryVector VECTOR(copyPrivilegeEntryType);
+*/
+&#x9;DECLARE PUBLIC TYPE updateType ROW(
+&#x9;&#x9;updateAction&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;&#x9;-- Update Action: replace, replaceBefore, replaceAfter
+&#x9;&#x9;occurrence&#x9;&#x9;&#x9;&#x9;INTEGER,&#x9;&#x9;&#x9;-- The occurrence of the searchText to act upon.  0=take action on all occurrences
+&#x9;&#x9;numLines&#x9;&#x9;&#x9;&#x9;INTEGER,&#x9;&#x9;&#x9;-- If updateAction=replaceBefore or replaceAfter, then then perform that action by searching
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--   for the number of lines CHR(10) either before or after and placing the text at that location.
+&#x9;&#x9;keyTextVerify&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;&#x9;-- This is short unique text from the replaceText variable that allows the code to verify if the replace has already been done.
+&#x9;&#x9;searchText&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;&#x9;-- The text to search for.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If multiple occurrences are found the action may be taken according to the defined occurrence.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If the searchText is not found then no action is taken.
+&#x9;&#x9;replaceText&#x9;&#x9;&#x9;&#x9;LONGVARCHAR&#x9;&#x9;&#x9;-- The text to replace given the update action.
+&#x9;);
+
+&#x9;DECLARE PUBLIC TYPE upgradeType ROW(
+&#x9;&#x9;bestPracticesVersionFrom DOUBLE,&#x9;&#x9;&#x9;&#x9;-- &quot;From&quot; version of the best practices where the change is coming from
+&#x9;&#x9;bestPracticesVersionTo&#x9;DOUBLE,&#x9;&#x9;&#x9;&#x9;&#x9;-- &quot;To&quot; version of the best practices where the change is being applied
+&#x9;&#x9;resourceAction&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;&#x9;&#x9;-- action to take on the resource: 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;     copy - copy srcResource to dstResource.  srcResource and dstResource required.  updateStruct is null.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;                if resource type is CONTAINER then copy all resources
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;                if resource type is not CONTAINER then copy specific resource
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;copyLeave - copy srcResource to _Copy_#.  srcResource is required.  dstResource and updateStruct are null.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;                Creates a copy of a resource and leaves the original in place. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;                The copy detects other copies an increments the number as needed in the format of _Copy_#
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;   copyRename - copy srcResource to _Copy_#.  srcResource is required.  dstResource and updateStruct are null.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;                Creates a copy of a resource and renames the original to it.  The original is no longer present.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;                The copy detects other copies an increments the number as needed in the format of _Copy_#
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;   update - update dstResource using updateStruct.  srcResource is null.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;   delete - delete dstResource.  srcResource and updateStruct are null.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;     move - move srcResource to dstResource.  updateStruct is null.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--     moveCustom - move all custom scripts from srcResource folder to the specified dstResource folder. updateStruct is null.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--                  a custom resource is determined by finding a resource in dstResource that is not in the DataAbstraction_GENERIC_Template.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--         rebind - rebind srcResource to dstResource using startingFolder.  updateStruct is null.
+&#x9;&#x9;resourcePath&#x9;&#x9;&#x9;VARCHAR(4000),&#x9;&#x9;&#x9;-- resource path of the resource or starting folder to be used with rebind action otherwise null.
+&#x9;&#x9;resourceType&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;&#x9;&#x9;-- resource type of the resource to be used with rebind action otherwise null.
+&#x9;&#x9;srcResource&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions.resourceType), -- source reource is always a vector of 1
+&#x9;&#x9;dstResource&#x9;&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/Utilities/repository/definitions/RepositoryDefinitions.resourceType),&#x9;-- destination resource may be an unbounded vector
+&#x9;&#x9;updateStruct&#x9;&#x9;&#x9;VECTOR(updateType)&#x9;&#x9;-- this structure is used when the resourceAction=update otherwise null
+&#x9;);
+&#x9;DECLARE PUBLIC TYPE upgradeVector VECTOR(upgradeType);
+
+&#x9;DECLARE PUBLIC TYPE CommonModelType ROW(
+        datasourceName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        projectFolderName &#x9;&#x9;&#x9;VARCHAR(255), 
+        greatGrandParentName &#x9;&#x9;VARCHAR(255), 
+        grandParentName &#x9;&#x9;&#x9;VARCHAR(255), 
+        parentName &#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        containerName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        physicalName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        physicalType &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+&#x9;&#x9;resourceNum&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER,
+        logicalName &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        logicalType &#x9;&#x9;&#x9;&#x9;VARCHAR(255), 
+        annotation &#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(32767), 
+        logicalTransformation &#x9;&#x9;VARCHAR(1024),
+&#x9;&#x9;physicalNameEncoded&#x9;&#x9;&#x9;VARCHAR(255)
+        );
+
+END
+</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564603051914</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="public_types" type="MAP">
+    <item>
+      <key type="STRING">startingFolderType</key>
+      <value type="BYTE_ARRAY">EB8GAgASAHMAdABhAHIAdABpAG4AZwBGAG8AbABkAGUAcgBUAHkAcABlBikAPQAvAHMAaABhAHIAZQBkAC8AQQBTAEEAcwBzAGUAdABzAC8AQgBlAHMAdABQAHIAYQBjAHQAaQBjAGUAcwBfAHYAOAAxAC8AUAByAG8AYwBlAGQAdQByAGUAcwAvAFQAeQBwAGUARABlAGYAaQBuAGkAdABpAG8AbgBzBioAEgBzAHQAYQByAHQAaQBuAGcARgBvAGwAZABlAHIAVAB5AHAAZQMSAAABAQMSAAABAQETAQkUAAAABhAhBhUABwBnAHIAbwB1AHAASQBkAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAABDgQEAAAAAAAAAP8BEwH/////ECEGFQAHAHAAcgBvAGMAZQBzAHMDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAZBgIAAwBCAEkAVAMSAAABDAQHAAAAAAAAAAAEBgAAAAAAAAAB/////xAhBhUACQBsAGEAeQBlAHIAVAB5AHAAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAOAHAAYQB0AGgARABlAHIAaQB2AGEAdABpAG8AbgMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgAEAEMASABBAFIDEgAAAg4EBQAAAAAAAAABBAQAAAAAAAAAAQETAf////8QIQYVABAAcwBvAHUAcgBjAGUARgBvAGwAZABlAHIAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgALAEwATwBOAEcAVgBBAFIAQwBIAEEAUgMSAAADDgQEAAAAAH////8BEwH/////ECEGFQAQAHQAYQByAGcAZQB0AEYAbwBsAGQAZQByAFAAYQB0AGgDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAw7/////</value>
+    </item>
+    <item>
+      <key type="STRING">crudMessageType</key>
+      <value type="BYTE_ARRAY">EB8GAgAPAGMAcgB1AGQATQBlAHMAcwBhAGcAZQBUAHkAcABlBikAPQAvAHMAaABhAHIAZQBkAC8AQQBTAEEAcwBzAGUAdABzAC8AQgBlAHMAdABQAHIAYQBjAHQAaQBjAGUAcwBfAHYAOAAxAC8AUAByAG8AYwBlAGQAdQByAGUAcwAvAFQAeQBwAGUARABlAGYAaQBuAGkAdABpAG8AbgBzBioADwBjAHIAdQBkAE0AZQBzAHMAYQBnAGUAVAB5AHAAZQMSAAABAQMSAAABAQETAQkUAAAABBAhBhUACQBlAHIAcgBvAHIAQwBvAGQAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAQwEB/////+AAAAABAYAAAAAf/////////8QIQYVAAsAbQBlAHMAcwBhAGcAZQBUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAABDgQEAAAAAAAAAP8BEwH/////ECEGFQAHAG0AZQBzAHMAYQBnAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAIOBAQAAAAAAAAPoAETAf////8QIQYVAAoAZQByAHIAbwByAFQAcgBhAGMAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgALAEwATwBOAEcAVgBBAFIAQwBIAEEAUgMSAAADDgQEAAAAAH////8BEwH///////8=</value>
+    </item>
+    <item>
+      <key type="STRING">CommonModelV2Row</key>
+      <value type="BYTE_ARRAY">EB8GAgAQAEMAbwBtAG0AbwBuAE0AbwBkAGUAbABWADIAUgBvAHcGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgAQAEMAbwBtAG0AbwBuAE0AbwBkAGUAbABWADIAUgBvAHcDEgAAAQEDEgAAAQEBEwEJFAAAAA4QIQYVAAsARABhAHQAYQAgAFMAbwB1AHIAYwBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAABDgQEAAAAAAAAAP8BEwH/////ECEGFQATAFAAcgBvAGoAZQBjAHQAIABGAG8AbABkAGUAcgAgAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUAFwBHAHIAZQBhAHQAIABHAHIAYQBuAGQAIABQAGEAcgBlAG4AdAAgAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUAEQBHAHIAYQBuAGQAIABQAGEAcgBlAG4AdAAgAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACwBQAGEAcgBlAG4AdAAgAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUADgBDAG8AbgB0AGEAaQBuAGUAcgAgAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUADQBQAGgAeQBzAGkAYwBhAGwAIABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAA0AUABoAHkAcwBpAGMAYQBsACAAVAB5AHAAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAMAEwAbwBnAGkAYwBhAGwAIABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAwATABvAGcAaQBjAGEAbAAgAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUAFgBMAG8AZwBpAGMAYQBsACAAVAByAGEAbgBzAGYAbwByAG0AYQB0AGkAbwBuAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAsATABPAE4ARwBWAEEAUgBDAEgAQQBSAxIAAAIOBAQAAAAAf////wETAf////8QIQYVABIATABvAGcAaQBjAGEAbAAgAEQAZQBmAGkAbgBpAHQAaQBvAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAg7//xAhBhUADABMAG8AZwBpAGMAYQBsACAAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAACDv//ECEGFQAIAEQAdQByAGEAdABpAG8AbgMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZECUGAgALAEkAbgB0AGUAcgB2AGEAbABEAGEAeQMSAAABEwMzAREACgM0AAAAAgM1AAAABv///////w==</value>
+    </item>
+    <item>
+      <key type="STRING">LogIdentifierType</key>
+      <value type="BYTE_ARRAY">EBsGAgAHAFYAQQBSAEMASABBAFIGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgARAEwAbwBnAEkAZABlAG4AdABpAGYAaQBlAHIAVAB5AHAAZQMSAAABDgQEAAAAAAAAA+gBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">defaultValuesType</key>
+      <value type="BYTE_ARRAY">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</value>
+    </item>
+    <item>
+      <key type="STRING">crudGenType</key>
+      <value type="BYTE_ARRAY">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</value>
+    </item>
+    <item>
+      <key type="STRING">crudResponseType</key>
+      <value type="BYTE_ARRAY">EB8GAgAQAGMAcgB1AGQAUgBlAHMAcABvAG4AcwBlAFQAeQBwAGUGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgAQAGMAcgB1AGQAUgBlAHMAcABvAG4AcwBlAFQAeQBwAGUDEgAAAQEDEgAAAQEBEwEJFAAAAAQQIQYVAAwAcgBlAHMAbwB1AHIAYwBlAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAA/wETAf////8QIQYVAAkAZwBlAG4AZQByAGEAdABlAGQDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABABDAEgAQQBSAxIAAAIOBAUAAAAAAAAAAQQEAAAAAAAAAAEBEwH/////ECEGFQAHAHMAdQBjAGMAZQBzAHMDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAZBgIAAwBCAEkAVAMSAAABDAQHAAAAAAAAAAAEBgAAAAAAAAAB/////xAhBhUABwBtAGUAcwBzAGEAZwBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAADDgQEAAAAAAAAA+gBEwH///////8=</value>
+    </item>
+    <item>
+      <key type="STRING">generateCRUDRow</key>
+      <value type="BYTE_ARRAY">EB8GAgAPAGcAZQBuAGUAcgBhAHQAZQBDAFIAVQBEAFIAbwB3BikAPQAvAHMAaABhAHIAZQBkAC8AQQBTAEEAcwBzAGUAdABzAC8AQgBlAHMAdABQAHIAYQBjAHQAaQBjAGUAcwBfAHYAOAAxAC8AUAByAG8AYwBlAGQAdQByAGUAcwAvAFQAeQBwAGUARABlAGYAaQBuAGkAdABpAG8AbgBzBioADwBnAGUAbgBlAHIAYQB0AGUAQwBSAFUARABSAG8AdwMSAAABAQMSAAABAQETAQkUAAAADRAhBhUADgBkAGEAdABhAHMAbwB1AHIAYwBlAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAA/wETAf////8QIQYVABEAcAByAG8AagBlAGMAdABGAG8AbABkAGUAcgBOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVABQAZwByAGUAYQB0AEcAcgBhAG4AZABQAGEAcgBlAG4AdABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAA8AZwByAGEAbgBkAFAAYQByAGUAbgB0AE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACgBwAGEAcgBlAG4AdABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAA0AYwBvAG4AdABhAGkAbgBlAHIATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQANAGMAbwBuAHQAYQBpAG4AZQByAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUABABuAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAsAbABvAGcAaQBjAGEAbABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAsAbABvAGcAaQBjAGEAbABUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAA0AbABvAGcAaQBjAGEAbABTAHQAYQB0AHUAcwMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgAHAFYAQQBSAEMASABBAFIDEgAAAg4EBAAAAAAAAA+gARMB/////xAhBhUADQBjAG8AbgB0AGEAaQBuAGUAcgBQAGEAdABoAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAsATABPAE4ARwBWAEEAUgBDAEgAQQBSAxIAAAMOBAQAAAAAf////wETAf////8QIQYVAAgAZAB1AHIAYQB0AGkAbwBuAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQJQYCAAsASQBuAHQAZQByAHYAYQBsAEQAYQB5AxIAAAETAzMBEQAKAzQAAAACAzUAAAAG////////</value>
+    </item>
+    <item>
+      <key type="STRING">defaultValuesTypeV2</key>
+      <value type="BYTE_ARRAY">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</value>
+    </item>
+    <item>
+      <key type="STRING">CommonModelType</key>
+      <value type="BYTE_ARRAY">EB8GAgAPAEMAbwBtAG0AbwBuAE0AbwBkAGUAbABUAHkAcABlBikAPQAvAHMAaABhAHIAZQBkAC8AQQBTAEEAcwBzAGUAdABzAC8AQgBlAHMAdABQAHIAYQBjAHQAaQBjAGUAcwBfAHYAOAAxAC8AUAByAG8AYwBlAGQAdQByAGUAcwAvAFQAeQBwAGUARABlAGYAaQBuAGkAdABpAG8AbgBzBioADwBDAG8AbQBtAG8AbgBNAG8AZABlAGwAVAB5AHAAZQMSAAABAQMSAAABAQETAQkUAAAADhAhBhUADgBkAGEAdABhAHMAbwB1AHIAYwBlAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAA/wETAf////8QIQYVABEAcAByAG8AagBlAGMAdABGAG8AbABkAGUAcgBOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVABQAZwByAGUAYQB0AEcAcgBhAG4AZABQAGEAcgBlAG4AdABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAA8AZwByAGEAbgBkAFAAYQByAGUAbgB0AE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACgBwAGEAcgBlAG4AdABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAA0AYwBvAG4AdABhAGkAbgBlAHIATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAMAHAAaAB5AHMAaQBjAGEAbABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAwAcABoAHkAcwBpAGMAYQBsAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACwByAGUAcwBvAHUAcgBjAGUATgB1AG0DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAZBgIABwBJAE4AVABFAEcARQBSAxIAAAEMBAf/////gAAAAAQGAAAAAH//////////ECEGFQALAGwAbwBnAGkAYwBhAGwATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQALAGwAbwBnAGkAYwBhAGwAVAB5AHAAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAKAGEAbgBuAG8AdABhAHQAaQBvAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAIOBAQAAAAAAAB//wETAf////8QIQYVABUAbABvAGcAaQBjAGEAbABUAHIAYQBuAHMAZgBvAHIAbQBhAHQAaQBvAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAMOBAQAAAAAAAAEAAETAf////8QIQYVABMAcABoAHkAcwBpAGMAYQBsAE4AYQBtAGUARQBuAGMAbwBkAGUAZAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv////8=</value>
+    </item>
+    <item>
+      <key type="STRING">ConfigParamsType</key>
+      <value type="BYTE_ARRAY">EB8GAgAQAEMAbwBuAGYAaQBnAFAAYQByAGEAbQBzAFQAeQBwAGUGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgAQAEMAbwBuAGYAaQBnAFAAYQByAGEAbQBzAFQAeQBwAGUDEgAAAQEDEgAAAQEBEwEJFAAAABIQIQYVAAwAZwBlAG4AZQByAGEAdABlAE0AbwBkAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABABDAEgAQQBSAxIAAAEOBAUAAAAAAAAAAQQEAAAAAAAAAAEBEwH/////ECEGFQAKAG8AdQB0AHAAdQB0AE0AbwBkAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUADQBnAGUAbgBlAHIAYQB0AGUAVgBpAGUAdwBzAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGQYCAAgAUwBNAEEATABMAEkATgBUAxIAAAEMBAf///////+AAAQGAAAAAAAAf///////ECEGFQAQAHIAZQBzAG8AdQByAGMAZQBDAGEAcwBlAFIAdQBsAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUADgBjAG8AbAB1AG0AbgBDAGEAcwBlAFIAdQBsAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACQBzAGUAcABhAHIAYQB0AG8AcgMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAMAHUAcwBlAEEAbABpAGEAcwBSAHUAbABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEM//8QIQYVAA4AcgBlAHMAbwB1AHIAYwBlAFAAcgBlAGYAaQB4Ay8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAACDgQEAAAAAAAAAP8BEwH/////ECEGFQAOAHIAZQBzAG8AdQByAGMAZQBTAHUAZgBmAGkAeAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAACDv//ECEGFQAYAGcAZQBuAGUAcgBhAHQAZQBXAGkAdABoAFMAbwB1AHIAYwBlAEMAbwBsAHUAbQBuAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEM//8QIQYVAAwAZwBlAG4AZQByAGEAdABlAEMAYQBzAHQDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQz//xAhBhUADwBnAGUAbgBlAHIAYQB0AGUASQBuAGQAZQB4AGUAcwMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDP//ECEGFQAFAGQAZQBiAHUAZwMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAGAGQAZQBiAHUAZwAyAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAYAZABlAGIAdQBnADMDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACABiAGEAcwBlAFAAYQB0AGgDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIACwBMAE8ATgBHAFYAQQBSAEMASABBAFIDEgAAAw4EBAAAAAB/////ARMB/////xAhBhUACwBzAGMAcgBpAHAAdABzAFAAYQB0AGgDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAw7//xAhBhUACQBwAGEAZABBAG0AbwB1AG4AdAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDP////8=</value>
+    </item>
+    <item>
+      <key type="STRING">DataSourceRowV2Row</key>
+      <value type="BYTE_ARRAY">EB8GAgASAEQAYQB0AGEAUwBvAHUAcgBjAGUAUgBvAHcAVgAyAFIAbwB3BikAPQAvAHMAaABhAHIAZQBkAC8AQQBTAEEAcwBzAGUAdABzAC8AQgBlAHMAdABQAHIAYQBjAHQAaQBjAGUAcwBfAHYAOAAxAC8AUAByAG8AYwBlAGQAdQByAGUAcwAvAFQAeQBwAGUARABlAGYAaQBuAGkAdABpAG8AbgBzBioAEgBEAGEAdABhAFMAbwB1AHIAYwBlAFIAbwB3AFYAMgBSAG8AdwMSAAABAQMSAAABAQETAQkUAAAADhAhBhUACgBEAGEAdABhAFMAbwB1AHIAYwBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAABDgQEAAAAAAAAAP8BEwH/////ECEGFQARAFAAcgBvAGoAZQBjAHQARgBvAGwAZABlAHIATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAUAEcAcgBlAGEAdABHAHIAYQBuAGQAUABhAHIAZQBuAHQATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAPAEcAcgBhAG4AZABQAGEAcgBlAG4AdABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAoAUABhAHIAZQBuAHQATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQANAEMAbwBuAHQAYQBpAG4AZQByAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUADABQAGgAeQBzAGkAYwBhAGwATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAKAE4AYQB0AGkAdgBlAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACwBMAG8AZwBpAGMAYQBsAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACwBMAG8AZwBpAGMAYQBsAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUAFQBMAG8AZwBpAGMAYQBsAFQAcgBhAG4AcwBmAG8AcgBtAGEAdABpAG8AbgMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgALAEwATwBOAEcAVgBBAFIAQwBIAEEAUgMSAAACDgQEAAAAAH////8BEwH/////ECEGFQARAEwAbwBnAGkAYwBhAGwARABlAGYAaQBuAGkAdABpAG8AbgMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAACDv//ECEGFQALAEwAbwBnAGkAYwBhAGwAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAACDv//ECEGFQAIAEQAdQByAGEAdABpAG8AbgMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZECUGAgALAEkAbgB0AGUAcgB2AGEAbABEAGEAeQMSAAABEwMzAREACgM0AAAAAgM1AAAABv///////w==</value>
+    </item>
+    <item>
+      <key type="STRING">startingFolderExtendedType</key>
+      <value type="BYTE_ARRAY">EB8GAgAaAHMAdABhAHIAdABpAG4AZwBGAG8AbABkAGUAcgBFAHgAdABlAG4AZABlAGQAVAB5AHAAZQYpAD0ALwBzAGgAYQByAGUAZAAvAEEAUwBBAHMAcwBlAHQAcwAvAEIAZQBzAHQAUAByAGEAYwB0AGkAYwBlAHMAXwB2ADgAMQAvAFAAcgBvAGMAZQBkAHUAcgBlAHMALwBUAHkAcABlAEQAZQBmAGkAbgBpAHQAaQBvAG4AcwYqABoAcwB0AGEAcgB0AGkAbgBnAEYAbwBsAGQAZQByAEUAeAB0AGUAbgBkAGUAZABUAHkAcABlAxIAAAEBAxIAAAEBARMBCRQAAAAJECEGFQAHAGcAcgBvAHUAcABJAGQDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAA/wETAf////8QIQYVAAcAcAByAG8AYwBlAHMAcwMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBkGAgADAEIASQBUAxIAAAEMBAcAAAAAAAAAAAQGAAAAAAAAAAH/////ECEGFQAJAGwAYQB5AGUAcgBUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAA4AcABhAHQAaABEAGUAcgBpAHYAYQB0AGkAbwBuAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAQAQwBIAEEAUgMSAAACDgQFAAAAAAAAAAEEBAAAAAAAAAABARMB/////xAhBhUAEABzAG8AdQByAGMAZQBGAG8AbABkAGUAcgBQAGEAdABoAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAsATABPAE4ARwBWAEEAUgBDAEgAQQBSAxIAAAMOBAQAAAAAf////wETAf////8QIQYVABAAdABhAHIAZwBlAHQARgBvAGwAZABlAHIAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAADDv//ECEGFQARAGQAZQByAGkAdgBlAGQARgBpAGwAdABlAHIAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAADDv//ECEGFQAPAHQAeQBwAGUARABlAGYAUAByAG8AYwBQAGEAdABoAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAMO//8QIQYVAA8AdAB5AHAAZQBEAGUAZgBQAHIAbwBjAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7/////</value>
+    </item>
+    <item>
+      <key type="STRING">SqlScriptV2Row</key>
+      <value type="BYTE_ARRAY">EB8GAgAOAFMAcQBsAFMAYwByAGkAcAB0AFYAMgBSAG8AdwYpAD0ALwBzAGgAYQByAGUAZAAvAEEAUwBBAHMAcwBlAHQAcwAvAEIAZQBzAHQAUAByAGEAYwB0AGkAYwBlAHMAXwB2ADgAMQAvAFAAcgBvAGMAZQBkAHUAcgBlAHMALwBUAHkAcABlAEQAZQBmAGkAbgBpAHQAaQBvAG4AcwYqAA4AUwBxAGwAUwBjAHIAaQBwAHQAVgAyAFIAbwB3AxIAAAEBAxIAAAEBARMBCRQAAAAKECEGFQANAGQAZQByAGkAdgBlAGQAQwBvAGwAdQBtAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAZBgIAAwBCAEkAVAMSAAABDAQHAAAAAAAAAAAEBgAAAAAAAAAB/////xAhBhUACwBzAG8AdQByAGMAZQBBAGwAaQBhAHMDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAPoAETAf////8QIQYVAAwAcwBvAHUAcgBjAGUAQwBvAGwAdQBtAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACwBjAG8AbAB1AG0AbgBBAGwAaQBhAHMDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACgBjAG8AbAB1AG0AbgBUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAACDgQEAAAAAAAAEAABEwH/////ECEGFQAQAHMAbwB1AHIAYwBlAEUAeABwAHIAZQBzAHMAaQBvAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIACwBMAE8ATgBHAFYAQQBSAEMASABBAFIDEgAAAw4EBAAAAAB/////ARMB/////xAhBhUAFgBzAG8AdQByAGMAZQBFAHgAcAByAGUAcwBzAGkAbwBuAE4AbwBDAGEAcwB0Ay8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAMO//8QIQYVABAAcwBvAHUAcgBjAGUAQwBvAGwAdQBtAG4ATABpAHMAdAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAADDv//ECEGFQAMAGYAdQBuAGMAdABpAG8AbgBMAGkAcwB0Ay8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAMO//8QIQYVAAoAcwBvAHUAcgBjAGUAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAADDv////8=</value>
+    </item>
+    <item>
+      <key type="STRING">columnListRow</key>
+      <value type="BYTE_ARRAY">EB8GAgANAGMAbwBsAHUAbQBuAEwAaQBzAHQAUgBvAHcGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgANAGMAbwBsAHUAbQBuAEwAaQBzAHQAUgBvAHcDEgAAAQEDEgAAAQEBEwEJFAAAAA4QIQYVAAwAcgBlAHMAbwB1AHIAYwBlAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAA/wETAf////8QIQYVAAwAcgBlAHMAbwB1AHIAYwBlAFAAYQB0AGgDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAIOBAQAAAAAAAAQAAETAf////8QIQYVAAwAcgBlAHMAbwB1AHIAYwBlAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUABwBzAHUAYgB0AHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAcAZQBuAGEAYgBsAGUAZAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBkGAgADAEIASQBUAxIAAAEMBAcAAAAAAAAAAAQGAAAAAAAAAAH/////ECEGFQAKAGEAbgBuAG8AdABhAHQAaQBvAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIACwBMAE8ATgBHAFYAQQBSAEMASABBAFIDEgAAAw4EBAAAAAB/////ARMB/////xAhBhUAEgBlAHgAcABsAGkAYwBpAHQAbAB5AEQAZQBzAGkAZwBuAGUAZAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDP//ECEGFQAJAHQAYQBiAGwAZQBUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAcAcwBxAGwAVABlAHgAdAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgAHAFYAQQBSAEMASABBAFIDEgAABA4EBAAAAAB/////ARMB/////xAhBhUAEABwAHIAbwBwAHIAaQBlAHQAYQByAHkATQBvAGQAZQBsAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAQO//8QIQYVAAoAYwBvAGwAdQBtAG4ATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAKAGMAbwBsAHUAbQBuAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAg7//xAhBhUADgBuAGEAdABpAHYAZQBCAGEAcwBlAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUACgBuAGEAdABpAHYAZQBUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO/////w==</value>
+    </item>
+    <item>
+      <key type="STRING">upgradeVector</key>
+      <value type="BYTE_ARRAY">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</value>
+    </item>
+    <item>
+      <key type="STRING">crudGenColumnType</key>
+      <value type="BYTE_ARRAY">EB8GAgARAGMAcgB1AGQARwBlAG4AQwBvAGwAdQBtAG4AVAB5AHAAZQYpAD0ALwBzAGgAYQByAGUAZAAvAEEAUwBBAHMAcwBlAHQAcwAvAEIAZQBzAHQAUAByAGEAYwB0AGkAYwBlAHMAXwB2ADgAMQAvAFAAcgBvAGMAZQBkAHUAcgBlAHMALwBUAHkAcABlAEQAZQBmAGkAbgBpAHQAaQBvAG4AcwYqABEAYwByAHUAZABHAGUAbgBDAG8AbAB1AG0AbgBUAHkAcABlAxIAAAEBAxIAAAEBARMBCRQAAAACECEGFQAHAGMAbwBsAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAA/wETAf////8QIQYVAAcAYwBvAGwAVAB5AHAAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv////8=</value>
+    </item>
+    <item>
+      <key type="STRING">generateViewsRow</key>
+      <value type="BYTE_ARRAY">EB8GAgAQAGcAZQBuAGUAcgBhAHQAZQBWAGkAZQB3AHMAUgBvAHcGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgAQAGcAZQBuAGUAcgBhAHQAZQBWAGkAZQB3AHMAUgBvAHcDEgAAAQEDEgAAAQEBEwEJFAAAAA0QIQYVAA4AZABhAHQAYQBzAG8AdQByAGMAZQBOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAABDgQEAAAAAAAAAP8BEwH/////ECEGFQARAHAAcgBvAGoAZQBjAHQARgBvAGwAZABlAHIATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAUAGcAcgBlAGEAdABHAHIAYQBuAGQAUABhAHIAZQBuAHQATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAPAGcAcgBhAG4AZABQAGEAcgBlAG4AdABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAoAcABhAHIAZQBuAHQATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQANAGMAbwBuAHQAYQBpAG4AZQByAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUADQBjAG8AbgB0AGEAaQBuAGUAcgBUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAoAYwBvAGwAdQBtAG4ATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQARAGwAbwBnAGkAYwBhAGwAQwBvAGwAdQBtAG4ATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQARAGwAbwBnAGkAYwBhAGwAQwBvAGwAdQBtAG4AVAB5AHAAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQANAGwAbwBnAGkAYwBhAGwAUwB0AGEAdAB1AHMDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAIOBAQAAAAAAAAPoAETAf////8QIQYVAA0AYwBvAG4AdABhAGkAbgBlAHIAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgALAEwATwBOAEcAVgBBAFIAQwBIAEEAUgMSAAADDgQEAAAAAH////8BEwH/////ECEGFQAIAGQAdQByAGEAdABpAG8AbgMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZECUGAgALAEkAbgB0AGUAcgB2AGEAbABEAGEAeQMSAAABEwMzAREACgM0AAAAAgM1AAAABv///////w==</value>
+    </item>
+    <item>
+      <key type="STRING">upgradeType</key>
+      <value type="BYTE_ARRAY">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</value>
+    </item>
+    <item>
+      <key type="STRING">DataSourceRow</key>
+      <value type="BYTE_ARRAY">EB8GAgANAEQAYQB0AGEAUwBvAHUAcgBjAGUAUgBvAHcGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgANAEQAYQB0AGEAUwBvAHUAcgBjAGUAUgBvAHcDEgAAAQEDEgAAAQEBEwEJFAAAAAwQIQYVABEAcAByAG8AagBlAGMAdABGAG8AbABkAGUAcgBOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAACBkQGwYCAAcAVgBBAFIAQwBIAEEAUgMSAAABDgQEAAAAAAAAAP8BEwH/////ECEGFQAUAGcAcgBlAGEAdABHAHIAYQBuAGQAUABhAHIAZQBuAHQATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAPAGcAcgBhAG4AZABQAGEAcgBlAG4AdABOAGEAbQBlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAoAcABhAHIAZQBuAHQATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQANAGMAbwBuAHQAYQBpAG4AZQByAE4AYQBtAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAQ7//xAhBhUADAByAGUAcwBvAHUAcgBjAGUATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQALAGwAbwBnAGkAYwBhAGwATgBhAG0AZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAMAHIAZQBzAG8AdQByAGMAZQBUAHkAcABlAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEO//8QIQYVAAoAbgBhAHQAaQB2AGUAVAB5AHAAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQANAGMAbwBuAHQAYQBpAG4AZQByAFAAYQB0AGgDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIACwBMAE8ATgBHAFYAQQBSAEMASABBAFIDEgAAAg4EBAAAAAB/////ARMB/////xAhBhUAFwBjAG8AbQBwAG8AcwBpAHQAZQBUAHIAYQBuAHMAZgBvAHIAbQBhAHQAaQBvAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAg7//xAhBhUACgBhAG4AbgBvAHQAYQB0AGkAbwBuAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAIO/////w==</value>
+    </item>
+    <item>
+      <key type="STRING">updateType</key>
+      <value type="BYTE_ARRAY">EB8GAgAKAHUAcABkAGEAdABlAFQAeQBwAGUGKQA9AC8AcwBoAGEAcgBlAGQALwBBAFMAQQBzAHMAZQB0AHMALwBCAGUAcwB0AFAAcgBhAGMAdABpAGMAZQBzAF8AdgA4ADEALwBQAHIAbwBjAGUAZAB1AHIAZQBzAC8AVAB5AHAAZQBEAGUAZgBpAG4AaQB0AGkAbwBuAHMGKgAKAHUAcABkAGEAdABlAFQAeQBwAGUDEgAAAQEDEgAAAQEBEwEJFAAAAAYQIQYVAAwAdQBwAGQAYQB0AGUAQQBjAHQAaQBvAG4DLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIABwBWAEEAUgBDAEgAQQBSAxIAAAEOBAQAAAAAAAAA/wETAf////8QIQYVAAoAbwBjAGMAdQByAHIAZQBuAGMAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAQwEB/////+AAAAABAYAAAAAf/////////8QIQYVAAgAbgB1AG0ATABpAG4AZQBzAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAEM//8QIQYVAA0AawBlAHkAVABlAHgAdABWAGUAcgBpAGYAeQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAMSAAABDv//ECEGFQAKAHMAZQBhAHIAYwBoAFQAZQB4AHQDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAAIGRAbBgIACwBMAE8ATgBHAFYAQQBSAEMASABBAFIDEgAAAg4EBAAAAAB/////ARMB/////xAhBhUACwByAGUAcABsAGEAYwBlAFQAZQB4AHQDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAg7/////</value>
+    </item>
+  </attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

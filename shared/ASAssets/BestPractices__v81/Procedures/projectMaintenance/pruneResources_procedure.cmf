@@ -1,0 +1,326 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="pruneResources" path="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/pruneResources" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="operation" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="sourcePath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="sourceExcludePathList" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="targetPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="targetExcludePathList" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="pruneResourcesType" type="TABLE" refId="256">
+        <element name="status">
+          <datatype name="VARCHAR" type="STRING" maxLength="20"/>
+        </element>
+        <element name="resourceType">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="resourcePath">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="usedResourceType">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="usedResourcePath">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/pruneResources" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="operation" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="sourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="sourceExcludePathList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="targetPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="targetExcludePathList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="status">
+            <datatype type="STRING" maxLength="20"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="usedResourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="usedResourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/pruneResourcesTargetSet" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="startingPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="excludePathList_" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="status">
+            <datatype type="STRING" maxLength="20"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="usedResourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="usedResourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/pruneResourcesUsedSet" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="startingPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="excludePathList_" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="status">
+            <datatype type="STRING" maxLength="20"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="usedResourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="usedResourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/destroyResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* pruneResources:
+&#x9;This procedure is used to retrieve or delete rows from the target folder that are not used by the source folder.
+&#x9;&#x9;Example:  The Formatting views contain a subset of the views in Metadata.  The objective is to prune the 
+&#x9;&#x9;tables in the Metadata that are not being used.
+
+&#x9;Input:
+&#x9;&#x9;operation&#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9; -- R=retrieve, D=delete resulting rows from target
+&#x9;&#x9;sourcePath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR, -- /shared/BestPracticesTest/Physical/Formatting/ds1/cat1/sch1/t1, t2, t3, t4
+&#x9;&#x9;sourceExcludePathList&#x9;LONGVARCHAR, -- comma separated list of paths to exclude
+&#x9;&#x9;targetPath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR, -- /shared/BestPracticesTest/Physical/Metadata/ds1/cat1/sch1/t1, t2, t3, t4, t5, t6, t7, t8
+&#x9;&#x9;targetExcludePathList&#x9;LONGVARCHAR, -- comma separated list of paths to exclude
+&#x9;&#x9;debug&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9; -- Y=debug is on, N=do not debug
+&#x9;Output:
+&#x9;&#x9;result&#x9;&#x9;&#x9;&#x9;PIPE
+&#x9;&#x9;PUBLIC TYPE&#x9;pruneResourcesType ROW(
+&#x9;&#x9;&#x9;status&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(20),&#x9;
+&#x9;&#x9;&#x9;resourceType&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;
+&#x9;&#x9;&#x9;resourcePath&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;&#x9;usedResourceType&#x9;&#x9;VARCHAR,&#x9;&#x9;
+&#x9;&#x9;&#x9;usedResourcePath&#x9;&#x9;LONGVARCHAR
+&#x9;&#x9;);
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/14/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;Created new
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE pruneResources(
+&#x9;IN  operation&#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9; -- R=retrieve, D=delete resulting rows from target
+&#x9;IN&#x9;sourcePath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR, -- /shared/BestPracticesTest/Physical/Formatting
+&#x9;IN  sourceExcludePathList&#x9;LONGVARCHAR, -- comma separated list of paths to exclude
+&#x9;IN  targetPath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  targetExcludePathList&#x9;LONGVARCHAR, -- comma separated list of paths to exclude
+&#x9;IN &#x9;debug&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9; -- Y=debug is on, N=do not debug
+&#x9;OUT&#x9;result&#x9;&#x9;&#x9;&#x9;&#x9;PIPE /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/pruneResources.pruneResourcesType
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;pruneResources&apos;;
+&#x9;DECLARE resourcePath&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE success&#x9;&#x9;&#x9;&#x9;BIT;
+&#x9;DECLARE createResponse &#x9;&#x9;XML;
+&#x9;DECLARE faultResponse&#x9;&#x9;XML;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE PUBLIC TYPE&#x9;pruneResourcesType ROW(
+&#x9;&#x9;status&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(20),&#x9;
+&#x9;&#x9;resourceType&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;
+&#x9;&#x9;resourcePath&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;usedResourceType&#x9;&#x9;VARCHAR,&#x9;&#x9;
+&#x9;&#x9;usedResourcePath&#x9;&#x9;LONGVARCHAR
+&#x9;);
+
+&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;sourcePath=&apos;||NVL(sourcePath,&apos;null&apos;));
+&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;targetPath=&apos;||NVL(targetPath,&apos;null&apos;));
+&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;sourceExcludePathList=&apos;||NVL(sourceExcludePathList,&apos;null&apos;));
+&#x9;CALL /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;targetExcludePathList=&apos;||NVL(targetExcludePathList,&apos;null&apos;));
+
+&#x9;FOR r AS 
+&#x9;&#x9;SELECT resourcePath, resourceType
+&#x9;&#x9;&#x9;FROM /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/pruneResourcesTargetSet(targetPath, targetExcludePathList, debug)
+
+&#x9;&#x9;EXCEPT
+
+&#x9;&#x9;SELECT usedResourcePath as resourcePath, usedResourceType as resourceType
+&#x9;&#x9;&#x9;FROM /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/pruneResourcesUsedSet(sourcePath, sourceExcludePathList, debug)
+&#x9;DO
+&#x9;&#x9;IF (operation = &apos;R&apos;) THEN
+&#x9;&#x9;&#x9;INSERT INTO result values(&apos;INTERSECTION&apos;, r.resourceType, r.resourcePath, null, null);
+&#x9;&#x9;END IF;
+&#x9;&#x9;IF (operation = &apos;D&apos;) THEN
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/destroyResource(r.resourcePath, null, r.resourceType, success, createResponse, faultResponse);
+&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;raise ex value CAST(faultResponse as longvarchar);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;INSERT INTO result values(&apos;DELETE&apos;, r.resourceType, r.resourcePath, null, null);
+&#x9;&#x9;END IF;
+
+&#x9;END FOR;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1383393161626</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="impactLevel" type="INTEGER">0</attribute>
+  <attribute name="impactMessage" type="NULL"/>
+  <attribute name="lastModifiedDate" type="LONG">1554523516053</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="public_types" type="MAP">
+    <item>
+      <key type="STRING">pruneResourcesType</key>
+      <value type="BYTE_ARRAY">EB8GAgASAHAAcgB1AG4AZQBSAGUAcwBvAHUAcgBjAGUAcwBUAHkAcABlBikATwAvAHMAaABhAHIAZQBkAC8AQQBTAEEAcwBzAGUAdABzAC8AQgBlAHMAdABQAHIAYQBjAHQAaQBjAGUAcwBfAHYAOAAxAC8AUAByAG8AYwBlAGQAdQByAGUAcwAvAHAAcgBvAGoAZQBjAHQATQBhAGkAbgB0AGUAbgBhAG4AYwBlAC8AcAByAHUAbgBlAFIAZQBzAG8AdQByAGMAZQBzBioAEgBwAHIAdQBuAGUAUgBlAHMAbwB1AHIAYwBlAHMAVAB5AHAAZQMSAAAAAQMSAAAAAQETAQkUAAAABRAhBhUABgBzAHQAYQB0AHUAcwMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgAHAFYAQQBSAEMASABBAFIDEgAAAAIEBAAAAAAAAAAUARMB/////xAhBhUADAByAGUAcwBvAHUAcgBjAGUAVAB5AHAAZQMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgAHAFYAQQBSAEMASABBAFIDEgAAAAMEBAAAAAAAAAD/ARMB/////xAhBhUADAByAGUAcwBvAHUAcgBjAGUAUABhAHQAaAMvAAAAAQMWAAAAAAMaAAAAAQMbAAAAAQMg/////wMiAAAAAAgZEBsGAgALAEwATwBOAEcAVgBBAFIAQwBIAEEAUgMSAAAABAQEAAAAAH////8BEwH/////ECEGFQAQAHUAcwBlAGQAUgBlAHMAbwB1AHIAYwBlAFQAeQBwAGUDLwAAAAEDFgAAAAADGgAAAAEDGwAAAAEDIP////8DIgAAAAADEgAAAAP//xAhBhUAEAB1AHMAZQBkAFIAZQBzAG8AdQByAGMAZQBQAGEAdABoAy8AAAABAxYAAAAAAxoAAAABAxsAAAABAyD/////AyIAAAAAAxIAAAAE/////w==</value>
+    </item>
+  </attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

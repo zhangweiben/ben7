@@ -1,0 +1,313 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="parseSqlScriptComplex" path="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/parseSqlScriptComplex" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="resourcePath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="resourceType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="subType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="SqlScriptV2Row" type="TABLE" refId="256">
+        <element name="derivedColumn">
+          <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+        </element>
+        <element name="sourceAlias">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="sourceColumn">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="columnAlias">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="columnType">
+          <datatype name="VARCHAR" type="STRING" maxLength="4096"/>
+        </element>
+        <element name="sourceExpression">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="sourceExpressionNoCast">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="sourceColumnList">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="functionList">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+        <element name="sourcePath">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/parseSqlScriptSimple" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="sqlScript" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="derivedColumn">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="sourceAlias">
+            <datatype type="STRING" maxLength="4000"/>
+          </element>
+          <element name="sourceColumn">
+            <datatype type="STRING" maxLength="4000"/>
+          </element>
+          <element name="columnAlias">
+            <datatype type="STRING" maxLength="4000"/>
+          </element>
+          <element name="columnType">
+            <datatype type="STRING" maxLength="4096"/>
+          </element>
+          <element name="sourceExpression">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="sourceExpressionNoCast">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="sourceColumnList">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="functionList">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="sourcePath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/extractComplexSql" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="sqlScript" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="sqlScript">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/removeSingleLineComments" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="outText" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/replaceNonAsciiChar" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inReplaceStr" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="outReplaceStr" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getScriptText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inSubType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="scriptText" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*&#x9;
+&#x9;parseSqlScriptComplex - Extract complex SQL statements and break them down to simple SQL statements.
+&#x9;&#x9;Split the SQL statements on these keywords:&#x9;UNION ALL|UNION|EXCEPT ALL|EXCEPT|INTERSECT ALL|INTERSECT
+&#x9;&#x9;This is the main interface into the sqlParser routines.
+
+&#x9;&#x9;Note: This method may return a duplicate &quot;columnAlias&quot; columns when the column is derived from multiple &quot;sourceColumn&quot;s.
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/11/2011&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+&#x9;03/28/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;8.1.1: Added ability to parse PROCEDURE types and Physical Metedata tables and return the column list.
+&#x9;11/20/2014&#x9;&#x9;Alex Dedov&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;8.1.5: Added invocation to removeSingleLineComments.
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE parseSqlScriptComplex(
+&#x9;IN&#x9;resourcePath&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  resourceType&#x9;&#x9;VARCHAR,
+&#x9;IN&#x9;subType&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;OUT result &#x9;&#x9;&#x9;&#x9;PIPE /shared/ASAssets/BestPractices_v81/Procedures/TypeDefinitions.SqlScriptV2Row
+/*&#x9;(&#x9;sourceAlias &#x9;&#x9;&#x9;VARCHAR(4000), 
+&#x9;&#x9;sourceColumn &#x9;&#x9;&#x9;VARCHAR(4000), 
+&#x9;&#x9;columnAlias &#x9;&#x9;&#x9;VARCHAR(4000), 
+&#x9;&#x9;columnType&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;sourceExpression &#x9;&#x9;LONGVARCHAR, -- complete source expression as defined in the view
+&#x9;&#x9;sourceExpressionNoCast&#x9;LONGVARCHAR, -- source expression with no outer cast 
+&#x9;&#x9;functionList&#x9;&#x9;&#x9;LONGVARCHAR, -- list of functions used by the view
+&#x9;&#x9;sourcePath &#x9;&#x9;&#x9;&#x9;LONGVARCHAR  -- path to the source view (parent view)
+&#x9;)     */
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;parseSqlScriptComplex&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.debugSqlParser1;
+&#x9;DECLARE newline&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.newline;
+&#x9;DECLARE sqlScript&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE stime&#x9;&#x9;&#x9;&#x9;&#x9;TIMESTAMP;
+&#x9;DECLARE resourcePathReserved&#x9;VARCHAR(4096);
+
+&#x9;-- Apply reserved path to the resource path
+&#x9;call /shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath(resourcePath, null, resourcePathReserved);
+
+&#x9;-- Get the SQL Script for the Table/View
+&#x9;CASE subType
+&#x9;&#x9;WHEN &apos;SQL_TABLE&apos; THEN
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/getScriptText(resourcePath, resourceType, subType, sqlScript); 
+&#x9;&#x9;&#x9;if (sqlScript is null or LENGTH(TRIM(sqlScript)) = 0) then
+&#x9;&#x9;&#x9;&#x9;set sqlScript = &apos;SELECT * FROM &apos;||resourcePathReserved;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;ORIGINAL COMPLEX sqlScript=&apos;||sqlScript);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;set sqlScript = &apos;SELECT * FROM &apos;||resourcePathReserved;
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;MODIFIED COMPLEX sqlScript=&apos;||sqlScript);
+&#x9;&#x9;&#x9;end if;
+&#x9;END CASE;
+
+-- 20141113#DA BEGIN Add: Remove single-line comments from SQL, this can only be done before replacing CR/LFs
+&#x9;IF (INSTR(sqlScript,&apos;--&apos;) &gt; 0) THEN
+&#x9;&#x9;set stime = CURRENT_TIMESTAMP;
+&#x9;&#x9;CALL /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/removeSingleLineComments(sqlScript,sqlScript) ;
+&#x9;END IF;
+-- 20141113#DA END Add
+
+&#x9;--Replace carriage return/line feed with a space
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/replaceNonAsciiChar(sqlScript,sqlScript);
+
+&#x9;for r as select * from /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/extractComplexSql(sqlScript) do
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;-------------------------------------------------------------------------------------------&apos;);
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;EXTRACTED SIMPLE SQL ITERATION # &apos;||i);
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;------------------------------------&apos;);
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;sqlScript=&apos;||r.sqlScript||newline);
+&#x9;&#x9;end if;
+
+&#x9;&#x9;for s as 
+&#x9;&#x9;&#x9;select * 
+&#x9;&#x9;&#x9;from /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/parseSqlScriptSimple(r.sqlScript,resourcePath,resourceType) 
+&#x9;&#x9;do
+&#x9;&#x9;&#x9;insert into result values (s);
+&#x9;&#x9;end for;
+&#x9;&#x9;set i = i + 1;
+&#x9;end for;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

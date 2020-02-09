@@ -1,0 +1,355 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:9a66723c-3693-47f1-a1f0-d7811996f9d5 -->
+<metadata name="defaultValues" path="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[defaultValues:
+&#x9;-- Data Virtualization Best Practices --
+
+&#x9;Provides a place to define default values for the entire project.  
+&#x9;These global default values are&#x9;used by the generation scripts as well.
+ 
+&#x9;Input: none
+&#x9;Output:
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CIS Version:&#x9;Reason:
+&#x9;5/10/2012&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.1.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+&#x9;06/24/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;7.2: Multiple instances of Best Practices supported (added bestPracticesRootPath)
+&#x9;07/31/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;B.P. 7.3: Upgrade utilities.  Fix generateViews performance issue.
+&#x9;10/25/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.1.0&#x9;&#x9;&#x9;B.P. 8.0: Set cisVersionsFixed to 6.1.0.00.00 so the spreasheets will be used.  Added to sqlParserFromKeywords.
+&#x9;03/20/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;B.P. 8.1.1: Set minVersion to 2014.101 - requires Utilities_2014Q101.
+&#x9;04/15/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;B.P. 8.1.3: Set minVersion to 2014.103 - requires Utilities_2014Q102 - /shared/ASAssets rebrand.
+&#x9;08/25/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;B.P. 8.1.4: Set bestPracticesVersion to 8.1.4.
+&#x9;11/26/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;B.P. 8.1.5: Set bestPracticesVersion to 8.1.5.  Added retriveColumnOption to provide a new improved performance option.
+&#x9;05/20/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6,7.0.x&#x9;&#x9;B.P. 8.1.6: Validated with CIS 7.0.x
+&#x9;09/21/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.7: Added generateViews=2 for a select * projection.  Requires Utilities_2015Q3
+&#x9;05/24/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.8: Added Privilege Scripts.
+&#x9;12/22/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.9: Transitioned to TIBCO Software open source.
+&#x9;03/20/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 2018.1: Upgraded to use Utilities 2018Q1.  Added new capability: Dynamic File Framework.  Various other changes.
+&#x9;01/24/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.1: Added the ability to handle columnCaseRule, resourcePrefix, resourceSuffix and newColumnList for generateMode=&apos;G&apos;. 
+&#x9;01/29/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.101: Fix bug so derivedFilterPath could be used with generateToFolder.
+&#x9;03/14/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.102: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.  Changed custom functions to explicit paths.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.]]&gt;</annotation>
+  <parameters></parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <attribute name="Script" type="STRING">/* 
+&#x9;defaultValues:
+&#x9;-- Data Virtualization Best Practices --
+
+&#x9;Provides a place to define default values for the entire project.  
+&#x9;These global default values are&#x9;used by the generation scripts as well.
+ 
+&#x9;Input: none
+&#x9;Output:
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CIS Version:&#x9;Reason:
+&#x9;5/10/2012&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.1.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+&#x9;06/24/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;7.2: Multiple instances of Best Practices supported (added bestPracticesRootPath)
+&#x9;07/31/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;B.P. 7.3: Upgrade utilities.  Fix generateViews performance issue.
+&#x9;10/25/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.1.0&#x9;&#x9;&#x9;B.P. 8.0: Set cisVersionsFixed to 6.1.0.00.00 so the spreasheets will be used.  Added to sqlParserFromKeywords.
+&#x9;03/20/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;B.P. 8.1.1: Set minVersion to 2014.101 - requires Utilities_2014Q101.
+&#x9;04/15/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;B.P. 8.1.3: Set minVersion to 2014.103 - requires Utilities_2014Q102 - /shared/ASAssets rebrand.
+&#x9;08/25/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;B.P. 8.1.4: Set bestPracticesVersion to 8.1.4.
+&#x9;11/26/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;B.P. 8.1.5: Set bestPracticesVersion to 8.1.5.  Added retriveColumnOption to provide a new improved performance option.
+&#x9;05/20/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6,7.0.x&#x9;&#x9;B.P. 8.1.6: Validated with CIS 7.0.x
+&#x9;09/21/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.7: Added generateViews=2 for a select * projection.  Requires Utilities_2015Q3
+&#x9;05/24/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.8: Added Privilege Scripts.
+&#x9;12/22/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.9: Transitioned to TIBCO Software open source.
+&#x9;03/20/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 2018.1: Upgraded to use Utilities 2018Q1.  Added new capability: Dynamic File Framework.  Various other changes.
+&#x9;01/24/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.1: Added the ability to handle columnCaseRule, resourcePrefix, resourceSuffix and newColumnList for generateMode=&apos;G&apos;. 
+&#x9;01/29/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.101: Fix bug so derivedFilterPath could be used with generateToFolder.
+&#x9;03/14/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.102: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.  Changed custom functions to explicit paths.
+&#x9;07/26/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.300: Requires Utilities 2019.301.  Modified determineBestPracticesVersion to more accurately detect version.  Fixed bug in generateDatasourceListXML().
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE defaultValues()
+BEGIN
+&#x9;-------------------------------------
+&#x9;-- commonModelType (EXCEL or CSV)
+&#x9;-------------------------------------
+&#x9;-- Use Excel as the default source for the Common_Model_V3_file[1-3].xlsx spreadsheet unless CSV is specified
+&#x9;--&#x9;&#x9;&apos;EXCEL&apos; - use the Excel worksheets (default)
+&#x9;--&#x9;&#x9;&apos;CSV&apos;&#x9;- use the CSV worksheets
+&#x9;--&#x9;&#x9;&apos;DB&apos; &#x9;- use the Postgres cache database table common_model_v3.
+&#x9;--&#x9;&#x9;&#x9;&#x9;  Note: Must create and introspect using /shared/ASAssets/BestPractices_v81/DataSource/CacheInstructions/pqCreate_postgres_cache_tables
+&#x9;DECLARE PUBLIC commonModelType&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR DEFAULT &apos;DB&apos;;
+
+&#x9;-------------------------------------
+&#x9;-- bestPracticesVersion
+&#x9;-------------------------------------
+&#x9;-- This is the version of the Best Practices
+&#x9;--    Also modify the defaultValues in DataAbstraction_GENERIC_Template and DataAbstractionSample before releasing.
+&#x9;--    Both of those values need to be a constant value which is the same as this value.
+&#x9;--&#x9;  Values: Year.Calendar Quarter [1-4]
+&#x9;--&#x9;&#x9;&#x9;  If there is a fix/patch then it begins incrementing 401, 402, 403, etc
+&#x9;DECLARE PUBLIC bestPracticesVersion&#x9;&#x9;&#x9;CONSTANT DOUBLE DEFAULT 2019.300;
+
+&#x9;-- This is the minimum version of the Utilities that the Best Practices scripts require
+&#x9;DECLARE PUBLIC minVersion&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT DOUBLE DEFAULT  2019.301;
+
+&#x9;-------------------------------------
+&#x9;-- White space characters
+&#x9;-------------------------------------
+&#x9;-- This is a tab character
+&#x9;DECLARE PUBLIC TAB&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT CHAR(1) DEFAULT CHR(9);
+&#x9;-- This is a carriage return character
+&#x9;DECLARE PUBLIC CR&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT CHAR(1) DEFAULT CHR(13);
+&#x9;-- This is a line feed character
+&#x9;DECLARE PUBLIC LF&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT CHAR(1) DEFAULT CHR(10);
+&#x9;-- This is the new line character for Composite Views
+&#x9;DECLARE PUBLIC newline&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR DEFAULT LF;
+&#x9;-- This is the end of line character for files (external to composite)
+&#x9;DECLARE PUBLIC eol&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR DEFAULT CR||LF;
+&#x9;-- This is the maximum size for parsing a string with Regex Replace.
+&#x9;-- Consider that the entire SQL statement must be able to fit within the size specified
+&#x9;DECLARE PUBLIC regexSize &#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT INTEGER DEFAULT 200000;
+
+&#x9;-------------------------------------
+&#x9;-- Unsupported Column Types
+&#x9;-------------------------------------
+&#x9;-- This is a comma separated list of Composite column types that are not supported for view generation.
+&#x9;DECLARE PUBLIC unsupportedColumnTypeList&#x9;CONSTANT VARCHAR DEFAULT &apos;OTHER&apos;;
+
+&#x9;-------------------------------------
+&#x9;-- Sql Parser constants
+&#x9;-------------------------------------
+ &#x9;-- Debug Sql Parser during development
+&#x9;DECLARE PUBLIC debugSqlParser1 &#x9;&#x9;&#x9;&#x9;CONSTANT CHAR(1) DEFAULT &apos;N&apos;; -- debug 1st (top) level sql parser methods
+    DECLARE PUBLIC debugSqlParser2 &#x9;&#x9;&#x9;&#x9;CONSTANT CHAR(1) DEFAULT &apos;N&apos;; -- debug 2nd level sql parser methods
+    DECLARE PUBLIC debugSqlParser3 &#x9;&#x9;&#x9;&#x9;CONSTANT CHAR(1) DEFAULT &apos;N&apos;; -- debug 3rd (lowest) level sql parser methods
+    DECLARE PUBLIC debugTime&#x9; &#x9;&#x9;&#x9;&#x9;CONSTANT CHAR(1) DEFAULT &apos;N&apos;; -- debug time output only
+
+&#x9;-- Debug Sql Parser during development.  Each keyword is in simple word form as the parser will break on spaces.  So &quot;FULL OUTER JOIN&quot; is represented by 3 words in the list below.
+&#x9;-- Always end with a comma as the search looks for &quot;searchTerm,&quot;.
+&#x9;DECLARE PUBLIC sqlParserFromKeywords&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT &apos;INNER,OUTER,JOIN,LEFT,RIGHT,FULL,CROSS,PROCEDURE,SEMIJOIN,NESTEDLOOP,HASH,SORTMERGE,FORCE_ORDER,SWAP_ORDER,LEFT_CARDINALITY,RIGHT_CARDINALITY,FORCE_DISK,DISABLE_THREADS,DISABLE_PUSH,PARTITION_SIZE,OPTION,&apos;;
+&#x9;DECLARE PUBLIC sqlParserFromOperators&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT &apos;=,&lt;,&gt;,&lt;=,&gt;=,&lt;&gt;,!=,&apos;;
+
+&#x9;-------------------------------------
+&#x9;-- Generate Views constants
+&#x9;-------------------------------------
+ &#x9;-- Retrieve column type
+&#x9;DECLARE PUBLIC retriveColumnOption&#x9;&#x9;&#x9;CONSTANT VARCHAR DEFAULT &apos;NEW&apos;;&#x9;-- ORIGINAL=original retrieve name, NEW=new style that retrieves all metadata for a table on frist invocation.
+
+&#x9;-------------------------------------
+&#x9;-- Best Practices and Utilities Root Path
+&#x9;-------------------------------------
+&#x9;DECLARE PUBLIC AssetsRootPath&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT &apos;/shared/ASAssets&apos;;
+&#x9;DECLARE PUBLIC utilitiesRootPath&#x9;&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT AssetsRootPath||&apos;/Utilities&apos;;
+&#x9;DECLARE PUBLIC bestPracticesRootPath&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT AssetsRootPath||&apos;/BestPractices_v81&apos;;
+&#x9;DECLARE PUBLIC commonModelViewPath&#x9;&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT bestPracticesRootPath||&apos;/DataSource/common_model&apos;;
+&#x9;-- The DV path to the database common_model_v3 table stored in the postgres cache.
+&#x9;--&#x9;&#x9;Used by the following procedure to perform inserts: /shared/ASAssets/BestPractices_v81/Procedures/generateDatasourceListInsertDB 
+&#x9;DECLARE PUBLIC commonModelDatabasePath&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT bestPracticesRootPath||&apos;/DataSource/common_model_v3&apos;;
+&#x9;-- The default root path where best practices files are stored in the file system.
+&#x9;--    Note: The files are assumed to be in defaultFSRootPath||&apos;/BestPractices/BestPractices_v80&apos;.  Used by updateDatasourcePaths().
+&#x9;DECLARE PUBLIC defaultFSRootPath&#x9;&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT &apos;C:\CompositeSoftware&apos;; 
+
+&#x9;-------------------------------------
+&#x9;-- Default script folders/directories
+&#x9;-------------------------------------
+&#x9;-- Default file system root path to save generated documentation to.
+&#x9;DECLARE PUBLIC docDefaultRootPath&#x9;&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT &apos;C:/temp&apos;;
+
+&#x9;-------------------------------------
+&#x9;-- Privilege Script Defaults
+&#x9;-------------------------------------
+&#x9;-- Determines which privilege datasource to use to get the privilege rows.
+&#x9;-- &#x9;EXCEL - Excel spreadsheet which gets uploaded to each CIS server.
+&#x9;-- &#x9;DB_LLE - SQL Server database for lower level environments.  Basically it is used for testing purposes and developing new functionality.
+&#x9;-- &#x9;DB_PROD - SQL Server production database.  This connection should always be used unless developing new functionality.
+&#x9;-- If a new datasource is added then also modify the procedure &apos;getPrivilegeDatasourceToScriptMapping&apos; to add a mapping
+&#x9;-- to the formatting layer views [ [PROD|LLE]_vGroups, [PROD|LLE]_vPrivileges, [PROD|LLE]_vUsers ].
+&#x9;DECLARE PUBLIC datasource&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR DEFAULT &apos;EXCEL&apos;; -- EXCEL, DB_LLE, DB_PROD
+&#x9;-- Set the default database mapping&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Oracle      or SQL Server
+&#x9;DECLARE PUBLIC defaultDatabaseLLEMapping&#x9;&#x9;CONSTANT VARCHAR DEFAULT &apos;DB_LLE_ORA&apos;;&#x9;-- DB_LLE_ORA  or DB_LLE_SS
+&#x9;DECLARE PUBLIC defaultDatabasePRODMapping&#x9;&#x9;CONSTANT VARCHAR DEFAULT &apos;DB_PROD_ORA&apos;;&#x9;-- DB_PROD_ORA or DB_PROD_SS
+&#x9;DECLARE PUBLIC privilegesBasePath&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT bestPracticesRootPath||&apos;/PrivilegeScripts&apos;;
+
+&#x9;-- comma separated list of name/domain to deny read privileges on.  Name may be user or group.
+&#x9;DECLARE PUBLIC denyReadPrivilegesNameList&#x9;&#x9;CONSTANT VARCHAR(4096) DEFAULT &apos;all/composite&apos;; 
+&#x9;-- Global variable: 
+&#x9;--   A comma separated list of environments types user and domain where the owner and owner domain shall override the specified value no matter how they are set within the privilege rows.
+&#x9;--   Format ENV_TYPE/[PDEFAULT,project1]/[SDEFAULT,subproject1]/user/domain, ENV_TYPE/[PDEFAULT,project2]/[SDEFAULT,subproject2]/user/domain,(repeat)
+&#x9;--   When project=PDEFAULT then apply the setting for all projects by default unless a specific project is found
+&#x9;--   When subproject=SDEFAULT then apply the setting for all subprojects by default unless a specific subproject is found
+&#x9;--   e.g. &apos;UAT/PDEFAULT/SDEFAULT/admin/composite, PROD/PDEFAULT/SDEFAULT/admin/composite&apos;
+&#x9;--   e.g. &apos;DEV/PDEFAULT/SDEFAULT/NULL/NULL,&apos; Use NULL/NULL to specify the user and domain so that it will not be set in the development environment.   
+&#x9;--&#x9;&#x9;&#x9; It is &quot;not&quot; recommended &quot;nor&quot; a best practice to change ownership in the development environment.
+&#x9;DECLARE PUBLIC OverrideEnvOwnerList&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR(4000) DEFAULT 
+&#x9;&#x9;&apos;DEV/PDEFAULT/SDEFAULT/NULL/NULL,&apos;||&#x9;&#x9;-- This specifies that all projects in DEV environment will *NOT* set the owner and owner domain because the values are emtpy.
+&#x9;&#x9;&apos;UAT/PDEFAULT/SDEFAULT/admin/composite,&apos;||&#x9;-- This specifies that all projects in UAT environment will set the owner to &apos;admin&apos; and owner domain to &apos;composite&apos;.
+&#x9;&#x9;&apos;PROD/PDEFAULT/SDEFAULT/admin/composite,&apos;||&#x9;-- This specifies that all projects in PROD environment will set the owner to &apos;admin&apos; and owner domain to &apos;composite&apos;.
+&#x9;&#x9;-- Add rows
+&#x9;&#x9;&apos;&apos;; 
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564671531144</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="public_constants" type="MAP">
+    <item>
+      <key type="STRING">denyReadPrivilegesNameList</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAANBAQAAAAAAAAADQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">eol</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAUAAAAAAAAAAgQEAAAAAAAAAAIBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">commonModelViewPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABATsABAUAAAAAAAAAGAQEAAAAAAAAD7gBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">defaultDatabaseLLEMapping</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAAKBAQAAAAAAAAACgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">bestPracticesVersion</key>
+      <value type="BYTE_ARRAY">EBcGAgAHAEQARQBDAEkATQBBAEwDEgAAAAEGDQAIADIAMAAxADkALgAzADAAMAYMAAgAMgAwADEAOQAuADMAMAAwAw4AAAAHAxAAAAAD//8=</value>
+    </item>
+    <item>
+      <key type="STRING">newline</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAUAAAAAAAAAAQQEAAAAAAAAAAEBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">bestPracticesRootPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABATsABAUAAAAAAAAAEgQEAAAAAAAAD7IBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">commonModelDatabasePath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABATsABAUAAAAAAAAAGwQEAAAAAAAAD7sBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">commonModelType</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAACBAQAAAAAAAAAAgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">OverrideEnvOwnerList</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABATsABAUAAAAAAAAAbQQEAAAAAAAAAG4BEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">minVersion</key>
+      <value type="BYTE_ARRAY">EBcGAgAHAEQARQBDAEkATQBBAEwDEgAAAAEGDQAIADIAMAAxADkALgAzADAAMQYMAAgAMgAwADEAOQAuADMAMAAxAw4AAAAHAxAAAAAD//8=</value>
+    </item>
+    <item>
+      <key type="STRING">utilitiesRootPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABATsABAUAAAAAAAAACgQEAAAAAAAAD6oBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">privilegesBasePath</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABATsABAUAAAAAAAAAEQQEAAAAAAAAD7EBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">regexSize</key>
+      <value type="BYTE_ARRAY">EBkGAgAHAEkATgBUAEUARwBFAFIDEgAAAAEEBwAAAAAAAw1ABAYAAAAAAAMNQP//</value>
+    </item>
+    <item>
+      <key type="STRING">sqlParserFromKeywords</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAADMBAQAAAAAAAAAzAETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">defaultFSRootPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAAUBAQAAAAAAAAAFAETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">debugTime</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">CR</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAUAAAAAAAAAAQQEAAAAAAAAAAEBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">debugSqlParser3</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">defaultDatabasePRODMapping</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAALBAQAAAAAAAAACwETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">debugSqlParser2</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">docDefaultRootPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAAHBAQAAAAAAAAABwETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">TAB</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAUAAAAAAAAAAQQEAAAAAAAAAAEBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">unsupportedColumnTypeList</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAAFBAQAAAAAAAAABQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">AssetsRootPath</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAAQBAQAAAAAAAAAEAETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">sqlParserFromOperators</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAASBAQAAAAAAAAAEgETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">datasource</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAAFBAQAAAAAAAAABQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">LF</key>
+      <value type="BYTE_ARRAY">EBsGAgAGAFMAdAByAGkAbgBnAxIAAAABBAUAAAAAAAAAAQQEAAAAAAAAAAEBEwH//w==</value>
+    </item>
+    <item>
+      <key type="STRING">debugSqlParser1</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAABBAQAAAAAAAAAAQETAf//</value>
+    </item>
+    <item>
+      <key type="STRING">retriveColumnOption</key>
+      <value type="BYTE_ARRAY">EBsGAgAEAEMASABBAFIDEgAAAAEBOwAEBQAAAAAAAAADBAQAAAAAAAAAAwETAf//</value>
+    </item>
+  </attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>
