@@ -1,0 +1,164 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="README" path="/shared/ASAssets/BestPractices_v81/DataAbstraction_GENERIC_Template/_scripts/Documentation/README" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters></parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <attribute name="Script" type="STRING">/* README
+
+&#x9;This README discusses the Best Practices for generating documentation for a project.
+
+&#x9;The Best Practices scripts utilize the Utilizes: /shared/ASAssets/Utilities/documentation/documentationTrigger and /constants
+&#x9;When a project is created from the &quot;DataAbstraction_GENERIC_Template&quot;, the user will also have the ability to 
+&#x9;schedule the documentation generation.
+
+&#x9;For each trigger, you will need to set the correct path to the project for both the resourcePath and the constants path.
+
+&#x9;There are many options for generating documentation.  
+&#x9;However, you might consider the breaking the documentation down into the following major areas:
+&#x9;&#x9;/services/databases/&lt;your_published_DB&gt;
+&#x9;&#x9;Application/Published&#x9;
+&#x9;&#x9;Application/Services
+&#x9;&#x9;Application/Views
+&#x9;&#x9;Business/Business
+&#x9;&#x9;Business/Logical
+
+&#x9;This allows you to generate documentation at different layers and get a different perspective.
+
+&#x9;constants &#x9;&#x9;&#x9;&#x9;- These are default constants used by the documentation procedures.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  Constants are project specific and therefore they are copied into each project folder
+
+&#x9;documentationTrigger&#x9;- This provides a capability to execute &quot;getDocumentationDriver&quot; on a scheduled basis.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  Since resources are constantly changing, this offers the ability to stay current with the Composite resources.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  The &quot;documentationTrigger&quot; is project specific and therefore it is copied into each project folder and duplicated as needed.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  The &quot;documentationTrigger&quot; provides a template (example) to use.
+
+&#x9;getDocumentationDriver &#x9;- This is the documentation driver procedure.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  It is used to generate documentation for composite resources and save to a file. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  It is generic and therefore it is not copied into each project folder but referenced via the &quot;documentationTrigger&quot;.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  location: /shared/ASAssets/Utilities/documentation
+
+&#x9;&#x9;Area:
+&#x9;&#x9;---------------------------------------&#x9;
+&#x9;&#x9;/services/databases/&lt;your_published_DB&gt;
+
+&#x9;&#x9;&#x9;Trigger: documentationTrigger_BESTPRACTICE -- parameters:
+&#x9;&#x9;&#x9;&#x9;in_resourcePath&#x9;&#x9;&#x9;&#x9;/services/databases/BESTPRACTICE
+&#x9;&#x9;&#x9;&#x9;in_resourceType&#x9;&#x9;&#x9;&#x9;DATA_SOURCE
+&#x9;&#x9;&#x9;&#x9;in_filePath&#x9;&#x9;&#x9;&#x9;&#x9;/temp/doc_BestPractices_BESTPRACTICE.txt
+&#x9;&#x9;&#x9;&#x9;in_docPreambleImpl&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_docResourceFormatImpl&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_constantPath&#x9;&#x9;&#x9;&#x9;/shared/&lt;project&gt;/”_scripts”/Documentation/constants
+&#x9;&#x9;&#x9;&#x9;in_switches&#x9;&#x9;&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludeKeywordsInPathList null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludePathsList&#x9;&#x9;&#x9;null (use the defaults)
+
+&#x9;&#x9;Application/Published
+&#x9;&#x9;&#x9;Trigger: documentationTrigger_Application_Published -- parameters:
+&#x9;&#x9;&#x9;&#x9;in_resourcePath&#x9;&#x9;&#x9;&#x9;/shared/&lt;your_project&gt;/Application/Published
+&#x9;&#x9;&#x9;&#x9;in_resourceType&#x9;&#x9;&#x9;&#x9;CONTAINER
+&#x9;&#x9;&#x9;&#x9;in_filePath&#x9;&#x9;&#x9;&#x9;&#x9;/temp/doc_BestPractices_Application_Published.txt
+&#x9;&#x9;&#x9;&#x9;in_docPreambleImpl&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_docResourceFormatImpl&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_constantPath&#x9;&#x9;&#x9;&#x9;/shared/&lt;project&gt;/”_scripts”/Documentation/constants
+&#x9;&#x9;&#x9;&#x9;in_switches&#x9;&#x9;&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludeKeywordsInPathList null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludePathsList&#x9;&#x9;&#x9;null (use the defaults)
+
+&#x9;&#x9;Application/Services
+&#x9;&#x9;&#x9;Trigger: documentationTrigger_Application_Services -- parameters:
+&#x9;&#x9;&#x9;&#x9;in_resourcePath&#x9;&#x9;&#x9;&#x9;/shared/&lt;your_project&gt;/Application/Application_Services
+&#x9;&#x9;&#x9;&#x9;in_resourceType&#x9;&#x9;&#x9;&#x9;CONTAINER
+&#x9;&#x9;&#x9;&#x9;in_filePath&#x9;&#x9;&#x9;&#x9;&#x9;/temp/doc_BestPractices_Application_Services.txt
+&#x9;&#x9;&#x9;&#x9;in_docPreambleImpl&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_docResourceFormatImpl&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_constantPath&#x9;&#x9;&#x9;&#x9;/shared/&lt;project&gt;/”_scripts”/Documentation/constants
+&#x9;&#x9;&#x9;&#x9;in_switches&#x9;&#x9;&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludeKeywordsInPathList null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludePathsList&#x9;&#x9;&#x9;null (use the defaults)
+
+&#x9;&#x9;Application/Views
+&#x9;&#x9;&#x9;Trigger: documentationTrigger_Application_Views -- parameters:
+&#x9;&#x9;&#x9;&#x9;in_resourcePath&#x9;&#x9;&#x9;&#x9;/shared/&lt;your_project&gt;/Application/Views
+&#x9;&#x9;&#x9;&#x9;in_resourceType&#x9;&#x9;&#x9;&#x9;CONTAINER
+&#x9;&#x9;&#x9;&#x9;in_filePath&#x9;&#x9;&#x9;&#x9;&#x9;/temp/doc_BestPractices_Application_Views.txt
+&#x9;&#x9;&#x9;&#x9;in_docPreambleImpl&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_docResourceFormatImpl&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_constantPath&#x9;&#x9;&#x9;&#x9;/shared/&lt;project&gt;/”_scripts”/Documentation/constants
+&#x9;&#x9;&#x9;&#x9;in_switches&#x9;&#x9;&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludeKeywordsInPathList null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludePathsList&#x9;&#x9;&#x9;null (use the defaults)
+
+&#x9;&#x9;Business/Business
+&#x9;&#x9;&#x9;Trigger: documentationTrigger_Business_Business -- parameters:
+&#x9;&#x9;&#x9;&#x9;in_resourcePath&#x9;&#x9;&#x9;&#x9;/shared/&lt;your_project&gt;/Business/Business
+&#x9;&#x9;&#x9;&#x9;in_resourceType&#x9;&#x9;&#x9;&#x9;CONTAINER
+&#x9;&#x9;&#x9;&#x9;in_filePath&#x9;&#x9;&#x9;&#x9;&#x9;/temp/doc_BestPractices_Business_Business.txt
+&#x9;&#x9;&#x9;&#x9;in_docPreambleImpl&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_docResourceFormatImpl&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_constantPath&#x9;&#x9;&#x9;&#x9;/shared/&lt;project&gt;/”_scripts”/Documentation/constants
+&#x9;&#x9;&#x9;&#x9;in_switches&#x9;&#x9;&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludeKeywordsInPathList null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludePathsList&#x9;&#x9;&#x9;null (use the defaults)
+
+&#x9;&#x9;Business/Logical
+&#x9;&#x9;&#x9;Trigger: documentationTrigger_Business_Logical -- parameters:
+&#x9;&#x9;&#x9;&#x9;in_resourcePath&#x9;&#x9;&#x9;&#x9;/shared/&lt;your_project&gt;/Business/Logical
+&#x9;&#x9;&#x9;&#x9;in_resourceType&#x9;&#x9;&#x9;&#x9;CONTAINER
+&#x9;&#x9;&#x9;&#x9;in_filePath&#x9;&#x9;&#x9;&#x9;&#x9;/temp/doc_BestPractices_Business_Logical.txt
+&#x9;&#x9;&#x9;&#x9;in_docPreambleImpl&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_docResourceFormatImpl&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_constantPath&#x9;&#x9;&#x9;&#x9;/shared/&lt;project&gt;/”_scripts”/Documentation/constants
+&#x9;&#x9;&#x9;&#x9;in_switches&#x9;&#x9;&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludeKeywordsInPathList null (use the defaults)
+&#x9;&#x9;&#x9;&#x9;in_excludePathsList&#x9;&#x9;&#x9;null (use the defaults)
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE README()
+BEGIN
+END</attribute>
+  <attribute name="creationDate" type="LONG">1377564320217</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1557254298913</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

@@ -1,0 +1,209 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="getSQLUsers" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getSQLUsers" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="datasource" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Environment_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Organization" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Project" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="SubProject" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="User_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Domain_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="sqlStatement" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="fromClause" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="2048"/>
+    </parameter>
+    <parameter name="whereClause" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="scriptType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="scriptMapping" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE getSQLUsers(
+&#x9;IN datasource&#x9;&#x9;VARCHAR(255),&#x9;-- REQUIRED FILTER: EXCEL or DB_[LLE,PROD], The source of the groups
+    IN Environment_Name VARCHAR(255), &#x9;-- REQUIRED FILTER: The Composite server environment in which to get/update groups for: [DEV, TEST, UAT, PROD]
+&#x9;IN Organization&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the organization such as IM or SS
+&#x9;IN Project&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the project that is hosted on CIS for this &quot;Env Type&quot;. 
+&#x9;IN SubProject&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the sub-project that is hosted on CIS for this &quot;Env Type&quot;.  If left blank, all rows for the sub-projects will be selected.
+    IN User_Name&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The group name
+    IN Domain_Name &#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The domain name in which to get/update groups.
+&#x9;IN debug&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- OPTIONAL: Y=debug on, N=debug off
+    OUT sqlStatement&#x9;LONGVARCHAR,
+&#x9;OUT fromClause&#x9;&#x9;VARCHAR(2048),
+&#x9;OUT whereClause&#x9;&#x9;LONGVARCHAR
+    )
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;getSQLUsers&apos;;
+&#x9;DECLARE scriptPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE message&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE resPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE j&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE pos1,pos2&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE object&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE moreToDo1&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE objectList1&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE expression1&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE explen1&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+
+&#x9;-- Get the datasource to script mapping.  Pass in the datasource type and return the path the view or script
+&#x9;--   that connects to the specific spreadsheet or database.
+&#x9;CALL /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping(&apos;U&apos;, datasource, scriptPath);
+&#x9;set fromClause = &apos;FROM &apos; ||scriptPath;
+&#x9;set sqlStatement = &apos;SELECT * &apos;||fromClause || CHR(10);
+
+&#x9;if (Environment_Name is not null and LENGTH(TRIM(Environment_Name)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;ENVIRONMENT_NAME IS NOT NULL
+&#x9;   AND PROJECT_NAME IS NOT NULL
+&#x9;   AND ENVIRONMENT_NAME = &apos;&apos;&apos; || TRIM(Environment_Name) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (Organization is not null and LENGTH(TRIM(Organization)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+&#x9;   AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;ORGANIZATION_NAME = &apos;&apos;&apos; || TRIM(Organization) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (Project is not null and LENGTH(TRIM(Project)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+&#x9;   AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;PROJECT_NAME = &apos;&apos;&apos; || TRIM(Project) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (SubProject is not null and LENGTH(TRIM(SubProject)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+&#x9;   AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;set whereClause = whereClause || &apos;SUBPROJECT_NAME = &apos;&apos;&apos; || TRIM(SubProject) || &apos;&apos;&apos; &apos;;
+&#x9;end if;
+&#x9;if (User_Name is not null and LENGTH(TRIM(User_Name)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+&#x9;   AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (Domain_Name is not null and LENGTH(TRIM(Domain_Name)) &gt; 0 and LOWER(Domain_Name) = &apos;composite&apos;) then
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;USER_NAME = &apos;&apos;&apos; || TRIM(LOWER(User_Name)) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;USER_NAME = &apos;&apos;&apos; || TRIM(User_Name) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;if (Domain_Name is not null and LENGTH(TRIM(Domain_Name)) &gt; 0) then
+&#x9;&#x9;if (whereClause is null) then
+&#x9;&#x9;&#x9;set whereClause = &apos;&#x9;WHERE &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;
+&#x9;   AND &apos;;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (LOWER(Domain_Name) = &apos;composite&apos;) then
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;DOMAIN_NAME = &apos;&apos;&apos; || TRIM(LOWER(Domain_Name)) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set whereClause = whereClause || &apos;DOMAIN_NAME = &apos;&apos;&apos; || TRIM(Domain_Name) || &apos;&apos;&apos; &apos;;
+&#x9;&#x9;end if;
+&#x9;end if;
+
+&#x9;if (whereClause is not null) then
+&#x9;&#x9;set sqlStatement = sqlStatement || whereClause;
+&#x9;&#x9;set whereClause = TRIM(whereClause);
+&#x9;end if;
+
+&#x9;set sqlStatement = sqlStatement || &apos;
+    ORDER BY ORGANIZATION_NAME, ENVIRONMENT_NAME, PROJECT_NAME, SUBPROJECT_NAME, USER_NAME&apos;;
+
+END</attribute>
+  <attribute name="creationDate" type="LONG">1387113466371</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+  <attribute name="transactionCached" type="STRING">false</attribute>
+</metadata>

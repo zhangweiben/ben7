@@ -1,0 +1,664 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="generateDatasourceListXMLCSV" path="/shared/ASAssets/BestPractices_v81/Procedures/generateDatasourceListXMLCSV" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="csvFullPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="bufferSize" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="generateHeader" direction="IN" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="generateLogicalNames" direction="IN" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="targetResource" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="layerType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="groupIds" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="derivedFilterPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="ConfigParamsXML" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed</attribute>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/generateDatasourceListXML" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="sourceResource" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="generateLogicalNames" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="layerType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inGroupIds" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inDerivedFilterPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inStartingFolderExtendedXML" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="ConfigParamsXML" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resultPipe" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="DataSource">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ProjectFolderName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="GreatGrandParentName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="GrandParentName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ParentName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ContainerName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="PhysicalName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="NativeType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="LogicalName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="LogicalType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="LogicalTransformation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="LogicalDefinition">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="LogicalPath">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="Duration">
+            <datatype type="INTERVAL_DAY" intervalMode="INTERVAL_HOUR_TO_SECOND" intervalPrecision="2" fractionalSecondPrecision="6"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/file/FileProcessingCJP/createFileAscii" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="filePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="append" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="fileContent" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/escapeCSV" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inStr" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="separator" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="qualifier" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="outStr" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* 
+&#x9;generateDatasourceListXMLCSV:
+&#x9;-- Data Virtualization Best Practices --
+
+&#x9;Output to a CSV file the data source structure an any given layer designated by the layerType parameter 
+&#x9;or target folder name.
+
+&#x9;Input:
+&#x9;&#x9;&#x9;-- full server path to write out the CSV file
+&#x9;&#x9;csvFullPath
+
+&#x9;&#x9;&#x9;-- number of rows to buffer
+&#x9;&#x9;bufferSize
+
+&#x9;&#x9;&#x9;-- generate the header or not
+&#x9;&#x9;&#x9;-- 0 (FALSE) - do not generate the header
+&#x9;&#x9;&#x9;-- 1 (TRUE) - do generate the header
+&#x9;&#x9;generateHeader
+
+&#x9;&#x9;&#x9;-- generate the logical names choice
+&#x9;&#x9;&#x9;-- 0 (FALSE) - generate datasource list only with no logical names, 
+    &#x9;&#x9;-- 1 (TRUE) - generate datasource list with logical names
+  &#x9;&#x9;generateLogicalNames
+
+&#x9;&#x9;&#x9;-- The target folder in CIS to begin searching for views to generate the view list or
+&#x9;&#x9;&#x9;-- a target view (exact path) to generate for.
+&#x9;&#x9;&#x9;-- If this is set it supercedes layerType, inGroupIDs and derivedFilterPath
+&#x9; &#x9;targetResource
+
+ &#x9;&#x9;-- If inTargetFolder is blank, then layerType, inGroupIds must be set with derivedFilterPath being optional
+&#x9;&#x9;&#x9;-- the designator for the layer in which to generate from
+&#x9;&#x9;&#x9;-- PM=Physical Metadata - generateDatasourceList physical metadata tables
+&#x9;&#x9;&#x9;-- FV=Formatting Views &#x9;- generateDatasourceList formatting views
+&#x9;&#x9;&#x9;-- BV=Business Views &#x9;- generateDatasourceList business views (only single source)
+&#x9;&#x9;&#x9;-- LV=Logical Views &#x9;- generateDatasourceList logical views (only single source)
+&#x9;&#x9;&#x9;-- CV=Client Views &#x9;&#x9;- generateDatasourceList client views (only single source)
+&#x9;&#x9;&#x9;-- CP=Client Published &#x9;- generateDatasourceList client published views (only single source)
+ &#x9;&#x9;layerType
+
+&#x9;&#x9;&#x9;-- This is a comma separate list group ids to process. 
+&#x9;&#x9;&#x9;-- This is a filter that allows the user to only generate for a specific group or list of groups
+&#x9;&#x9;&#x9;--   found in the /generationScripts/Configure/ConfigureStartingFolders.
+&#x9;&#x9;&#x9;--   Pass in null to select all groupIds.
+&#x9;&#x9;inGroupIds
+
+&#x9;&#x9;&#x9;-- The list &quot;derivedFilterPath&quot; is a comma-separated list of resources and may be used with either generateToFolder (option 1) to groupId (option 2) 
+&#x9;&#x9;&#x9;-- The path is derived by concatenating the partial filter path with the target path of the designated layer type.
+&#x9;&#x9;&#x9;-- The layerType and the groupId are used to filter the rows from the configureStartingFolders.  The target path is
+&#x9;&#x9;&#x9;--    defined in configureStartingFolders per the layerType and groupId combination.
+&#x9;&#x9;&#x9;--   e.g. layerType=PV and targetFolderPath=/shared/BestPractices/DataAbstractionSample/L1_Physical_Layer/Physical_Views
+&#x9;&#x9;&#x9;--        The derivedFilterPath list=CUSTOMERS,EMPLOYEES
+&#x9;&#x9;&#x9;--        Even though there are several other views in the /CISORADEMO folder under the Physical_Views only the ones specified
+&#x9;&#x9;&#x9;--&#x9;      will be generated.  Views directly under the target path do not require any qualifying path except the view name.
+&#x9;&#x9;&#x9;--        Lastly, a leading &apos;/&apos; is not required but may be present if desired.
+&#x9;&#x9;&#x9;-- Correlate the groupId position with the derivedFilterPath position
+&#x9;&#x9;&#x9;--&#x9;&#x9;derivedFilterPath=&quot;customers,orders&quot;,shippingmethods
+&#x9;&#x9;&#x9;--                         |                     |
+&#x9;&#x9;&#x9;--                         v                     v
+&#x9;&#x9;&#x9;--&#x9;&#x9;          groupId=ds_inventory.tutorial,ds_orders.tutorial
+&#x9;&#x9;&#x9;-- If null, generate views from all target folders as directed by the &quot;configure starting folders&quot; and the designated layer type.
+&#x9;&#x9;derivedFilterPath&#x9;LONGVARCHAR, 
+
+&#x9;&#x9;&#x9;-- The XML of configuration parameters.  A full description can be found in /generationScripts/Configure/ConfigureParams
+&#x9;&#x9;ConfigParamsXML
+
+&#x9;Output:
+&#x9;&#x9;A CSV file is output in the location specified by csvFullPath.  The output format is a comma separate file in this format:
+&#x9;&#x9;&#x9;CommonModelV2Row ROW (
+&#x9;&#x9;&#x9;&#x9;&quot;Data Source&quot; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the data source in composite (data lineage-used resources)
+--[NOT CURRENTLY IMPLEMENTED] Published&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- Indicates whether this element is published in composite (data lineage-dependent resources)
+&#x9;&#x9;&#x9;&#x9;&quot;Parent Name&quot; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The name of the parent container - parent to the parent (a.k.a. grand parent)
+&#x9;&#x9;&#x9;&#x9;&quot;Container Name&quot; &#x9;&#x9;&#x9;VARCHAR(255), -- The name of the container - parent to the resource
+&#x9;&#x9;&#x9;&#x9;&quot;Physical Name&quot;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The physical column name (a.k.a. source column name)
+&#x9;&#x9;&#x9;&#x9;&quot;Physical Type&quot;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The physical type (a.k.a. source column native type)
+&#x9;&#x9;&#x9;&#x9;&quot;Logical Name&quot;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The logical column name (a.k.a. table/view alias)
+&#x9;&#x9;&#x9;&#x9;&quot;Logical Type&quot; &#x9;&#x9;&#x9;&#x9;VARCHAR(255), -- The logical column type
+&#x9;&#x9;&#x9;&#x9;&quot;Logial Transformation&quot;&#x9;&#x9;LONGVARCHAR,  -- The logical column transformation excluding outer cast statement
+&#x9;&#x9;&#x9;&#x9;&quot;Logical Definition&quot;&#x9;&#x9;LONGVARCHAR,  -- The logical resource definition (a.k.a. view/table/column annotation)
+&#x9;&#x9;&#x9;&#x9;&quot;Logical Path&quot;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR   -- The logical Path (this is not dumped to the spreadsheet)
+&#x9;&#x9;&#x9;)
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;created new for modifications for Best Practices 7.0
+&#x9;05/22/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;Modified for Best Practices 7.1
+&#x9;07/31/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;B.P. 7.3: Fixed issue with generating when there is a header.
+&#x9;01/24/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.1: Added the ability to handle columnCaseRule, resourcePrefix, resourceSuffix and newColumnList for generateMode=&apos;G&apos;. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;newColumnList Format: column1&amp;&amp;type1&amp;&amp;value1//column2&amp;&amp;type2&amp;&amp;value2//column3&amp;&amp;type3&amp;&amp;value3
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+&#x9;06/12/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Derived the new generateDatasourceListXMLCSV from generateDatasourceListCSV to eliminate vector usage.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE generateDatasourceListXMLCSV(
+&#x9;&#x9;-- full server path to write out the CSV file
+&#x9;IN csvFullPath&#x9;&#x9;&#x9;LONGVARCHAR,
+
+&#x9;&#x9;-- number of rows to buffer
+&#x9;IN bufferSize&#x9;&#x9;&#x9;INTEGER,
+
+&#x9;&#x9;-- generate the header or not&#x9;
+&#x9;&#x9;-- 0 (FALSE) - do not generate the header
+&#x9;&#x9;-- 1 (TRUE) - do generate the header
+&#x9;IN generateHeader&#x9;&#x9;BIT,
+
+&#x9;&#x9;-- 0 (FALSE) - generate datasource list only with no logical names, 
+    &#x9;-- 1 (TRUE) - generate datasource list with logical names
+   &#x9;IN generateLogicalNames&#x9;BIT,
+
+&#x9;&#x9;-- The target folder in CIS to begin searching for views to generate the view list or
+&#x9;&#x9;-- a target view (exact path) to generate for.
+&#x9;&#x9;-- If this is set it supercedes layerType, inGroupIDs and derivedFilterPath
+&#x9;IN targetResource&#x9;&#x9;LONGVARCHAR,
+
+&#x9;-- If inTargetFolder is blank, then layerType, inGroupIds must be set with derivedFilterPath being optional
+&#x9;&#x9;-- PM=Physical Metadata - generateDatasourceList physical metadata tables
+&#x9;&#x9;-- FV=Formatting Views &#x9;- generateDatasourceList formatting views
+&#x9;&#x9;-- BV=Business Views &#x9;- generateDatasourceList business views (only single source)
+&#x9;&#x9;-- LV=Logical Views &#x9;- generateDatasourceList logical views (only single source)
+&#x9;&#x9;-- CV=Client Views &#x9;&#x9;- generateDatasourceList client views (only single source)
+&#x9;&#x9;-- CP=Client Published &#x9;- generateDatasourceList client published views (only single source)
+   &#x9;IN layerType&#x9;&#x9;&#x9;VARCHAR,
+
+&#x9;&#x9;-- This is a comma separate list group ids to process. 
+&#x9;&#x9;-- This is a filter that allows the user to only generate for a specific group or list of groups
+&#x9;&#x9;--   found in the /generationScripts/Configure/ConfigureStartingFolders.
+&#x9;&#x9;--   Pass in null to select all groupIds.
+&#x9;IN groupIds&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+
+&#x9;&#x9;-- The list &quot;derivedFilterPath&quot; is a comma-separated list of resources and may be used with either generateToFolder (option 1) to groupId (option 2) 
+&#x9;&#x9;-- The path is derived by concatenating the partial filter path with the source path of the designated layer type.
+&#x9;&#x9;-- The layerType and the groupId are used to filter the rows from the configureStartingFolders.  The source path is
+&#x9;&#x9;--    defined in configureStartingFolders per the layerType and groupId combination.
+&#x9;&#x9;--   e.g. layerType=CP and sourceFolderPath=/shared/BestPractices/DataAbstractionSample/L1_Mapping_Layer/Client_Views
+&#x9;&#x9;--        The derivedFilterPath list=Orders_Closed,/Orders/Customers,Orders/Product
+&#x9;&#x9;--        Even though there are several other views in the /Orders folder under the Client_Views only the ones specified
+&#x9;&#x9;--&#x9;      will be generated to the Client_Published.  Views directly under the source path do not require any qualifying path except the view name.
+&#x9;&#x9;--        Lastly, a leading &apos;/&apos; is not required but may be present if desired.
+&#x9;&#x9;-- Correlate the groupId position with the derivedFilterPath position
+&#x9;&#x9;--&#x9;&#x9;derivedFilterPath=&quot;customers,orders&quot;,shippingmethods
+&#x9;&#x9;--                         |                     |
+&#x9;&#x9;--                         v                     v
+&#x9;&#x9;--&#x9;&#x9;          groupId=ds_inventory.tutorial,ds_orders.tutorial
+&#x9;&#x9;-- If null, generate views from all source folders as directed by the &quot;configure starting folders&quot; and the designated layer type.
+&#x9;IN derivedFilterPath&#x9;LONGVARCHAR,
+
+&#x9;&#x9;-- The XML of configuration parameters.  A full description can be found in /generationScripts/Configure/ConfigureParams
+&#x9;IN ConfigParamsXML&#x9;&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;DECLARE generateViewsWrapper INTEGER DEFAULT 1;
+&#x9;DECLARE TAB&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.TAB;
+&#x9;DECLARE CR&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.CR;
+&#x9;DECLARE LF&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.LF;
+&#x9;DECLARE bufferCount &#x9;&#x9;INTEGER DEFAULT bufferSize;
+&#x9;DECLARE rowCount&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE append&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE sep&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;,&apos;;
+&#x9;DECLARE qualifier&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;&quot;&apos;;
+&#x9;DECLARE eol&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.eol;
+&#x9;DECLARE dataRow&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE escapedRow&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE messageRow&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT null;
+&#x9;DECLARE typeLen&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 5; -- The length the substring for the resource type
+&#x9;DECLARE LogicalDefinition &#x9;LONGVARCHAR;
+&#x9;DECLARE padChar&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;_&apos;;
+&#x9;DECLARE headerCount&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE resourceCount&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE totalColumnCount&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE viewColumnCount&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE startTime&#x9;&#x9;&#x9;TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+&#x9;DECLARE groupStartTime&#x9;&#x9;TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+&#x9;DECLARE endTime&#x9;&#x9;&#x9;&#x9;TIMESTAMP;
+&#x9;DECLARE duration&#x9;&#x9;&#x9;INTERVAL DAY to SECOND;
+&#x9;DECLARE rollingDuration&#x9;&#x9;INTERVAL DAY to SECOND;
+&#x9;DECLARE totalDuration&#x9;&#x9;INTERVAL DAY to SECOND;
+&#x9;DECLARE hours&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE minutes&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE seconds&#x9;&#x9;&#x9;&#x9;DECIMAL(32,1);
+&#x9;DECLARE header&#x9;&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT
+&#x9; &apos;Data Source,Project Folder Name,Great Grand Parent,Grand Parent,Parent Name,Container Name,Physical Name,Physical Type,Logical Name,Logical Type,Logical Transformation,Logical Definition&apos;;
+--[NOT CURRENTLY IMPLEMENTED] &quot;Published&quot; --&gt; &apos;Data Source,Published,Parent Name,Container Name,Physical Name,Physical Type,Logical Name,Logical Type,Logial Transformation,Logical Definition&apos;;
+
+&#x9;-- Write out the header forcing a new file to be created each time
+&#x9;if (generateHeader is not null and generateHeader = 1) then
+--&#x9;&#x9;call print(&apos;creating header&apos;);
+&#x9;&#x9;set dataRow = header;
+&#x9;&#x9;set rowCount = rowCount + 1;
+&#x9;&#x9;set bufferCount = bufferCount - 1;
+&#x9;&#x9;set headerCount = headerCount + 1;
+&#x9;else
+&#x9;&#x9;set dataRow = null;
+&#x9;end if;
+
+&#x9;if (messageRow is null) then
+&#x9;&#x9;-- First time through so print out header
+&#x9;&#x9;call print(RPAD(&apos;TYPE&apos;,typeLen,padChar)||&apos; &apos;||&apos;___#RES &apos;||&apos;#COLS &apos;||&apos;_#TCOLS &apos;||&apos;Duration &apos;||RPAD(&apos;ProjectFolderName&apos;,30,padChar)||&apos; &apos;||RPAD(&apos;GreatGrandParentName&apos;,22,padChar)||&apos; &apos;||RPAD(&apos;GrandParentName&apos;,40,padChar)||&apos; &apos;||RPAD(&apos;ParentName&apos;,40,padChar)||&apos; &apos;||RPAD(&apos;ContainerName&apos;,30,padChar)||&apos; &apos;||RPAD(&apos;PhysicalName&apos;,40,padChar)||&apos; &apos;||&apos;LogicalName&apos;);
+&#x9;end if;
+
+&#x9;-- Loop through the output records
+    for r as 
+        SELECT 
+&#x9;&#x9;&#x9;DataSource,
+&#x9;&#x9;&#x9;ProjectFolderName,
+--[NOT CURRENTLY IMPLEMENTED] Published,
+&#x9;&#x9;&#x9;GreatGrandParentName,
+&#x9;&#x9;&#x9;GrandParentName,
+&#x9;&#x9;&#x9;ParentName,
+&#x9;&#x9;&#x9;ContainerName,
+&#x9;&#x9;&#x9;PhysicalName,
+&#x9;&#x9;&#x9;NativeType,
+&#x9;&#x9;&#x9;LogicalName,
+&#x9;&#x9;&#x9;LogicalType,
+&#x9;&#x9;&#x9;LogicalTransformation,
+&#x9;&#x9;&#x9;LogicalDefinition,
+&#x9;&#x9;&#x9;Duration
+        FROM /shared/ASAssets/BestPractices_v81/Procedures/generateDatasourceListXML(targetResource, generateLogicalNames, layerType, groupIds, derivedFilterPath, null, ConfigParamsXML)
+&#x9;&#x9;WHERE DataSource != &apos;FINISHED&apos;
+&#x9;do
+&#x9;&#x9;if (bufferCount = 0) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/file/FileProcessingCJP/createFileAscii(csvFullPath, append, dataRow);
+&#x9;&#x9;&#x9;set endTime = CURRENT_TIMESTAMP;
+&#x9;&#x9;&#x9;set duration = endTime - groupStartTime;
+&#x9;&#x9;&#x9;set totalDuration = endTime - startTime;
+&#x9;&#x9;&#x9;call print(&apos;rows=&apos;||rowCount||&apos; = (header=&apos;||headerCount||&apos; + resources=&apos;||resourceCount||&apos; + columns=&apos;||totalColumnCount||&apos;)   append=&apos;||append||&apos;   buffered group duration=&apos;||cast(duration as varchar)||&apos;   total duration=&apos;||cast(totalDuration as varchar));
+&#x9;&#x9;&#x9;set groupStartTime = CURRENT_TIMESTAMP;
+&#x9;&#x9;&#x9;set bufferCount = bufferSize;
+&#x9;&#x9;&#x9;set dataRow = &apos;&apos;;
+&#x9;&#x9;&#x9;set append = 1;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;if (dataRow is null) then
+&#x9;&#x9;&#x9;&#x9;set dataRow = &apos;&apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set dataRow = dataRow || eol;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;if (generateViewsWrapper &gt;= 1) then
+&#x9;&#x9;&#x9;-- Print out the resource information
+&#x9;&#x9;&#x9;if (r.NativeType = &apos;TABLE&apos; or r.NativeType = &apos;PROCEDURE&apos;) then
+&#x9;&#x9;&#x9;&#x9;if (messageRow is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set hours = EXTRACT(HOUR FROM rollingDuration);
+&#x9;&#x9;&#x9;&#x9;&#x9;set minutes = EXTRACT(MINUTE FROM rollingDuration) + hours * 60;
+&#x9;&#x9;&#x9;&#x9;&#x9;set seconds = ROUND(EXTRACT(SECOND FROM rollingDuration),1);
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = REPLACE(messageRow, &apos;:XXXXX:&apos;, LPAD(viewColumnCount,5,padChar));
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = REPLACE(messageRow, &apos;:YYYYYYY:&apos;, LPAD(totalColumnCount,7,padChar));
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = REPLACE(messageRow, &apos;:ZZZZZZZZ:&apos;, LPAD(minutes,3,&apos;0&apos;)||&apos;:&apos;||LPAD(seconds,4,&apos;0&apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;call print(messageRow);
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;set viewColumnCount = 0;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set resourceCount = resourceCount + 1;
+&#x9;&#x9;&#x9;&#x9;set messageRow = 
+&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(SUBSTRING(r.NativeType,1,typeLen),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;typeLen,padChar)||&apos; &apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;LPAD(cast(resourceCount as varchar),&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;7,padChar)||&apos; &apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;:XXXXX: &apos;||&#x9; &#x9;-- column count placeholder
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;:YYYYYYY: &apos;||&#x9; &#x9;-- total column count placeholder
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;:ZZZZZZZZ: &apos;;&#x9;-- view duration placeholder
+&#x9;&#x9;&#x9;&#x9;if (r.ProjectFolderName IS NULL OR LENGTH(&apos;|&apos;||r.ProjectFolderName||&apos;|&apos;) = 2) then  --empty
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(padChar,&#x9;&#x9;&#x9;&#x9;30,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(r.ProjectFolderName,&#x9;30,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;if (r.GreatGrandParentName IS NULL OR LENGTH(&apos;|&apos;||r.GreatGrandParentName||&apos;|&apos;) = 2) then  --empty
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(padChar,&#x9;&#x9;&#x9;&#x9;22,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(r.GreatGrandParentName,&#x9;22,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;if (r.GrandParentName IS NULL OR LENGTH(&apos;|&apos;||r.GrandParentName||&apos;|&apos;) = 2) then  --empty
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(padChar,&#x9;&#x9;&#x9;&#x9;40,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(r.GrandParentName,&#x9;&#x9;40,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;if (r.ParentName IS NULL OR LENGTH(&apos;|&apos;||r.ParentName||&apos;|&apos;) = 2) then  --empty
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(padChar,&#x9;&#x9;&#x9;&#x9;40,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(r.ParentName,&#x9;&#x9;&#x9;40,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;if (r.ContainerName IS NULL OR LENGTH(&apos;|&apos;||r.ContainerName||&apos;|&apos;) = 2) then  --empty
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(padChar,&#x9;&#x9;&#x9;&#x9;30,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(r.ContainerName,&#x9;&#x9;30,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;if (r.PhysicalName IS NULL OR LENGTH(&apos;|&apos;||r.PhysicalName||&apos;|&apos;) = 2) then  --empty
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(padChar,&#x9;&#x9;&#x9;&#x9;40,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || RPAD(r.PhysicalName,&#x9;&#x9;&#x9;40,padChar)||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set messageRow = messageRow || NVL(r.LogicalName,&apos; &apos;);
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set totalColumnCount = totalColumnCount + 1;&#x9;-- Count the total number of columns oveall
+&#x9;&#x9;&#x9;&#x9;set viewColumnCount = viewColumnCount + 1;&#x9;&#x9;-- Count the number of columns in the view
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;set bufferCount = bufferCount - 1;
+&#x9;&#x9;set rowCount = rowCount + 1;
+&#x9;
+&#x9;&#x9;--Replace tab with a &lt;TAB&gt; symbol
+&#x9;&#x9;set LogicalDefinition = TRIM(REPLACE(r.LogicalDefinition,TAB,&apos;&lt;TAB&gt;&apos;)); -- Tab
+&#x9;&#x9;--Replace carriage return/line feed with a &lt;CR&gt;&lt;LF&gt; symbol
+&#x9;&#x9;set LogicalDefinition = TRIM(REPLACE(LogicalDefinition,CR,&apos;&lt;CR&gt;&apos;)); -- Carriage return
+&#x9;&#x9;set LogicalDefinition = TRIM(REPLACE(LogicalDefinition,LF,&apos;&lt;LF&gt;&apos;)); -- Line Feed
+
+&#x9;&#x9;--Replace XML carriage return/line feed with a &lt;CR&gt;&lt;LF&gt; symbol
+&#x9;&#x9;set LogicalDefinition = TRIM(REPLACE(REPLACE(LogicalDefinition,&apos;&amp;#xd;&apos;,&apos; &apos;),&apos;&amp;#xD;&apos;,&apos;&lt;CR&gt;&apos;)); -- XML Carriage Return representation
+&#x9;&#x9;set LogicalDefinition = TRIM(REPLACE(REPLACE(LogicalDefinition,&apos;&amp;#xa;&apos;,&apos; &apos;),&apos;&amp;#xA;&apos;,&apos;&lt;LF&gt;&apos;)); -- XML Line Feed representation
+
+&#x9;&#x9;-- Add to the dataRow buffer
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.DataSource,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.ProjectFolderName,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+--[NOT CURRENTLY IMPLEMENTED] TRIM(NVL(escapeCSV(r.Published,sep,qualifier),&apos;  &apos;))||sep||
+&#x9;&#x9;--call /shared/ASAssets/Utilities/string/escapeCSV(r.Published,sep,qualifier, escapedRow);
+&#x9;&#x9;--set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.GreatGrandParentName,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.GrandParentName,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.ParentName,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.ContainerName,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.PhysicalName,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.NativeType,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.LogicalName,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.LogicalType,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(r.LogicalTransformation,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/escapeCSV(LogicalDefinition,sep,qualifier, escapedRow);
+&#x9;&#x9;set dataRow = dataRow || TRIM(NVL(escapedRow,&apos;  &apos;))||sep;
+
+&#x9;&#x9;-- This is a rolling duration for a view.  The column row for a view contains the total processing duration for that view.
+&#x9;&#x9;set rollingDuration = r.Duration; 
+&#x9;end for;
+
+&#x9;-- Print out the final TABLE or PROCEDURE message
+&#x9;if (messageRow is not null) then
+&#x9;&#x9;set hours = EXTRACT(HOUR FROM rollingDuration);
+&#x9;&#x9;set minutes = EXTRACT(MINUTE FROM rollingDuration) + hours * 60;
+&#x9;&#x9;set seconds = ROUND(EXTRACT(SECOND FROM rollingDuration),1);
+&#x9;&#x9;set messageRow = REPLACE(messageRow, &apos;:XXXXX:&apos;, LPAD(viewColumnCount,5,padChar));
+&#x9;&#x9;set messageRow = REPLACE(messageRow, &apos;:YYYYYYY:&apos;, LPAD(totalColumnCount,7,padChar));
+&#x9;&#x9;set messageRow = REPLACE(messageRow, &apos;:ZZZZZZZZ:&apos;, LPAD(minutes,3,&apos;0&apos;)||&apos;:&apos;||LPAD(seconds,4,&apos;0&apos;));
+&#x9;&#x9;call print(messageRow);
+&#x9;end if;
+&#x9;-- Write out the final part of the buffer
+&#x9;if (dataRow is not null) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/file/FileProcessingCJP/createFileAscii(csvFullPath, append, dataRow);
+&#x9;&#x9;set endTime = CURRENT_TIMESTAMP;
+&#x9;&#x9;set duration = endTime - groupStartTime;
+&#x9;&#x9;set totalDuration = endTime - startTime;
+&#x9;&#x9;call print(&apos;rows=&apos;||rowCount||&apos; = (header=&apos;||headerCount||&apos; + resources=&apos;||resourceCount||&apos; + columns=&apos;||totalColumnCount||&apos;)   append=&apos;||append||&apos;   buffered group duration=&apos;||cast(duration as varchar)||&apos;   total duration=&apos;||cast(totalDuration as varchar));
+&#x9;end if;
+
+&#x9;call print(&apos;&apos;);
+&#x9;call print(&apos;rows=&apos;||rowCount||&apos; = (header=&apos;||headerCount||&apos; + resources=&apos;||resourceCount||&apos; + columns=&apos;||totalColumnCount||&apos;)&apos;);
+&#x9;call print(&apos;&apos;);
+&#x9;set endTime = CURRENT_TIMESTAMP;
+&#x9;set totalDuration = endTime - startTime;
+&#x9;call print(&apos;Start Time=&apos;||startTime);
+&#x9;call print(&apos;  End Time=&apos;||endTime);
+&#x9;call print(&apos;  Duration=&apos;||cast(totalDuration as varchar));
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1570164238389</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">na</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">asp5665</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:8:Customized" type="STRING">datatype.changed;datatype.changed</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">8/387</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">9/242</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">11/265</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/397</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/214</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/379</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/396</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/392</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/395</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/391</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/390</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+</metadata>

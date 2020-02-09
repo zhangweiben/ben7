@@ -1,0 +1,1508 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="Amw_Hatvcase" path="/shared/Common/Physical/Formatting/Sales_Support/Amw_Hatvcase" type="TABLE" subtype="SQL_TABLE" changeToken="0" tableType="VIEW">
+  <columns>
+    <column name="amw_hatvcaseid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_1stmonthofqual" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_aboid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_abonumber" nullable="true">
+      <datatype type="STRING" maxLength="15"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_accountreceivables" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_achievers" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_adano" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_approvaldone" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_approvallevel" nullable="true">
+      <datatype type="STRING" maxLength="10"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_approvalteam" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_approver" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_awardlevelid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_bcrconcerns" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_businessaffiliation" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_businessjustification" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_businessnamelocal" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_byfaapoints" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_cancelledbyid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_comments" nullable="true">
+      <datatype type="STRING" maxLength="250"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_congratslettersent" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_coreplanaward" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_costiboimpact" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_currentapprovallevel" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_currentaward" nullable="true">
+      <datatype type="STRING" maxLength="50"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_dateofdecision" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_dateofexcapprovaldecision" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_dateofexcreq" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_dateofrecommendation" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_datequalapprovedonholdordenied" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_datesverifiedcommunicationlog" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_deadlinedate" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_decision" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_diamondclubedc" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_diamonddreams" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_diamondid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_docneeded" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_docneededltrsent" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_docreceived" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_docstatuscode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_dummycurrentapprovallevel" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_earlyreleaseofpayment" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_emeraldid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_emeraldprofitsharing" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_explanation" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_explanationofrequireddocumentation" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_faa" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_faalevelidentification" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_faastrongestmarketid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_finalapprovals" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_finalqualificationmonthprojectedid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_firstmonthofqualificationid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_fiscalyear" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_grouparbalance" nullable="true">
+      <datatype type="DECIMAL" maxDigits="23" maxFractionalDigits="10"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_grouparbalanceasof" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_groupsize" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_groupvolume" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_hatadminnameid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_hatfilestatuscode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_hatvcasestatuscode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_hatvgovernancegroupname" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_hatvkpiurl" nullable="true">
+      <datatype type="STRING" maxLength="1000"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_hatvtrackingawardsid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_highticketitemsales" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_incountryfaapoints" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_internationalfaapoints" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_internationalsponsorid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_investigationcompleted" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_item" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_leaderdevelopmentaward" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_managernameid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_monthendorder" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_nagcregionalfc" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_name" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_newawardorrequalification" nullable="true">
+      <datatype type="STRING" maxLength="50"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_nextawardqualificationchinese" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_npc" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_ofincountrylegs" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_ofinternationallegs" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_ontrackasofid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_orderingabos" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_otcattca" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_otherkpis" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_performanceyear" nullable="true">
+      <datatype type="STRING" maxLength="4"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_personalarbalance" nullable="true">
+      <datatype type="DECIMAL" maxDigits="23" maxFractionalDigits="10"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_personalarbalanceasof" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_personalgroupcode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_personalvolume" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_platinumid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_pvperabo" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_q12" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_q711" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_qualificationsprofile" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_qualificationstatuscode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_reasonqualwasputonholdordenied" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_recognitionawardsrewardsdetail" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_recommendation" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_recommendationcomments" nullable="true">
+      <datatype type="STRING" maxLength="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_reviewedbyid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_rulesadministratornameid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_salesplanaffiliate" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_sponsorid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_totalfaapoints" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_totallegs" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_trackercommunicationsent" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_trackinglevel" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_trackingpinlevels" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_volumeequivalency" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_volumeprofile" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="createdby" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="createdon" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="createdonbehalfby" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="importsequencenumber" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="modifiedby" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="modifiedon" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="modifiedonbehalfby" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="overriddencreatedon" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="ownerid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="owningbusinessunit" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="owningteam" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="owninguser" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="processid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="stageid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="statecode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="statuscode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="timezoneruleversionnumber" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="traversedpath" nullable="true">
+      <datatype type="STRING" maxLength="1250"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="utcconversiontimezonecode" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="versionnumber" nullable="true">
+      <datatype type="INTEGER"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_highesttrackingawardid" nullable="true">
+      <datatype type="STRING" minLength="36" maxLength="36"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_deniedqreason" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_hardkpiplatinumprerequisite" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_highesttrackingawardidchinese" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_currentawardchinese" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="amw_finalapproval" nullable="true">
+      <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+  </columns>
+  <indexes>
+    <index name="PK__amw_hatv__37709726E732029D" type="PRIMARY_KEY" unique="true">
+      <indexColumn name="amw_hatvcaseid" sortOrder="ASCENDING"/>
+    </index>
+  </indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="nobody" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ SELECT"/>
+  </security>
+  <dependency target="/shared/Common/Physical/Metadata/Azure/SQLServer_Sales_Support/RMB07001_SALES_SPRT_PRD_DYNMC_APP/dbo/amw_hatvcase" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="amw_hatvcaseId" nullable="false">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_1stMonthofQual">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_ABOId">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_abonumber">
+        <datatype type="STRING" maxLength="15"/>
+      </element>
+      <element name="amw_AccountReceivables">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_Achievers">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_ADANo">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_approvaldone">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_approvallevel">
+        <datatype type="STRING" maxLength="10"/>
+      </element>
+      <element name="amw_approvalteam">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_approver">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_awardlevelid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_BCRConcerns">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_businessaffiliation">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_BusinessJustification">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_businessnamelocal">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_ByFAAPoints">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_CancelledByID">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_comments">
+        <datatype type="STRING" maxLength="250"/>
+      </element>
+      <element name="amw_CongratsLetterSent">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_CorePlanAward">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_CostIBOImpact">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_currentapprovallevel">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="amw_currentaward">
+        <datatype type="STRING" maxLength="50"/>
+      </element>
+      <element name="amw_dateofdecision">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_DateOfExcApprovalDecision">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_DateOfExcReq">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_dateofrecommendation">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_DateQualApprovedOnHoldorDenied">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_DatesVerifiedCommunicationLog">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_DeadlineDate">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_decision">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_DiamondClubEDC">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_DiamondDreams">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_diamondid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_DocNeeded">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_DocNeededLtrSent">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_DocReceived">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_DocStatusCode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_dummycurrentapprovallevel">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_EarlyReleaseofPayment">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_emeraldid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_EmeraldProfitSharing">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_Explanation">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_ExplanationofRequiredDocumentation">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_FAA">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_FAALevelIdentification">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_FAAStrongestMarketid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_FinalApprovals">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_FinalQualificationMonthProjectedid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_FirstMonthofQualificationid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_FiscalYear">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_GroupARBalance">
+        <datatype type="DECIMAL" maxDigits="23" maxFractionalDigits="10"/>
+      </element>
+      <element name="amw_GroupARBalanceAsOf">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_GroupSize">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_GroupVolume">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_HATAdminNameID">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_HATFileStatusCode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_HATVCaseStatusCode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_hatvgovernancegroupname">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_hatvkpiurl">
+        <datatype type="STRING" maxLength="1000"/>
+      </element>
+      <element name="amw_hatvtrackingawardsid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_HighTicketItemSales">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_InCountryFAAPoints">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_InternationalFAAPoints">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_internationalsponsorid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_Investigationcompleted">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_Item">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_LeaderDevelopmentAward">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_ManagerNameID">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_MonthEndOrder">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_NAGCRegionalFC">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_name">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_newawardorrequalification">
+        <datatype type="STRING" maxLength="50"/>
+      </element>
+      <element name="amw_nextawardqualificationchinese">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_NPC">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_ofInCountryLegs">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_ofInternationalLegs">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_ontrackasofid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_OrderingABOs">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_OTCATTCA">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_OtherKPIs">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_PerformanceYear">
+        <datatype type="STRING" maxLength="4"/>
+      </element>
+      <element name="amw_PersonalARBalance">
+        <datatype type="DECIMAL" maxDigits="23" maxFractionalDigits="10"/>
+      </element>
+      <element name="amw_PersonalARBalanceAsOf">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_PersonalGroupCode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_PersonalVolume">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_platinumid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_PVperABO">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_Q12">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_Q711">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_qualificationsprofile">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_QualificationStatusCode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_ReasonQualWasPutonHoldorDenied">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_RecognitionAwardsRewardsDetail">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_recommendation">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_recommendationcomments">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="amw_ReviewedByID">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_RulesAdministratorNameID">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_salesplanaffiliate">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_sponsorid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_TotalFAAPoints">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_TotalLegs">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="amw_TrackerCommunicationSent">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="amw_TrackingLevel">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_TrackingPinLevels">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_VolumeEquivalency">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_VolumeProfile">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="CreatedBy">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="CreatedOn">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="CreatedOnBehalfBy">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="ImportSequenceNumber">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="ModifiedBy">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="ModifiedOn">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="ModifiedOnBehalfBy">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="OverriddenCreatedOn">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="OwnerId">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="OwningBusinessUnit">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="OwningTeam">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="OwningUser">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="processid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="stageid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="statecode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="statuscode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="TimeZoneRuleVersionNumber">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="traversedpath">
+        <datatype type="STRING" maxLength="1250"/>
+      </element>
+      <element name="UTCConversionTimeZoneCode">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="VersionNumber">
+        <datatype type="INTEGER"/>
+      </element>
+      <element name="amw_highesttrackingawardid">
+        <datatype type="STRING" minLength="36" maxLength="36"/>
+      </element>
+      <element name="amw_deniedqreason">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_hardkpiplatinumprerequisite">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="amw_highesttrackingawardidchinese">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_currentawardchinese">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="amw_FinalApproval">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="SQL" type="STRING">SELECT 
+&#x9;amw_hatvcase.amw_hatvcaseId amw_hatvcaseid,
+&#x9;CAST(amw_hatvcase.amw_1stMonthofQual AS VARCHAR(100)) AS amw_1stmonthofqual,
+&#x9;CAST(amw_hatvcase.amw_ABOId AS CHAR(36)) AS amw_aboid,
+&#x9;CAST(amw_hatvcase.amw_abonumber AS VARCHAR(15)) AS amw_abonumber,
+&#x9;CAST(amw_hatvcase.amw_AccountReceivables AS VARCHAR(100)) AS amw_accountreceivables,
+&#x9;CAST(amw_hatvcase.amw_Achievers AS BIT) AS amw_achievers,
+&#x9;CAST(amw_hatvcase.amw_ADANo AS VARCHAR(100)) AS amw_adano,
+&#x9;CAST(amw_hatvcase.amw_approvaldone AS BIT) AS amw_approvaldone,
+&#x9;CAST(amw_hatvcase.amw_approvallevel AS VARCHAR(10)) AS amw_approvallevel,
+&#x9;CAST(amw_hatvcase.amw_approvalteam AS CHAR(36)) AS amw_approvalteam,
+&#x9;CAST(amw_hatvcase.amw_approver AS CHAR(36)) AS amw_approver,
+&#x9;CAST(amw_hatvcase.amw_awardlevelid AS CHAR(36)) AS amw_awardlevelid,
+&#x9;CAST(amw_hatvcase.amw_BCRConcerns AS BIT) AS amw_bcrconcerns,
+&#x9;CAST(amw_hatvcase.amw_businessaffiliation AS CHAR(36)) AS amw_businessaffiliation,
+&#x9;CAST(amw_hatvcase.amw_BusinessJustification AS VARCHAR(2147483647)) AS amw_businessjustification,
+&#x9;CAST(amw_hatvcase.amw_businessnamelocal AS VARCHAR(100)) AS amw_businessnamelocal,
+&#x9;CAST(amw_hatvcase.amw_ByFAAPoints AS VARCHAR(100)) AS amw_byfaapoints,
+&#x9;CAST(amw_hatvcase.amw_CancelledByID AS CHAR(36)) AS amw_cancelledbyid,
+&#x9;CAST(amw_hatvcase.amw_comments AS VARCHAR(250)) AS amw_comments,
+&#x9;CAST(amw_hatvcase.amw_CongratsLetterSent AS TIMESTAMP) AS amw_congratslettersent,
+&#x9;CAST(amw_hatvcase.amw_CorePlanAward AS BIT) AS amw_coreplanaward,
+&#x9;CAST(amw_hatvcase.amw_CostIBOImpact AS VARCHAR(2147483647)) AS amw_costiboimpact,
+&#x9;CAST(amw_hatvcase.amw_currentapprovallevel AS VARCHAR(1)) AS amw_currentapprovallevel,
+&#x9;CAST(amw_hatvcase.amw_currentaward AS VARCHAR(50)) AS amw_currentaward,
+&#x9;CAST(amw_hatvcase.amw_dateofdecision AS TIMESTAMP) AS amw_dateofdecision,
+&#x9;CAST(amw_hatvcase.amw_DateOfExcApprovalDecision AS TIMESTAMP) AS amw_dateofexcapprovaldecision,
+&#x9;CAST(amw_hatvcase.amw_DateOfExcReq AS TIMESTAMP) AS amw_dateofexcreq,
+&#x9;CAST(amw_hatvcase.amw_dateofrecommendation AS TIMESTAMP) AS amw_dateofrecommendation,
+&#x9;CAST(amw_hatvcase.amw_DateQualApprovedOnHoldorDenied AS TIMESTAMP) AS amw_datequalapprovedonholdordenied,
+&#x9;CAST(amw_hatvcase.amw_DatesVerifiedCommunicationLog AS VARCHAR(2147483647)) AS amw_datesverifiedcommunicationlog,
+&#x9;CAST(amw_hatvcase.amw_DeadlineDate AS TIMESTAMP) AS amw_deadlinedate,
+&#x9;CAST(amw_hatvcase.amw_decision AS INTEGER) AS amw_decision,
+&#x9;CAST(amw_hatvcase.amw_DiamondClubEDC AS BIT) AS amw_diamondclubedc,
+&#x9;CAST(amw_hatvcase.amw_DiamondDreams AS BIT) AS amw_diamonddreams,
+&#x9;CAST(amw_hatvcase.amw_diamondid AS CHAR(36)) AS amw_diamondid,
+&#x9;CAST(amw_hatvcase.amw_DocNeeded AS BIT) AS amw_docneeded,
+&#x9;CAST(amw_hatvcase.amw_DocNeededLtrSent AS TIMESTAMP) AS amw_docneededltrsent,
+&#x9;CAST(amw_hatvcase.amw_DocReceived AS TIMESTAMP) AS amw_docreceived,
+&#x9;CAST(amw_hatvcase.amw_DocStatusCode AS INTEGER) AS amw_docstatuscode,
+&#x9;CAST(amw_hatvcase.amw_dummycurrentapprovallevel AS INTEGER) AS amw_dummycurrentapprovallevel,
+&#x9;CAST(amw_hatvcase.amw_EarlyReleaseofPayment AS BIT) AS amw_earlyreleaseofpayment,
+&#x9;CAST(amw_hatvcase.amw_emeraldid AS CHAR(36)) AS amw_emeraldid,
+&#x9;CAST(amw_hatvcase.amw_EmeraldProfitSharing AS BIT) AS amw_emeraldprofitsharing,
+&#x9;CAST(amw_hatvcase.amw_Explanation AS VARCHAR(2147483647)) AS amw_explanation,
+&#x9;CAST(amw_hatvcase.amw_ExplanationofRequiredDocumentation AS VARCHAR(2147483647)) AS amw_explanationofrequireddocumentation,
+&#x9;CAST(amw_hatvcase.amw_FAA AS BIT) AS amw_faa,
+&#x9;CAST(amw_hatvcase.amw_FAALevelIdentification AS VARCHAR(100)) AS amw_faalevelidentification,
+&#x9;CAST(amw_hatvcase.amw_FAAStrongestMarketid AS CHAR(36)) AS amw_faastrongestmarketid,
+&#x9;CAST(amw_hatvcase.amw_FinalApprovals AS VARCHAR(2147483647)) AS amw_finalapprovals,
+&#x9;CAST(amw_hatvcase.amw_FinalQualificationMonthProjectedid AS CHAR(36)) AS amw_finalqualificationmonthprojectedid,
+&#x9;CAST(amw_hatvcase.amw_FirstMonthofQualificationid AS CHAR(36)) AS amw_firstmonthofqualificationid,
+&#x9;CAST(amw_hatvcase.amw_FiscalYear AS VARCHAR(100)) AS amw_fiscalyear,
+&#x9;CAST(amw_hatvcase.amw_GroupARBalance AS DECIMAL(23,10)) AS amw_grouparbalance,
+&#x9;CAST(amw_hatvcase.amw_GroupARBalanceAsOf AS TIMESTAMP) AS amw_grouparbalanceasof,
+&#x9;CAST(amw_hatvcase.amw_GroupSize AS INTEGER) AS amw_groupsize,
+&#x9;CAST(amw_hatvcase.amw_GroupVolume AS INTEGER) AS amw_groupvolume,
+&#x9;CAST(amw_hatvcase.amw_HATAdminNameID AS CHAR(36)) AS amw_hatadminnameid,
+&#x9;CAST(amw_hatvcase.amw_HATFileStatusCode AS INTEGER) AS amw_hatfilestatuscode,
+&#x9;CAST(amw_hatvcase.amw_HATVCaseStatusCode AS INTEGER) AS amw_hatvcasestatuscode,
+&#x9;CAST(amw_hatvcase.amw_hatvgovernancegroupname AS CHAR(36)) AS amw_hatvgovernancegroupname,
+&#x9;CAST(amw_hatvcase.amw_hatvkpiurl AS VARCHAR(1000)) AS amw_hatvkpiurl,
+&#x9;CAST(amw_hatvcase.amw_hatvtrackingawardsid AS CHAR(36)) AS amw_hatvtrackingawardsid,
+&#x9;CAST(amw_hatvcase.amw_HighTicketItemSales AS VARCHAR(2147483647)) AS amw_highticketitemsales,
+&#x9;CAST(amw_hatvcase.amw_InCountryFAAPoints AS INTEGER) AS amw_incountryfaapoints,
+&#x9;CAST(amw_hatvcase.amw_InternationalFAAPoints AS INTEGER) AS amw_internationalfaapoints,
+&#x9;CAST(amw_hatvcase.amw_internationalsponsorid AS CHAR(36)) AS amw_internationalsponsorid,
+&#x9;CAST(amw_hatvcase.amw_Investigationcompleted AS BIT) AS amw_investigationcompleted,
+&#x9;CAST(amw_hatvcase.amw_Item AS VARCHAR(100)) AS amw_item,
+&#x9;CAST(amw_hatvcase.amw_LeaderDevelopmentAward AS BIT) AS amw_leaderdevelopmentaward,
+&#x9;CAST(amw_hatvcase.amw_ManagerNameID AS CHAR(36)) AS amw_managernameid,
+&#x9;CAST(amw_hatvcase.amw_MonthEndOrder AS VARCHAR(100)) AS amw_monthendorder,
+&#x9;CAST(amw_hatvcase.amw_NAGCRegionalFC AS BIT) AS amw_nagcregionalfc,
+&#x9;CAST(amw_hatvcase.amw_name AS VARCHAR(100)) AS amw_name,
+&#x9;CAST(amw_hatvcase.amw_newawardorrequalification AS VARCHAR(50)) AS amw_newawardorrequalification,
+&#x9;CAST(amw_hatvcase.amw_nextawardqualificationchinese AS VARCHAR(100)) AS amw_nextawardqualificationchinese,
+&#x9;CAST(amw_hatvcase.amw_NPC AS BIT) AS amw_npc,
+&#x9;CAST(amw_hatvcase.amw_ofInCountryLegs AS INTEGER) AS amw_ofincountrylegs,
+&#x9;CAST(amw_hatvcase.amw_ofInternationalLegs AS INTEGER) AS amw_ofinternationallegs,
+&#x9;CAST(amw_hatvcase.amw_ontrackasofid AS CHAR(36)) AS amw_ontrackasofid,
+&#x9;CAST(amw_hatvcase.amw_OrderingABOs AS INTEGER) AS amw_orderingabos,
+&#x9;CAST(amw_hatvcase.amw_OTCATTCA AS BIT) AS amw_otcattca,
+&#x9;CAST(amw_hatvcase.amw_OtherKPIs AS VARCHAR(2147483647)) AS amw_otherkpis,
+&#x9;CAST(amw_hatvcase.amw_PerformanceYear AS VARCHAR(4)) AS amw_performanceyear,
+&#x9;CAST(amw_hatvcase.amw_PersonalARBalance AS DECIMAL(23,10)) AS amw_personalarbalance,
+&#x9;CAST(amw_hatvcase.amw_PersonalARBalanceAsOf AS TIMESTAMP) AS amw_personalarbalanceasof,
+&#x9;CAST(amw_hatvcase.amw_PersonalGroupCode AS INTEGER) AS amw_personalgroupcode,
+&#x9;CAST(amw_hatvcase.amw_PersonalVolume AS INTEGER) AS amw_personalvolume,
+&#x9;CAST(amw_hatvcase.amw_platinumid AS CHAR(36)) AS amw_platinumid,
+&#x9;CAST(amw_hatvcase.amw_PVperABO AS INTEGER) AS amw_pvperabo,
+&#x9;CAST(amw_hatvcase.amw_Q12 AS BIT) AS amw_q12,
+&#x9;CAST(amw_hatvcase.amw_Q711 AS BIT) AS amw_q711,
+&#x9;CAST(amw_hatvcase.amw_qualificationsprofile AS CHAR(36)) AS amw_qualificationsprofile,
+&#x9;CAST(amw_hatvcase.amw_QualificationStatusCode AS INTEGER) AS amw_qualificationstatuscode,
+&#x9;CAST(amw_hatvcase.amw_ReasonQualWasPutonHoldorDenied AS VARCHAR(2147483647)) AS amw_reasonqualwasputonholdordenied,
+&#x9;CAST(amw_hatvcase.amw_RecognitionAwardsRewardsDetail AS VARCHAR(2147483647)) AS amw_recognitionawardsrewardsdetail,
+&#x9;CAST(amw_hatvcase.amw_recommendation AS INTEGER) AS amw_recommendation,
+&#x9;CAST(amw_hatvcase.amw_recommendationcomments AS VARCHAR(2147483647)) AS amw_recommendationcomments,
+&#x9;CAST(amw_hatvcase.amw_ReviewedByID AS CHAR(36)) AS amw_reviewedbyid,
+&#x9;CAST(amw_hatvcase.amw_RulesAdministratorNameID AS CHAR(36)) AS amw_rulesadministratornameid,
+&#x9;CAST(amw_hatvcase.amw_salesplanaffiliate AS CHAR(36)) AS amw_salesplanaffiliate,
+&#x9;CAST(amw_hatvcase.amw_sponsorid AS CHAR(36)) AS amw_sponsorid,
+&#x9;CAST(amw_hatvcase.amw_TotalFAAPoints AS INTEGER) AS amw_totalfaapoints,
+&#x9;CAST(amw_hatvcase.amw_TotalLegs AS INTEGER) AS amw_totallegs,
+&#x9;CAST(amw_hatvcase.amw_TrackerCommunicationSent AS TIMESTAMP) AS amw_trackercommunicationsent,
+&#x9;CAST(amw_hatvcase.amw_TrackingLevel AS VARCHAR(100)) AS amw_trackinglevel,
+&#x9;CAST(amw_hatvcase.amw_TrackingPinLevels AS VARCHAR(100)) AS amw_trackingpinlevels,
+&#x9;CAST(amw_hatvcase.amw_VolumeEquivalency AS BIT) AS amw_volumeequivalency,
+&#x9;CAST(amw_hatvcase.amw_VolumeProfile AS CHAR(36)) AS amw_volumeprofile,
+&#x9;CAST(amw_hatvcase.CreatedBy AS CHAR(36)) AS createdby,
+&#x9;CAST(amw_hatvcase.CreatedOn AS TIMESTAMP) AS createdon,
+&#x9;CAST(amw_hatvcase.CreatedOnBehalfBy AS CHAR(36)) AS createdonbehalfby,
+&#x9;CAST(amw_hatvcase.ImportSequenceNumber AS INTEGER) AS importsequencenumber,
+&#x9;CAST(amw_hatvcase.ModifiedBy AS CHAR(36)) AS modifiedby,
+&#x9;CAST(amw_hatvcase.ModifiedOn AS TIMESTAMP) AS modifiedon,
+&#x9;CAST(amw_hatvcase.ModifiedOnBehalfBy AS CHAR(36)) AS modifiedonbehalfby,
+&#x9;CAST(amw_hatvcase.OverriddenCreatedOn AS TIMESTAMP) AS overriddencreatedon,
+&#x9;CAST(amw_hatvcase.OwnerId AS CHAR(36)) AS ownerid,
+&#x9;CAST(amw_hatvcase.OwningBusinessUnit AS CHAR(36)) AS owningbusinessunit,
+&#x9;CAST(amw_hatvcase.OwningTeam AS CHAR(36)) AS owningteam,
+&#x9;CAST(amw_hatvcase.OwningUser AS CHAR(36)) AS owninguser,
+&#x9;CAST(amw_hatvcase.processid AS CHAR(36)) AS processid,
+&#x9;CAST(amw_hatvcase.stageid AS CHAR(36)) AS stageid,
+&#x9;CAST(amw_hatvcase.statecode AS INTEGER) AS statecode,
+&#x9;CAST(amw_hatvcase.statuscode AS INTEGER) AS statuscode,
+&#x9;CAST(amw_hatvcase.TimeZoneRuleVersionNumber AS INTEGER) AS timezoneruleversionnumber,
+&#x9;CAST(amw_hatvcase.traversedpath AS VARCHAR(1250)) AS traversedpath,
+&#x9;CAST(amw_hatvcase.UTCConversionTimeZoneCode AS INTEGER) AS utcconversiontimezonecode,
+&#x9;CAST(amw_hatvcase.VersionNumber AS BIGINT) AS versionnumber,
+&#x9;CAST(amw_hatvcase.amw_highesttrackingawardid AS CHAR(36)) AS amw_highesttrackingawardid,
+&#x9;CAST(amw_hatvcase.amw_deniedqreason AS BIT) AS amw_deniedqreason,
+&#x9;CAST(amw_hatvcase.amw_hardkpiplatinumprerequisite AS BIT) AS amw_hardkpiplatinumprerequisite,
+&#x9;CAST(amw_hatvcase.amw_highesttrackingawardidchinese AS VARCHAR(100)) AS amw_highesttrackingawardidchinese,
+&#x9;CAST(amw_hatvcase.amw_currentawardchinese AS VARCHAR(100)) AS amw_currentawardchinese,
+&#x9;CAST(amw_hatvcase.amw_FinalApproval AS BIT) AS amw_finalapproval 
+FROM
+&#x9;/shared/Common/Physical/Metadata/Azure/SQLServer_Sales_Support/RMB07001_SALES_SPRT_PRD_DYNMC_APP/dbo/amw_hatvcase amw_hatvcase</attribute>
+  <attribute name="creationDate" type="LONG">1567126960845</attribute>
+  <attribute name="creatorUserDomain" type="STRING">na</attribute>
+  <attribute name="creatorUserId" type="INTEGER">30109</attribute>
+  <attribute name="creatorUserName" type="STRING">aiuhmb0</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1567126960845</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">na</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">30109</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">aiuhmb0</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1567126960845</attribute>
+</metadata>

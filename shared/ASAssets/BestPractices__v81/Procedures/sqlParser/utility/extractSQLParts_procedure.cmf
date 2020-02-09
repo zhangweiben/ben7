@@ -1,0 +1,291 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="extractSQLParts" path="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/extractSQLParts" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="inSqlScript" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="debug2" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="sqlScriptColumns" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="fromClause" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="codingListColumns" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="codingListFrom" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/findString2" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inSearchString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inStringToSearch" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inDirection" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="startingPosition" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="inOccurrences" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="pos" direction="OUT">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedList" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="codingListType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="codingList" direction="OUT">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedString" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inCodingType" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="inEncodingActions" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="codingList" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inModuleNameInvoking" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inDebug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="inStringName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="outString" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/replaceNonAsciiChar" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inReplaceStr" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="outReplaceStr" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;extractSQLParts - Parse the incoming sql script and extract the column list into one variable and the from clause into another variable.
+&#x9;&#x9;Encode the column list for special characters that are found within single or double quotes.
+
+&#x9;IN
+&#x9;&#x9;inSqlScript&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;- The incoming SQL Script
+&#x9;&#x9;debug&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;- Level 1 debug for this procedure (Y or N)
+&#x9;&#x9;debug2&#x9;&#x9;&#x9;&#x9;CHAR(1), &#x9;&#x9;- Level 2 debug for invoked procedures (Y or N)
+&#x9;OUT
+&#x9;&#x9;sqlScriptColumns&#x9;LONGVARCHAR,&#x9;- The list of columns encoded with special characters found between single and double quotes.
+&#x9;&#x9;fromClause&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;- The from clause
+&#x9;&#x9;codingList&#x9;&#x9;&#x9;VARCHAR(4000)&#x9;- The encoding list used to encode the columns.  This will be used to decode the columns
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/16/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;11/19/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;8.1.5: Added UPPER to &apos; FROM &apos;,UPPER(sqlScript) to catch lower case &quot;from&quot; clause.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE extractSQLParts(
+&#x9;IN&#x9;inSqlScript&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  debug&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;-- Level 1 debug for this procedure
+&#x9;IN  debug2&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1), &#x9;-- Level 2 debug for invoked procedures
+&#x9;OUT sqlScriptColumns&#x9;&#x9;LONGVARCHAR,
+&#x9;OUT fromClause&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;OUT codingListColumns&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT codingListFrom&#x9;&#x9;&#x9;VARCHAR(4000)
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;extractSQLParts&apos;;
+&#x9;DECLARE sqlScript&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT inSqlScript;
+&#x9;DECLARE newline&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.newline;
+&#x9;DECLARE pos&#x9;&#x9; &#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE begPos&#x9;&#x9; &#x9;&#x9;INTEGER;
+&#x9;DECLARE endPos&#x9;&#x9; &#x9;&#x9;INTEGER;
+&#x9;DECLARE codingListComma&#x9;&#x9;VARCHAR;
+
+&#x9;-- Get the coding list.  [codingListColumns, codingListFrom, codingListComma, codingListRetriveColumns]
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedList(&apos;codingListColumns&apos;, codingListColumns);
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedList(&apos;codingListFrom&apos;, codingListFrom);
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedList(&apos;codingListComma&apos;, codingListComma);
+
+&#x9;-- Replace all non ASCI characters such as \r\n (chr(13)chr(10)) and tab (chr(9) with a space.
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/replaceNonAsciiChar(sqlScript,sqlScript);
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;1. replace non-ascii sqlScript=&apos;||sqlScript||newline);
+&#x9;end if;
+
+&#x9;-- Encode the sqlScript with special characters in Double Quotes only.   These are typically the columns in double quotes.
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedString(&apos;E&apos;, &apos;D&apos;, codingListFrom, sqlScript, moduleName, debug2, &apos;sqlScript&apos;, sqlScript);
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;2. encode(D) sqlScript=&apos;||sqlScript||&apos;  encode_list=&apos;||codingListColumns||newline);
+&#x9;end if;
+
+&#x9;-- Add a space in front of the SQL Statement
+&#x9;set sqlScript = &apos; &apos;|| sqlScript;
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;3. add beg space sqlScript=&apos;||sqlScript||newline);
+&#x9;end if;
+
+&#x9;-- Remove the Composite OPTION separated by {OPTION }
+&#x9;set begPos = POSITION(&apos;{&apos; IN sqlScript);
+&#x9;set endPos = POSITION(&apos;}&apos; IN sqlScript);
+&#x9;while (begPos &gt; 0 and endPos &gt; 0) do
+&#x9;&#x9;set sqlScript = SUBSTRING(sqlScript,1,begPos-1) || SUBSTRING(sqlScript,endPos+1,LENGTH(sqlScript));
+&#x9;&#x9;set begPos = POSITION(&apos;{&apos; IN sqlScript);
+&#x9;&#x9;set endPos = POSITION(&apos;}&apos; IN sqlScript);
+&#x9;end while;
+
+&#x9;-- Remove comments /* and */ from the sql
+&#x9;set begPos = POSITION(&apos;/*&apos; IN sqlScript);
+&#x9;set endPos = POSITION(&apos;*/&apos; IN sqlScript);
+&#x9;while (begPos &gt; 0 and endPos &gt; 0) do
+&#x9;&#x9;set sqlScript = SUBSTRING(sqlScript,1,begPos-1) || SUBSTRING(sqlScript,endPos+2,LENGTH(sqlScript));
+&#x9;&#x9;set begPos = POSITION(&apos;/*&apos; IN sqlScript);
+&#x9;&#x9;set endPos = POSITION(&apos;*/&apos; IN sqlScript);
+&#x9;end while;
+
+&#x9;-- Remove the SELECT keyword from the sql script
+&#x9;set pos = POSITION(&apos; SELECT &apos; in UPPER(sqlScript));
+&#x9;if (pos &gt; 0) then
+&#x9;&#x9;set sqlScript = &apos; &apos;||TRIM(SUBSTRING(sqlScript, pos+8, LENGTH(sqlScript)));
+&#x9;end if;
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;SELECT: pos=&apos;||pos|| &apos; 4. sqlScript=[&apos;||sqlScript||&apos;]&apos;||newline);
+&#x9;end if;
+
+&#x9;-- Remove the DISTINCT keyword from the sql script
+&#x9;set pos = POSITION(&apos; DISTINCT &apos; in UPPER(sqlScript));
+&#x9;if (pos &gt; 0) then
+&#x9;&#x9;set sqlScript = TRIM(SUBSTRING(sqlScript, pos+10, LENGTH(sqlScript)));
+&#x9;end if;
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;DISTINCT: pos=&apos;||pos||&apos; 5. sqlScript=[&apos;||sqlScript||&apos;]&apos;||newline);
+&#x9;end if;
+
+&#x9;-- Extract the FROM clause from the sql script
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/findString2(&apos; FROM &apos;,UPPER(sqlScript),&apos;R&apos;,null,1,pos);
+&#x9;if (pos &gt; 0) then
+&#x9;&#x9;set fromClause = TRIM(SUBSTRING(sqlScript, pos, LENGTH(sqlScript)));
+&#x9;end if;
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;6. extract FROM: pos=&apos;||pos||&apos; fromClause=[&apos;||fromClause||&apos;]&apos;||newline);
+&#x9;end if;
+
+&#x9;-- Replace commas with a space so that multiple tables will be parsed
+&#x9;set fromClause = REPLACE(fromClause, &apos;,&apos;, &apos; &apos;);
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;7. replace commas fromClause=[&apos;||fromClause||&apos;]&apos;||newline);
+&#x9;end if;
+
+&#x9;--Extract the columns
+&#x9;--&#x9;CALL PRINT(&apos;+++++++ sqlScript:&apos;||sqlScript||&apos; pos:&apos;||CAST(pos AS VARCHAR)) ;
+&#x9;set sqlScriptColumns = TRIM(SUBSTRING(sqlScript,1,pos-1));
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;8. extract SQL COLUMNS sqlScriptColumns=[&apos;||sqlScriptColumns||&apos;]&apos;||newline);
+&#x9;end if;
+
+&#x9;--Encode the values within single quotes.  Columns were done in step 1.
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedString(&apos;E&apos;, &apos;S&apos;, codingListColumns, sqlScriptColumns, moduleName, debug2, &apos;sqlScriptColumns&apos;, sqlScriptColumns);
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;9. encode(S) SQL COLUMNS sqlScriptColumns=&apos;||sqlScriptColumns||&apos;  encode_list=&apos;||codingListColumns||newline);
+&#x9;end if;
+
+&#x9;-- Replace commas inside left and right parentheses
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedString(&apos;E&apos;, &apos;P&apos;, codingListComma, sqlScriptColumns, moduleName, debug2, &apos;sqlScriptColumns&apos;, sqlScriptColumns);
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;10. encode(P) SQL COLUMNS sqlScriptColumns=&apos;||sqlScriptColumns||&apos;  encode_list=&apos;||codingListComma||newline);
+&#x9;end if;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1384519100968</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

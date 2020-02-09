@@ -1,0 +1,526 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="Dwv41141_Account_Dtl" path="/shared/Common/Physical/Formatting/PostgreSQL_EAP/MDMS/Dwv41141_Account_Dtl" type="TABLE" subtype="SQL_TABLE" changeToken="0" tableType="VIEW">
+  <annotation>&lt;![CDATA[null]]&gt;</annotation>
+  <columns>
+    <column name="abono" nullable="true">
+      <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="aff" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="accountid" nullable="true">
+      <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="businessentitycode" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="businessnaturecode" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="entrydate" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="expirationdate" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="distributorname" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="typecode" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="includeexcludeflag" nullable="true">
+      <datatype type="BOOLEAN"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="isocountrycode" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="languagecode" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="legalentity" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="lineofaffiliationcode" nullable="true">
+      <datatype type="STRING" maxLength="5"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="missinginformationflag" nullable="true">
+      <datatype type="BOOLEAN"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="pin" nullable="true">
+      <datatype type="STRING" maxLength="15"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="segmentcode" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="statuscode" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="isocurrencycode" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="sponsorabono" nullable="true">
+      <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="intlprimarybusinessflag" nullable="true">
+      <datatype type="BOOLEAN"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="intlsponsorabono" nullable="true">
+      <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="intlsponsoraff" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="intlsponsorisocountrycode" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="legalentitytypecode" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="homeabonumber" nullable="true">
+      <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="homecountrycode" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="multibusinessindicatorflag" nullable="true">
+      <datatype type="BOOLEAN"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="distributornamelatin" nullable="true">
+      <datatype type="STRING" maxLength="100"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="softdeletedate" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="hascreditlineflag" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="creditlimitamount" nullable="true">
+      <datatype type="DECIMAL" maxDigits="131089" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="ordercreditlimitamount" nullable="true">
+      <datatype type="DECIMAL" maxDigits="131089" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="blacklistflag" nullable="true">
+      <datatype type="BOOLEAN"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="eventid" nullable="true">
+      <datatype type="DECIMAL" maxDigits="15" maxFractionalDigits="0"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="eventcode" nullable="true">
+      <datatype type="STRING" maxLength="50"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="sourcetimestamp" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="publishtimestamp" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="actioncode" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="sourceintegrationid" nullable="true">
+      <datatype type="STRING" maxLength="50"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="insrt_proc_nm" nullable="true">
+      <datatype type="STRING" maxLength="240"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="insrt_dt" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="updt_user_id" nullable="true">
+      <datatype type="STRING" maxLength="50"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="updt_proc_nm" nullable="true">
+      <datatype type="STRING" maxLength="240"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+    <column name="updt_dt" nullable="true">
+      <datatype type="DATETIME"/>
+      <security>
+        <owner user="nobody" domain="composite"/>
+      </security>
+      <annotation>&lt;![CDATA[]]&gt;</annotation>
+    </column>
+  </columns>
+  <indexes></indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="nobody" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ SELECT"/>
+  </security>
+  <dependency target="/shared/Common/Physical/Metadata/AWS/PostgreSQL_EAP/ods_mdms_wwsdms01/dwv41141_account_dtl" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="ABONo">
+        <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      </element>
+      <element name="Aff">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="AccountID">
+        <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      </element>
+      <element name="BusinessEntityCode">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="BusinessNatureCode">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="EntryDate">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="ExpirationDate">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="DistributorName">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="TypeCode">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="IncludeExcludeFlag">
+        <datatype type="BOOLEAN"/>
+      </element>
+      <element name="ISOCountryCode">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="LanguageCode">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="LegalEntity">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="LineOfAffiliationCode">
+        <datatype type="STRING" maxLength="5"/>
+      </element>
+      <element name="MissingInformationFlag">
+        <datatype type="BOOLEAN"/>
+      </element>
+      <element name="PIN">
+        <datatype type="STRING" maxLength="15"/>
+      </element>
+      <element name="SegmentCode">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="StatusCode">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="ISOCurrencyCode">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="SponsorABONo">
+        <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      </element>
+      <element name="IntlPrimaryBusinessFlag">
+        <datatype type="BOOLEAN"/>
+      </element>
+      <element name="IntlSponsorABONo">
+        <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      </element>
+      <element name="IntlSponsorAff">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="IntlSponsorISOCountryCode">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="LegalEntityTypeCode">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="HomeABONumber">
+        <datatype type="DECIMAL" maxDigits="11" maxFractionalDigits="0"/>
+      </element>
+      <element name="HomeCountryCode">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="MultiBusinessIndicatorFlag">
+        <datatype type="BOOLEAN"/>
+      </element>
+      <element name="DistributorNameLatin">
+        <datatype type="STRING" maxLength="100"/>
+      </element>
+      <element name="SoftDeleteDate">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="HasCreditLineFlag">
+        <datatype type="STRING" maxLength="3"/>
+      </element>
+      <element name="CreditLimitAmount">
+        <datatype type="DECIMAL" maxDigits="131089" maxFractionalDigits="0"/>
+      </element>
+      <element name="OrderCreditLimitAmount">
+        <datatype type="DECIMAL" maxDigits="131089" maxFractionalDigits="0"/>
+      </element>
+      <element name="BlackListFlag">
+        <datatype type="BOOLEAN"/>
+      </element>
+      <element name="EventID">
+        <datatype type="DECIMAL" maxDigits="15" maxFractionalDigits="0"/>
+      </element>
+      <element name="EventCode">
+        <datatype type="STRING" maxLength="50"/>
+      </element>
+      <element name="SourceTimestamp">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="PublishTimestamp">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="ActionCode">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="SourceIntegrationID">
+        <datatype type="STRING" maxLength="50"/>
+      </element>
+      <element name="INSRT_PROC_NM">
+        <datatype type="STRING" maxLength="240"/>
+      </element>
+      <element name="INSRT_DT">
+        <datatype type="DATETIME"/>
+      </element>
+      <element name="UPDT_USER_ID">
+        <datatype type="STRING" maxLength="50"/>
+      </element>
+      <element name="UPDT_PROC_NM">
+        <datatype type="STRING" maxLength="240"/>
+      </element>
+      <element name="UPDT_DT">
+        <datatype type="DATETIME"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="SQL" type="STRING">SELECT 
+&#x9;CAST(dwv41141_account_dtl.ABONo AS NUMERIC(11,0)) AS abono,
+&#x9;CAST(dwv41141_account_dtl.Aff AS VARCHAR(3)) AS aff,
+&#x9;CAST(dwv41141_account_dtl.AccountID AS NUMERIC(11,0)) AS accountid,
+&#x9;CAST(dwv41141_account_dtl.BusinessEntityCode AS VARCHAR(3)) AS businessentitycode,
+&#x9;CAST(dwv41141_account_dtl.BusinessNatureCode AS VARCHAR(3)) AS businessnaturecode,
+&#x9;CAST(dwv41141_account_dtl.EntryDate AS TIMESTAMP) AS entrydate,
+&#x9;CAST(dwv41141_account_dtl.ExpirationDate AS TIMESTAMP) AS expirationdate,
+&#x9;CAST(dwv41141_account_dtl.DistributorName AS VARCHAR(100)) AS distributorname,
+&#x9;CAST(dwv41141_account_dtl.TypeCode AS VARCHAR(1)) AS typecode,
+&#x9;CAST(dwv41141_account_dtl.IncludeExcludeFlag AS BOOLEAN) AS includeexcludeflag,
+&#x9;CAST(dwv41141_account_dtl.ISOCountryCode AS VARCHAR(3)) AS isocountrycode,
+&#x9;CAST(dwv41141_account_dtl.LanguageCode AS VARCHAR(3)) AS languagecode,
+&#x9;CAST(dwv41141_account_dtl.LegalEntity AS VARCHAR(1)) AS legalentity,
+&#x9;CAST(dwv41141_account_dtl.LineOfAffiliationCode AS VARCHAR(5)) AS lineofaffiliationcode,
+&#x9;CAST(dwv41141_account_dtl.MissingInformationFlag AS BOOLEAN) AS missinginformationflag,
+&#x9;CAST(dwv41141_account_dtl.PIN AS VARCHAR(15)) AS pin,
+&#x9;CAST(dwv41141_account_dtl.SegmentCode AS VARCHAR(1)) AS segmentcode,
+&#x9;CAST(dwv41141_account_dtl.StatusCode AS VARCHAR(1)) AS statuscode,
+&#x9;CAST(dwv41141_account_dtl.ISOCurrencyCode AS VARCHAR(3)) AS isocurrencycode,
+&#x9;CAST(dwv41141_account_dtl.SponsorABONo AS NUMERIC(11,0)) AS sponsorabono,
+&#x9;CAST(dwv41141_account_dtl.IntlPrimaryBusinessFlag AS BOOLEAN) AS intlprimarybusinessflag,
+&#x9;CAST(dwv41141_account_dtl.IntlSponsorABONo AS NUMERIC(11,0)) AS intlsponsorabono,
+&#x9;CAST(dwv41141_account_dtl.IntlSponsorAff AS VARCHAR(3)) AS intlsponsoraff,
+&#x9;CAST(dwv41141_account_dtl.IntlSponsorISOCountryCode AS VARCHAR(3)) AS intlsponsorisocountrycode,
+&#x9;CAST(dwv41141_account_dtl.LegalEntityTypeCode AS VARCHAR(1)) AS legalentitytypecode,
+&#x9;CAST(dwv41141_account_dtl.HomeABONumber AS NUMERIC(11,0)) AS homeabonumber,
+&#x9;CAST(dwv41141_account_dtl.HomeCountryCode AS VARCHAR(3)) AS homecountrycode,
+&#x9;CAST(dwv41141_account_dtl.MultiBusinessIndicatorFlag AS BOOLEAN) AS multibusinessindicatorflag,
+&#x9;CAST(dwv41141_account_dtl.DistributorNameLatin AS VARCHAR(100)) AS distributornamelatin,
+&#x9;CAST(dwv41141_account_dtl.SoftDeleteDate AS TIMESTAMP) AS softdeletedate,
+&#x9;CAST(dwv41141_account_dtl.HasCreditLineFlag AS VARCHAR(3)) AS hascreditlineflag,
+&#x9;CAST(dwv41141_account_dtl.CreditLimitAmount AS NUMERIC(131089,0)) AS creditlimitamount,
+&#x9;CAST(dwv41141_account_dtl.OrderCreditLimitAmount AS NUMERIC(131089,0)) AS ordercreditlimitamount,
+&#x9;CAST(dwv41141_account_dtl.BlackListFlag AS BOOLEAN) AS blacklistflag,
+&#x9;CAST(dwv41141_account_dtl.EventID AS NUMERIC(15,0)) AS eventid,
+&#x9;CAST(dwv41141_account_dtl.EventCode AS VARCHAR(50)) AS eventcode,
+&#x9;CAST(dwv41141_account_dtl.SourceTimestamp AS TIMESTAMP) AS sourcetimestamp,
+&#x9;CAST(dwv41141_account_dtl.PublishTimestamp AS TIMESTAMP) AS publishtimestamp,
+&#x9;CAST(dwv41141_account_dtl.ActionCode AS VARCHAR(1)) AS actioncode,
+&#x9;CAST(dwv41141_account_dtl.SourceIntegrationID AS VARCHAR(50)) AS sourceintegrationid,
+&#x9;CAST(dwv41141_account_dtl.INSRT_PROC_NM AS VARCHAR(240)) AS insrt_proc_nm,
+&#x9;CAST(dwv41141_account_dtl.INSRT_DT AS TIMESTAMP) AS insrt_dt,
+&#x9;CAST(dwv41141_account_dtl.UPDT_USER_ID AS VARCHAR(50)) AS updt_user_id,
+&#x9;CAST(dwv41141_account_dtl.UPDT_PROC_NM AS VARCHAR(240)) AS updt_proc_nm,
+&#x9;CAST(dwv41141_account_dtl.UPDT_DT AS TIMESTAMP) AS updt_dt 
+FROM
+&#x9;/shared/Common/Physical/Metadata/AWS/PostgreSQL_EAP/ods_mdms_wwsdms01/dwv41141_account_dtl dwv41141_account_dtl</attribute>
+  <attribute name="creationDate" type="LONG">1569986025871</attribute>
+  <attribute name="creatorUserDomain" type="STRING">na</attribute>
+  <attribute name="creatorUserId" type="INTEGER">30109</attribute>
+  <attribute name="creatorUserName" type="STRING">aiuhmb0</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1569986025871</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">na</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">30109</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">aiuhmb0</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1569986025871</attribute>
+</metadata>

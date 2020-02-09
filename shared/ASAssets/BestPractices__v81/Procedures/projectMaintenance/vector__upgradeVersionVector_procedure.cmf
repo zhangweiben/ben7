@@ -1,0 +1,150 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="vector_upgradeVersionVector" path="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/vector_upgradeVersionVector" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="upgradeVersionVector" direction="OUT" nullable="true">
+      <datatype name="upgradeVersionVector" type="ARRAY" maxLength="0">
+        <itemDatatype>
+          <datatype name="upgradeVersionVector" type="TREE" refId="257">
+            <element name="bestPracticesVersionFrom">
+              <datatype name="DOUBLE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+            </element>
+            <element name="bestPracticesVersionTo">
+              <datatype name="DOUBLE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+            </element>
+            <element name="backupType">
+              <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+            </element>
+          </datatype>
+        </itemDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;vector_upgradeVersionVector:
+
+&#x9;This procedure provides a vector of upgrade versions.   Upgrading is performed sequentially.  For example, if the current
+&#x9;version is 7.0 and you are upgrading to 7.2, first 7.0 is upgraded to 7.1 and then 7.1 is upgraded to 7.2 and so on.
+&#x9;It is the responsibility of the developer to add additional sections with the appropriate actions when providing a
+&#x9;new version of the Best Practices.
+
+&#x9;Input: none
+&#x9;Output:
+&#x9;&#x9;OUT upgradeVersionVector&#x9;&#x9;VECTOR(ROW(bestPracticesVersionFrom DOUBLE, bestPracticesVersionTo DOUBLE)),
+
+&#x9;Exceptions:  none
+
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CIS Version:&#x9;Reason:
+&#x9;06/24/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;7.2: added new
+&#x9;08/01/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;7.3: added support for upgrading 1.0, 5.0 and 6.0 compatible versions to the latest
+&#x9;11/08/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.1.0&#x9;&#x9;&#x9;8.0: added 8.0 upgrade.  Added ability to specify how the target folder is backed up.
+&#x9;04/23/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.0&#x9;&#x9;&#x9;8.1.2/8.1.3: changed bestPracticesVersionDefault to bestPracticesVersionCurrent and set each line to use Current version.
+&#x9;08/08/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.5&#x9;&#x9;&#x9;B.P. 8.1.3: Added upgrade from 8.1 to current like 8.13
+&#x9;11/26/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;B.P. 8.1.4: Added upgrade from 8.1 to current like 8.15
+&#x9;05/20/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6,7.0.x&#x9;&#x9;B.P. 8.1.6: Added upgrade from 8.1 to current like 8.16
+&#x9;09/21/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.7: Added generateViews=2 for a select * projection.  Requires Utilities_2015Q3
+&#x9;05/24/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.8: Added Privilege Scripts.
+&#x9;12/22/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 8.1.9: Transitioned to TIBCO Software open source.
+&#x9;03/20/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.x&#x9;&#x9;&#x9;B.P. 2018.1: Upgraded to use Utilities 2018Q1.  Added new capability: Dynamic File Framework.  Various other changes.
+&#x9;01/24/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.1: Added the ability to handle columnCaseRule, resourcePrefix, resourceSuffix and newColumnList for generateMode=&apos;G&apos;. 
+&#x9;01/29/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;8.0.0&#x9;&#x9;&#x9;B.P. 2019.101: Fix bug so derivedFilterPath could be used with generateToFolder.
+&#x9;06/13/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+&#x9;07/26/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.300: restore original defaultValues to the new scripts defaultValues.  Improved version detection algorithm.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE vector_upgradeVersionVector(
+&#x9;OUT upgradeVersionVector&#x9;&#x9;VECTOR(ROW(bestPracticesVersionFrom DOUBLE, bestPracticesVersionTo DOUBLE, backupType INTEGER))
+)
+BEGIN
+&#x9;DECLARE bestPracticesVersionCurrent DOUBLE DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.bestPracticesVersion;
+/********************************************************************************************************************************
+ * upgradeVersionVector:
+ *    The &quot;upgradeVersionVector&quot; provides a complete list of all the upgrade paths over time starting with 7.0 to 7.1.
+ *    The &quot;upgradeVersionVector&quot; is like a linked list.  The last &quot;bestPracticesVersionTo&quot; becomes the &quot;bestPracticesVersionFrom&quot;
+ *    for the next pair of versions.   This is how the list is used to upgrade from one version to the next.  If there is any
+ *    break in this sequence, then the upgrade stops.  
+ *
+ *    It is the responsibility of the developer to add new upgrade path entries for each new release of the Best Practices scripts.
+ *********************************************************************************************************************************/
+&#x9;set upgradeVersionVector = VECTOR[
+--&#x9;&#x9;&#x9;  bestPracticesVersionFrom&#x9;&#x9;&#x9;&#x9;bestPracticesVersionTo&#x9;&#x9;&#x9;backupType (0=backup individual folders in place, 1=backup entire folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; (1.0, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;1)&#x9;-- Perform upgrade from 1.0 - 4.0 to current version &#x9;(backup entire folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(5.0, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;1)&#x9;-- Perform upgrade from 5.0 - 5.2 to current version &#x9;(backup entire folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(6.0, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;1)&#x9;-- Perform upgrade from 6.0 - 6.6 to current version &#x9;(backup entire folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(7.0, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 7.0 to 8.0 &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(7.1, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 7.1 to 8.0 &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(7.2, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 7.2 to 8.0 &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(7.3, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 7.3 to 8.0 &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.0, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.0 to 8.1 &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.1, &#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 8.13&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.13,&#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 8.14&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.14,&#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 8.15&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.15,&#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 8.16&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.16,&#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 8.17&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.17,&#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 8.18&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.18,&#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 8.19&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(8.19,&#x9;&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 8.1 to 2018.1&#x9;&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+-- NOTE: Going forward version numbers will be - Year.Calendar Quarter [1-4] like 2019.1.  
+--&#x9;&#x9; If there is a fix/patch then it begins incrementing 401, 402, 403, etc
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(2018.1,&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 2018.1 to 2019.1&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(2019.1,&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 2019.1 to 2019.101&#x9;&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(2019.101,&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 2019.101 to 2019.200&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,(2019.200,&#x9;&#x9;&#x9;bestPracticesVersionCurrent,&#x9;0)&#x9;-- Perform upgrade from 2019.101 to 2019.300&#x9;&#x9;&#x9;(upgrade in place, backup _scripts folder)
+&#x9;&#x9;];
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564671603955</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:0:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

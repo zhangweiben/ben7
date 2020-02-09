@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="AS400T" path="/shared/KamedaCommon/Physical/Metadata/PROD_MPAC/AS400T" type="CONTAINER" subtype="CATALOG" changeToken="0">
+  <security>
+    <owner user="admin" domain="composite"/>
+  </security>
+  <attribute name="autoAddChildren" type="BOOLEAN">false</attribute>
+  <attribute name="creationDate" type="LONG">1461025340573</attribute>
+  <attribute name="creatorUserDomain" type="STRING">kameda</attribute>
+  <attribute name="creatorUserId" type="INTEGER">503</attribute>
+  <attribute name="creatorUserName" type="STRING">ota.ryoji</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1565332676665</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">503</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1461025340573</attribute>
+  <attribute name="selectionState" type="INTEGER">1</attribute>
+  <attribute name="userDeletedSet" type="SET"></attribute>
+</metadata>

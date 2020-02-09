@@ -1,0 +1,261 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="extractInterval" path="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/extractInterval" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="inColumnExpression" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inOccurrence" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="function" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="contents" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="remainder" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/findString2" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inSearchString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inStringToSearch" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inDirection" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="startingPosition" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="inOccurrences" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="pos" direction="OUT">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/extractDelimitedText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inputString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="delimiter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="occurrence" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseInputText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseOutput" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="trimText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="includeDelimiter" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="object">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;extractInterval -Extract the INTERVAL syntax from a column expression and treat it as the function.
+&#x9;&#x9;Unless a real column is present, there is no further lineage on this type of column.
+
+&#x9;Syntax - INTERVAL DAY - The interval day literal has the following syntax:
+&#x9;&#x9;INTERVAL &apos;dd hh:mm:ss.nn&apos; DAY TO SECOND
+&#x9;&#x9;INTERVAL &apos;dd hh:mm&apos; DAY TO MINUTE
+&#x9;&#x9;INTERVAL &apos;dd hh&apos; DAY TO HOUR
+&#x9;&#x9;INTERVAL &apos;dd&apos; DAY
+&#x9;&#x9;INTERVAL &apos;hh&apos; HOUR
+&#x9;&#x9;INTERVAL &apos;mm&apos; MINUTE
+&#x9;&#x9;INTERVAL &apos;ss.nn&apos; SECOND
+
+&#x9;Syntax - INTERVAL YEAR
+&#x9;&#x9;INTERVAL &apos;12&apos; YEAR [TO MONTH]
+&#x9;&#x9;INTERVAL &apos;3&apos; MONTH
+&#x9;&#x9;If year-month is the unit of measurement, the syntax is
+&#x9;&#x9;INTERVAL &apos;2-11&apos; YEAR TO MONTH
+&#x9;&#x9;A dash separates the year and month values. The month value must not exceed 11 months. 
+&#x9;&#x9;Negative intervals may be represented in three ways:
+&#x9;&#x9;-INTERVAL &apos;3&apos; MONTH
+&#x9;&#x9;INTERVAL &apos;-3&apos; MONTH
+&#x9;&#x9;INTERVAL -&apos;3&apos; MONTH
+&#x9;In fact, all three may be used at once which results in a -3 month interval.
+&#x9;A default precision of 2 is assigned if none is specified. For example,
+&#x9;&#x9;INTERVAL &apos;99&apos; year(2)
+&#x9;&#x9;INTERVAL &apos;99&apos; year
+&#x9;Both expressions above are the same. The precision is a number indicating the maximum number of digits in the leading number. 
+&#x9;For example, the expression below is invalid because the precision is exceeded by the five digits in the year value.
+&#x9;&#x9;INTERVAL &apos;20001&apos; year(4)
+&#x9;If it is a year-month interval, the precision only applies to the year
+&#x9;&#x9;INTERVAL &apos;200-09&apos; year(3) to month
+
+&#x9;Example of EXTRACT with INTERVAL
+&#x9;&#x9;SELECT &#x9;orders.OrderDate,
+&#x9;&#x9;&#x9;&#x9;EXTRACT(SECOND FROM INTERVAL &apos;2 23:51:19.124&apos; DAY TO SECOND),
+&#x9;&#x9;&#x9;&#x9;EXTRACT(MINUTE FROM INTERVAL &apos;2 23:51:19.124&apos; DAY TO SECOND),
+&#x9;&#x9;&#x9;&#x9;EXTRACT(HOUR FROM INTERVAL &apos;2 23:51:19.124&apos; DAY TO SECOND),
+&#x9;&#x9;&#x9;&#x9;EXTRACT(DAY FROM INTERVAL &apos;2 23:51:19.124&apos; DAY TO SECOND),
+&#x9;&#x9;&#x9;&#x9;EXTRACT(YEAR FROM INTERVAL &apos;499-11&apos; YEAR(3) TO MONTH),
+&#x9;&#x9;&#x9;&#x9;EXTRACT(MONTH FROM INTERVAL &apos;500&apos; MONTH(3))&#x9;
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/11/2011&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+&#x9;03/02/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced RegexSplit with extractDelimitedText
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE extractInterval(
+&#x9;IN inColumnExpression&#x9;&#x9;LONGVARCHAR,
+&#x9;-- The occurrence of comma separated list of expressions to return in the contents field
+&#x9;--  for functions that reference more than one column. If null or 0, then return the comma separate list.
+&#x9;--  Examples:
+&#x9;--   CONCAT(col1, col2)
+&#x9;--   col1 || col2 || col3 || col4
+&#x9;--   coalesce(col1, col2, col3)
+&#x9;IN inOccurrence&#x9;&#x9;INTEGER,
+&#x9;OUT function&#x9;&#x9;VARCHAR,
+&#x9;OUT contents&#x9;&#x9;LONGVARCHAR,
+&#x9;OUT remainder&#x9;&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;extractInterval&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.debugSqlParser3;
+&#x9;DECLARE columnExpression&#x9;LONGVARCHAR DEFAULT TRIM(inColumnExpression);
+&#x9;DECLARE occurrence&#x9;&#x9;&#x9;INTEGER DEFAULT inOccurrence;
+&#x9;DECLARE begPos &#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE midPos &#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE endPos &#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE operations&#x9;&#x9;&#x9;VECTOR (VARCHAR(1)) DEFAULT VECTOR[&apos;+&apos;,&apos;-&apos;,&apos;/&apos;,&apos;*&apos;,&apos;%&apos;];
+&#x9;DECLARE keywordsV&#x9;&#x9;&#x9;VECTOR (VARCHAR) DEFAULT VECTOR[&apos;TO&apos;,&apos;DAY&apos;,&apos;SECOND&apos;,&apos;MINUTE&apos;,&apos;HOUR&apos;,&apos;MONTH&apos;,&apos;YEAR&apos;];
+&#x9;DECLARE keywords&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;INTERVAL TO DAY SECOND MINUTE HOUR MONTH YEAR CURRENT_DATE CURRENT_TIMESTAMP CURRENT_TIME&apos;;
+&#x9;DECLARE keyword&#x9;&#x9;&#x9;&#x9;VARCHAR;
+
+&#x9;if (occurrence is null) then
+&#x9;&#x9;set occurrence = 1;
+&#x9;end if;
+&#x9;set begPos = INSTR(UPPER(columnExpression),&apos;INTERVAL&apos;,1,1);
+&#x9;if (begPos &gt; 0) then
+&#x9;&#x9;while (i &lt;= CARDINALITY(operations)) do
+&#x9;&#x9;&#x9;set columnExpression = REPLACE(columnExpression,operations[i],&apos;&apos;);
+&#x9;&#x9;&#x9;set i = i + 1;
+&#x9;&#x9;end while;
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;remove operations:: ce=&apos;||columnExpression);
+&#x9;&#x9;end if;
+&#x9;&#x9;-- Look for the single quotes in the string:
+&#x9;&#x9;--  INTERVAL &apos;2 23:51:19.124&apos; DAY TO SECOND
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/findString2(&apos;&apos;&apos;&apos;,columnExpression,&apos;F&apos;,begPos+8,1, midPos);
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/findString2(&apos;&apos;&apos;&apos;,columnExpression,&apos;F&apos;,begPos+8,2, endPos);
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;positions:: INTERVAL=&apos;||begPos||&apos;  beg&apos;&apos;=&apos;||midPos||&apos;  end&apos;&apos;=&apos;||endPos);
+&#x9;&#x9;end if;
+&#x9;&#x9;-- Remove literal
+&#x9;&#x9;if (midPos &gt; 0 and endPos &gt; midPos) then
+&#x9;&#x9;&#x9;set columnExpression = TRIM(SUBSTRING(columnExpression,1,midPos-1))||&apos; &apos;||TRIM(SUBSTRING(columnExpression,endPos+1,LENGTH(columnExpression)));
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;remove literal:: ce=&apos;||columnExpression);
+&#x9;&#x9;end if;
+&#x9;&#x9;set i = 1;
+&#x9;&#x9;for r as select * from /shared/ASAssets/Utilities/string/extractDelimitedText(columnExpression,&apos; &apos;,0,0,0,1,0) do
+&#x9;&#x9;&#x9;set keyword = r.object;
+--&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;regex split:: word=&apos;||keyword);
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/findString2(&apos;(&apos;,keyword,&apos;F&apos;,1,1, begPos);
+&#x9;&#x9;&#x9;if (begPos &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set keyword = SUBSTRING(keyword,1,begPos-1);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;regex split:: word=&apos;||keyword);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (POSITION(keyword IN keywords) = 0) then
+&#x9;&#x9;&#x9;&#x9;if (i &lt;= occurrence) then
+&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;regex non-keyword:: word=&apos;||r.object);
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;set contents = keyword;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set i = i + 1;&#x9;
+&#x9;&#x9;end for;
+&#x9;end if;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1557255075409</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

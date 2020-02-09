@@ -1,0 +1,778 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="vPrivileges_All_Excel" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vPrivileges_All_Excel" type="TABLE" subtype="SQL_TABLE" changeToken="0" tableType="VIEW">
+  <annotation>&lt;![CDATA[Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <columns>
+    <column name="rownum" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="sheetRownum" nullable="true">
+      <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="datasource" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="sheetName" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Privilege_Type" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Organization" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Project" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="SubProject" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Resource Path" nullable="true">
+      <datatype type="STRING" maxLength="4000"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Resource Type" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Recurse Dependencies" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Recurse Dependents" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Recurse Child" nullable="true">
+      <datatype type="STRING" maxLength="3"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Revoke All" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Name" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Name Type" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Domain" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Env Type" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="OrderPrecedence" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="R" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="W" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="E" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="S" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="U" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="I" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="D" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="G" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Owner" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Owner Domain" nullable="true">
+      <datatype type="STRING" maxLength="255"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Comments" nullable="true">
+      <datatype type="STRING" maxLength="4000"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="Initialize" nullable="true">
+      <datatype type="STRING" maxLength="1"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+    <column name="IsActive" nullable="true">
+      <datatype type="STRING" minLength="1" maxLength="1" trailingSpaces="false"/>
+      <security>
+        <owner user="admin" domain="composite"/>
+      </security>
+    </column>
+  </columns>
+  <indexes></indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ SELECT"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vPrivileges_databases_Excel" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="rownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="sheetRownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="datasource">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="sheetName">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Privilege_Type">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Organization">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Project">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="SubProject">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Resource Path">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Resource Type">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Recurse Dependencies">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Recurse Dependents">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Recurse Child">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Revoke All">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Name">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Name Type">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Domain">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Env Type">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="R">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="W">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="E">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="S">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="U">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="I">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="D">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="G">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Owner">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Owner Domain">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Comments">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Initialize">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vPrivileges_shared_Excel" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="rownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="sheetRownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="datasource">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="sheetName">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Privilege_Type">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Organization">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Project">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="SubProject">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Resource Path">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Resource Type">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Recurse Dependencies">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Recurse Dependents">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Recurse Child">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Revoke All">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Name">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Name Type">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Domain">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Env Type">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="R">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="W">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="E">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="S">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="U">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="I">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="D">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="G">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Owner">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Owner Domain">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Comments">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Initialize">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vPrivileges_webservices_Excel" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="rownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="sheetRownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="datasource">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="sheetName">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Privilege_Type">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Organization">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Project">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="SubProject">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Resource Path">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Resource Type">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Recurse Dependencies">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Recurse Dependents">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Recurse Child">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Revoke All">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Name">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Name Type">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Domain">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Env Type">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="R">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="W">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="E">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="S">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="U">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="I">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="D">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="G">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+      <element name="Owner">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Owner Domain">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Comments">
+        <datatype type="STRING" maxLength="32767" trailingSpaces="false"/>
+      </element>
+      <element name="Initialize">
+        <datatype type="STRING" maxLength="32767"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="SQL" type="STRING">SELECT 
+&#x9;P.rownum, 
+&#x9;P.sheetRownum, 
+&#x9;CAST(P.datasource as VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;datasource,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN TRIM(P.sheetName) = &apos;Privileges_shared&apos; &#x9;&#x9;THEN &apos;1&apos;||P.sheetName
+&#x9;&#x9;WHEN TRIM(P.sheetName) = &apos;Privileges_databases&apos; &#x9;THEN &apos;2&apos;||P.sheetName
+&#x9;&#x9;WHEN TRIM(P.sheetName) = &apos;Privileges_webservices&apos; &#x9;THEN &apos;3&apos;||P.sheetName
+&#x9;&#x9;ELSE TRIM(P.sheetName)
+&#x9;END as VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;sheetName, 
+&#x9;P.Privilege_Type&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Privilege_Type,
+&#x9;CAST(P.Organization as VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Organization,  
+&#x9;CAST(TRIM(P.Project) as VARCHAR(255)) &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Project,
+&#x9;CAST(TRIM(P.SubProject) as VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SubProject,
+&#x9;CAST(TRIM(CASE
+&#x9;&#x9;&#x9;WHEN INSTR(P.&quot;Resource Path&quot;, &apos;&quot;&apos;) &gt; 0 THEN
+&#x9;&#x9;&#x9;&#x9;CASE WHEN SUBSTRING(P.&quot;Resource Path&quot;, LENGTH(P.&quot;Resource Path&quot;), 1) = &apos;&quot;&apos; THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;REPLACE(REPLACE(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;REPLACE(REPLACE(SUBSTRING(P.&quot;Resource Path&quot;, 1, LENGTH(P.&quot;Resource Path&quot;) -1), &apos;/&quot;&quot;&apos;, &apos;/&apos;), &apos;&quot;&quot;/&apos;, &apos;/&apos;),
+&#x9;&#x9;&#x9;&#x9;&#x9; &apos;/&quot;&apos;, &apos;/&apos;), &apos;&quot;/&apos;, &apos;/&apos;)
+&#x9;&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;&#x9;REPLACE(REPLACE(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;REPLACE(REPLACE(P.&quot;Resource Path&quot;, &apos;/&quot;&quot;&apos;, &apos;/&apos;), &apos;&quot;&quot;/&apos;, &apos;/&apos;),
+&#x9;&#x9;&#x9;&#x9;&#x9; &apos;/&quot;&apos;, &apos;/&apos;), &apos;&quot;/&apos;, &apos;/&apos;)
+&#x9;&#x9;&#x9;&#x9;END
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;P.&quot;Resource Path&quot;
+&#x9;&#x9;END) AS VARCHAR(4000))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Resource Path&quot;,
+&#x9;CAST(TRIM(P.&quot;Resource Type&quot;) AS VARCHAR(255))&#x9;&#x9;&#x9; &#x9;&#x9;&#x9;&quot;Resource Type&quot;,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.&quot;Recurse Dependencies&quot; IS NULL OR LENGTH(TRIM(P.&quot;Recurse Dependencies&quot;)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Recurse Dependencies&quot;)) = &apos;X&apos; THEN &apos;Y&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Recurse Dependencies&quot;)) = &apos;Y&apos; THEN &apos;Y&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Recurse Dependencies&quot;)) = &apos;N&apos; THEN NULL
+&#x9;    ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Recurse Dependencies&quot;, 
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.&quot;Recurse Dependents&quot; IS NULL OR LENGTH(TRIM(P.&quot;Recurse Dependents&quot;)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Recurse Dependents&quot;)) = &apos;X&apos; THEN &apos;Y&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Recurse Dependents&quot;)) = &apos;Y&apos; THEN &apos;Y&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Recurse Dependents&quot;)) = &apos;N&apos; THEN NULL
+&#x9;    ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Recurse Dependents&quot;, 
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.&quot;Recurse Child&quot; IS NULL OR LENGTH(TRIM(P.&quot;Recurse Child&quot;)) = 0 THEN &apos;N&apos;
+&#x9;    ELSE UPPER(TRIM(P.&quot;Recurse Child&quot;))
+&#x9;END AS VARCHAR(3))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Recurse Child&quot;, 
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.&quot;Revoke All&quot; IS NULL THEN &apos;N&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Revoke All&quot;)) = &apos;X&apos; THEN &apos;Y&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Revoke All&quot;)) = &apos;Y&apos; THEN &apos;Y&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.&quot;Revoke All&quot;)) = &apos;N&apos; THEN &apos;N&apos;
+&#x9;    ELSE TRIM(P.&quot;Revoke All&quot;)
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Revoke All&quot;,
+&#x9;CAST(CASE
+&#x9;&#x9;WHEN P.Name IS NOT NULL AND LENGTH(TRIM(P.Name)) &gt; 0 AND P.&quot;Domain&quot; IS NOT NULL AND LOWER(P.&quot;Domain&quot;) = &apos;composite&apos; THEN LOWER(P.Name)
+&#x9;&#x9;ELSE TRIM(P.Name)
+&#x9;END AS VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Name, 
+&#x9;CAST(CASE
+&#x9;&#x9;WHEN P.&quot;Name Type&quot; IS NULL OR LENGTH(TRIM(P.&quot;Name Type&quot;)) = 0 THEN &apos;GROUP&apos;
+&#x9;&#x9;ELSE UPPER(TRIM(P.&quot;Name Type&quot;))
+&#x9;END AS VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Name Type&quot;,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.&quot;Domain&quot; IS NULL OR LENGTH(TRIM(P.&quot;Domain&quot;)) = 0 OR LOWER(P.&quot;Domain&quot;) = &apos;composite&apos; THEN &apos;composite&apos;
+&#x9;&#x9;ELSE TRIM(P.&quot;Domain&quot;)
+&#x9;END AS VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Domain&quot;, 
+&#x9;CAST(UPPER(TRIM(P.&quot;Env Type&quot;)) AS VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Env Type&quot;,
+&#x9;-- OrderPrecedence: Force privilege rows with ALL NO ACCESS TO OCCUR FIRST since these privileges are used to initialize before setting actual privileges
+&#x9;CAST(CASE
+&#x9;&#x9;WHEN (P.R IS NULL OR LENGTH(TRIM(P.R)) = 0)
+&#x9;&#x9; AND (P.W IS NULL OR LENGTH(TRIM(P.W)) = 0)
+&#x9;&#x9; AND (P.E IS NULL OR LENGTH(TRIM(P.E)) = 0)
+&#x9;&#x9; AND (P.S IS NULL OR LENGTH(TRIM(P.S)) = 0)
+&#x9;&#x9; AND (P.U IS NULL OR LENGTH(TRIM(P.U)) = 0)
+&#x9;&#x9; AND (P.I IS NULL OR LENGTH(TRIM(P.I)) = 0)
+&#x9;&#x9; AND (P.D IS NULL OR LENGTH(TRIM(P.D)) = 0)
+&#x9;&#x9; AND (P.G IS NULL OR LENGTH(TRIM(P.G)) = 0) 
+&#x9;&#x9;THEN &apos;A&apos;
+&#x9;&#x9;ELSE &apos;Z&apos;
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OrderPrecedence, 
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.R IS NULL OR LENGTH(TRIM(P.R)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.R)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.R)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.R)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;R,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.W IS NULL OR LENGTH(TRIM(P.W)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.W)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.W)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.W)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;W,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.E IS NULL OR LENGTH(TRIM(P.E)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.E)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.E)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.E)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;E,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.S IS NULL OR LENGTH(TRIM(P.S)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.S)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.S)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.S)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;S,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.U IS NULL OR LENGTH(TRIM(P.U)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.U)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.U)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.U)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;U,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.I IS NULL OR LENGTH(TRIM(P.I)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.I)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.I)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.I)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;I,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.D IS NULL OR LENGTH(TRIM(P.D)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.D)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.D)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.D)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;D,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.G IS NULL OR LENGTH(TRIM(P.G)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.G)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.G)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.G)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;G,
+&#x9;CAST(CASE
+&#x9;&#x9;WHEN P.Owner IS NOT NULL AND LENGTH(TRIM(P.Owner)) &gt; 0 AND P.&quot;Owner Domain&quot; IS NOT NULL AND LOWER(P.&quot;Owner Domain&quot;) = &apos;composite&apos; THEN LOWER(P.Owner)
+&#x9;&#x9;WHEN P.Owner IS NOT NULL AND LENGTH(TRIM(P.Owner)) &gt; 0 AND (P.Owner = &apos;NULL&apos; OR P.Owner = &apos;BLANK&apos;) THEN NULL
+&#x9;&#x9;ELSE TRIM(P.Owner)
+&#x9;END AS VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Owner, 
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.&quot;Owner Domain&quot; IS NOT NULL AND LENGTH(TRIM(P.&quot;Owner Domain&quot;)) &gt; 0 AND LOWER(P.&quot;Owner Domain&quot;) = &apos;composite&apos; THEN &apos;composite&apos;
+&#x9;&#x9;WHEN P.&quot;Owner Domain&quot; IS NOT NULL AND LENGTH(TRIM(P.&quot;Owner Domain&quot;)) &gt; 0 AND (P.&quot;Owner Domain&quot; = &apos;NULL&apos; OR P.&quot;Owner Domain&quot; = &apos;BLANK&apos;) THEN NULL
+&#x9;&#x9;ELSE TRIM(P.&quot;Owner Domain&quot;)
+&#x9;END AS VARCHAR(255))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Owner Domain&quot;, 
+&#x9;CAST(TRIM(P.Comments) AS VARCHAR(4000))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Comments,
+&#x9;CAST(CASE 
+&#x9;&#x9;WHEN P.Initialize IS NULL OR LENGTH(TRIM(P.Initialize)) = 0 THEN NULL
+&#x9;&#x9;WHEN UPPER(TRIM(P.Initialize)) = &apos;X&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.Initialize)) = &apos;Y&apos; THEN &apos;X&apos;
+&#x9;&#x9;WHEN UPPER(TRIM(P.Initialize)) = &apos;N&apos; THEN NULL
+&#x9;&#x9;ELSE NULL
+&#x9;END AS VARCHAR(1))&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Initialize,
+&#x9;&apos;Y&apos;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IsActive
+FROM (
+&#x9;-- Privileges_shared
+&#x9;SELECT
+        rownum, 
+        sheetRownum, 
+        datasource, 
+        sheetName, 
+&#x9;&#x9;Privilege_Type,
+        Organization, 
+        Project, 
+        SubProject, 
+        &quot;Resource Path&quot;, 
+        &quot;Resource Type&quot;, 
+        &quot;Recurse Dependencies&quot;, 
+        &quot;Recurse Dependents&quot;, 
+        &quot;Recurse Child&quot;, 
+        &quot;Revoke All&quot;, 
+        Name, 
+        &quot;Name Type&quot;, 
+        &quot;Domain&quot;, 
+        &quot;Env Type&quot;, 
+        R, 
+        W, 
+        E, 
+        S, 
+        U, 
+        I, 
+        D, 
+        G, 
+        Owner, 
+        &quot;Owner Domain&quot;, 
+        Comments, 
+        Initialize
+&#x9;FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vPrivileges_shared_Excel
+
+&#x9;UNION ALL
+
+&#x9;-- Privileges_databases
+&#x9;SELECT 
+        rownum, 
+        sheetRownum, 
+        datasource, 
+        sheetName, 
+&#x9;&#x9;Privilege_Type,
+        Organization, 
+        Project, 
+        SubProject, 
+        &quot;Resource Path&quot;, 
+        &quot;Resource Type&quot;, 
+        &quot;Recurse Dependencies&quot;, 
+        &quot;Recurse Dependents&quot;, 
+        &quot;Recurse Child&quot;, 
+        &quot;Revoke All&quot;, 
+        Name, 
+        &quot;Name Type&quot;, 
+        &quot;Domain&quot;, 
+        &quot;Env Type&quot;, 
+        R, 
+        W, 
+        E, 
+        S, 
+        U, 
+        I, 
+        D, 
+        G, 
+        Owner, 
+        &quot;Owner Domain&quot;, 
+        Comments, 
+        Initialize
+&#x9;FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vPrivileges_databases_Excel
+
+&#x9;UNION ALL
+
+&#x9;-- Privileges_webservices
+&#x9;SELECT 
+        rownum, 
+        sheetRownum, 
+        datasource, 
+        sheetName, 
+&#x9;&#x9;Privilege_Type,
+        Organization, 
+        Project, 
+        SubProject, 
+        &quot;Resource Path&quot;, 
+        &quot;Resource Type&quot;, 
+        &quot;Recurse Dependencies&quot;, 
+        &quot;Recurse Dependents&quot;, 
+        &quot;Recurse Child&quot;, 
+        &quot;Revoke All&quot;, 
+        Name, 
+        &quot;Name Type&quot;, 
+        &quot;Domain&quot;, 
+        &quot;Env Type&quot;, 
+        R, 
+        W, 
+        E, 
+        S, 
+        U, 
+        I, 
+        D, 
+        G, 
+        Owner, 
+        &quot;Owner Domain&quot;, 
+        Comments, 
+        Initialize
+&#x9;FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vPrivileges_webservices_Excel
+) P</attribute>
+  <attribute name="creationDate" type="LONG">1459426328336</attribute>
+  <attribute name="creatorUserDomain" type="STRING">ldap_im</attribute>
+  <attribute name="creatorUserId" type="INTEGER">4306</attribute>
+  <attribute name="creatorUserName" type="STRING">zkxl6un</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">4306</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1459426328336</attribute>
+</metadata>

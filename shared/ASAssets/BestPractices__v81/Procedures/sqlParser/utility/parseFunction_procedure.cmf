@@ -1,0 +1,408 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="parseFunction" path="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseFunction" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="inColumnExpression" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="function" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+    </parameter>
+    <parameter name="columnList" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/isNumber" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="valueString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;parseFunction - parse the column expression and extract the function
+
+&#x9;IN
+&#x9;&#x9;inColumnExpression - the incoming column expression
+&#x9;OUT
+&#x9;&#x9;function - primary function found
+&#x9;&#x9;columnList - a list of column expressions found that are not literal strings or numbers.
+&#x9;&#x9;&#x9;this may contain additional function expressions
+
+&#x9;Exceptions:  none
+
+&#x9;--------------
+&#x9;Not Supported:&#x9;XMLAGG,XMLDOCUMENT,XMLNAMESPACES,XMLELEMENT,XMLATTRIBUTES,XMLCONCAT,XMLFOREST,XMLQUERY,XMLTEXT
+&#x9;--------------
+&#x9;&#x9;when &apos;XMLAGG&apos; then
+&#x9;&#x9;-- XMLAGG ( &lt;XML value expression&gt; [ ORDER BY &lt;sort specification list&gt; ][ &lt;XML returning clause&gt; ])
+&#x9;&#x9; SELECT
+&#x9;&#x9;&#x9;XMLAGG((XMLELEMENT(name Details,
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLATTRIBUTES(ProductID as product),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name orderno, OrderID),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name status, Status),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name price, UnitPrice)))
+&#x9;&#x9;&#x9;ORDER BY ProductID ASC, Status ASC, OrderID DESC, UnitPrice ASC) myOutput
+&#x9;&#x9;&#x9;FROM /shared/examples/ds_orders/orderdetails WHERE ProductID &lt; 20
+&#x9;&#x9;
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLDOCUMENT&apos; then
+&#x9;&#x9;-- XMLDOCUMENT ( &lt;XML value expression&gt; [ &lt;XML returning clause&gt; ] ) alias
+&#x9;&#x9; SELECT
+&#x9;&#x9;&#x9;&#x9;XMLDOCUMENT(
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name Details, XMLATTRIBUTES(ProductID as product),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name orderno, OrderID),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name status, Status),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name price, UnitPrice))
+&#x9;&#x9;&#x9;&#x9;) myXMLDocument
+&#x9;&#x9;&#x9;FROM /shared/examples/ds_orders/orderdetails
+&#x9;&#x9;&#x9;WHERE ProductID &lt; 20
+
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLNAMESPACES&apos; then
+&#x9;&#x9;-- XMLNAMESPACES(&apos;http://localhost:9400/services/webservices/ws/TestService/TestPort&apos; AS &quot;customers&quot;) alias
+&#x9;&#x9; SELECT  CustomerID,
+&#x9;&#x9;&#x9;&#x9;XMLELEMENT(NAME customerName,
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLNAMESPACES(&apos;http://localhost:9400/services/webservices/ws/TestService/TestPort&apos; AS &quot;customers&quot;),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLATTRIBUTES(City AS city, ContactLastName as name)
+&#x9;&#x9;&#x9;&#x9;) &quot;Customer Details&quot;
+&#x9;&#x9;&#x9;FROM /services/webservices/ws/TestService/TestPort/customers
+&#x9;&#x9;&#x9;WHERE StateOrProvince = &apos;CA&apos;
+&#x9;&#x9;
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLELEMENT&apos; then
+&#x9;&#x9;-- XMLELEMENT(NAME &quot;29&quot;, &apos;text&apos;) alias
+&#x9;&#x9; SELECT
+&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name Details, XMLATTRIBUTES(ProductID as product),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name orderno, OrderID),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name status, Status),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name price, UnitPrice)
+&#x9;&#x9;&#x9;&#x9;) myOutput
+&#x9;&#x9;&#x9;FROM /shared/examples/ds_orders/orderdetails
+&#x9;&#x9;&#x9;WHERE ProductID &lt; 20
+&#x9;&#x9;
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLATTRIBUTES&apos; then
+&#x9;&#x9;-- XMLATTRIBUTES(col as XML_Identifier)
+&#x9;&#x9;/* SELECT
+&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name Details, XMLATTRIBUTES(ProductID as product), 
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name orderno, OrderID),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name status, Status),
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLELEMENT(name price, UnitPrice)
+&#x9;&#x9;&#x9;&#x9;) myOutput
+&#x9;&#x9;&#x9;FROM /shared/examples/ds_orders/orderdetails
+&#x9;&#x9;&#x9;WHERE ProductID &lt; 20
+&#x9;&#x9;
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLCONCAT&apos; then
+&#x9;&#x9;-- XMLCONCAT ( &lt;XML value expression&gt; { , &lt;XML value expression&gt; }...[ &lt;XML returning clause&gt; ] ) alias
+&#x9;&#x9;/* SELECT
+&#x9;&#x9;&#x9;&#x9;XMLCONCAT(
+&#x9;&#x9;&#x9;&#x9;&#x9;XMLTEXT(customers.ContactFirstName), XMLTEXT(&apos; &apos;), &#x9;XMLTEXT(customers.ContactLastName)
+&#x9;&#x9;&#x9;&#x9;) AS CustomerName
+&#x9;&#x9;&#x9;FROM /shared/examples/ds_orders/customers customers
+&#x9;&#x9;
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLFOREST&apos; then
+&#x9;&#x9;-- XMLFOREST ( [ &lt;XML namespace declaration&gt;. ] &lt;forest element list&gt;[ OPTION &lt;XML content option&gt; ][ &lt;XML returning clause&gt; ]) alias
+&#x9;&#x9;/* SELECT  
+&#x9;&#x9;&#x9;&#x9;XMLFOREST(CompanyName AS name, City AS city) as NameAndCityOfCompany
+&#x9;&#x9;&#x9;FROM /shared/examples/ds_orders/customers
+&#x9;&#x9;
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLQUERY&apos; then
+&#x9;&#x9;-- XMLQUERY ( &lt;XQuery expression&gt; [ &lt;XML query argument list&gt; ][ &lt;XML returning clause&gt;[ &lt;XML query returning mechanism&gt; ] ]&lt;XML query empty handling option&gt;) alias
+&#x9;&#x9;/* XMLQuery(&apos;declare variable $c external; for $i in $c
+&#x9;&#x9;&#x9;where $i /PDName = &quot;Daniel Morgan&quot;
+&#x9;&#x9;&#x9;order by $i/PDName
+&#x9;&#x9;&#x9;return $i/PDName&apos; passing XMLELEMENT(name PDRecord, XMLELEMENT(name PDName, &apos;Daniel Morgan&apos;)) as c )
+
+&#x9;&#x9;&#x9;set contents = body;
+&#x9;&#x9;when &apos;XMLTEXT&apos; then
+&#x9;&#x9;-- XMLTEXT ( &lt;character value expression&gt; [ &lt;XML returning clause&gt; ] )
+&#x9;&#x9;-- XMLTEXT(column) XML_Identifier
+&#x9;&#x9; SELECT XMLELEMENT(name company, XMLTEXT(customers.CompanyName) ) &quot;Company Name&quot;,
+&#x9;&#x9;&#x9;&#x9;XMLTEXT(customers.City) City
+&#x9;&#x9;&#x9;FROM /shared/examples/ds_orders/customers customers
+&#x9;&#x9;
+&#x9;&#x9;&#x9;set contents = body;
+
+&#x9;--------------
+&#x9;Supported:
+&#x9;--------------
+&#x9;-- Another function was found inside the function (The following functions are supported generically by the 
+&#x9;-- following algorithm.  Anything can be processed that matches the pattern:
+&#x9;&#x9;-- &#x9;&#x9;FUNCTION(column|table_alias.column [, expression]...) 
+&#x9;&#x9;--&#x9;&#x9;table_alias.column|column 
+&#x9;&#x9;--&#x9;&#x9;table_alias.column|column
+
+&#x9;&#x9;-- POSITION(expr1 IN expr2) 
+&#x9;&#x9;-- CAST(expr AS TYPE)
+&#x9;&#x9;-- CONCAT(string1, string2)
+&#x9;&#x9;-- INSTR(expr1, expr2 [,search_start[, nth_occurrence]])
+&#x9;&#x9;-- LPAD (string, integer, [‘expression2’])
+&#x9;&#x9;-- REPLACE(search_string, string_to_be_replaced, replacement_string)
+&#x9;&#x9;-- RPAD (string, integer, [‘expression2’])
+&#x9;&#x9;-- SUBSTRING(string, start_position, length_of_substring)
+&#x9;&#x9;-- NULLIF(argument1, argument2)
+&#x9;&#x9;-- NVL(expression, ‘some value’)
+&#x9;&#x9;-- NVL2(expr1, value_if_NOT_NULL, value_if_NULL)
+&#x9;&#x9;-- EXTRACT (&lt;field name&gt; FROM &lt;value&gt;)
+&#x9;&#x9;-- FORMAT_DATE(DATE|TIME|TIMESTAMP,FORMAT_STRING)
+&#x9;&#x9;-- PARSE_DATE(data_string,format_string)
+&#x9;&#x9;-- PARSE_TIME(data_string,format_string)
+&#x9;&#x9;-- PARSE_TIMESTAMP(data_string,format_string)
+&#x9;&#x9;-- DAYS_BETWEEN(date1, date2)
+&#x9;&#x9;-- MONTHS_BETWEEN(date1, date2)
+&#x9;&#x9;-- XPATH(sourceXml, xpathExpression)
+&#x9;&#x9;-- COALESCE(expr1, expr2, expr3…)
+&#x9;&#x9;-- DECODE (expr, string1, result1 [, stringN, resultN][, default])
+&#x9;&#x9;-- XSLT(sourceXml, xsltExpression)
+&#x9;&#x9;etc...
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/11/2011&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+&#x9;06/24/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;7.2: Multiple instances of Best Practices supported
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE parseFunction(
+&#x9;IN&#x9;inColumnExpression&#x9;LONGVARCHAR, -- The column text to pars
+&#x9;OUT function&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;OUT columnList&#x9;&#x9;&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;VARCHAR DEFAULT &apos;parseFunction&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.debugSqlParser3;
+&#x9;DECLARE columnExpression LONGVARCHAR DEFAULT inColumnExpression;
+&#x9;DECLARE sep&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;^&apos;; -- separator
+&#x9;DECLARE notSupported&#x9;VARCHAR DEFAULT &apos;XMLAGG,XMLDOCUMENT,XMLNAMESPACES,XMLELEMENT,XMLATTRIBUTES,XMLCONCAT,XMLFOREST,XMLQUERY,XMLTEXT&apos;;
+&#x9;DECLARE exprLen&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE expression&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE expression2&#x9;&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE ch&#x9;&#x9;&#x9;&#x9;CHAR(1);
+&#x9;DECLARE word&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE separators&#x9;&#x9;VARCHAR DEFAULT &apos; (),&apos;;
+&#x9;DECLARE i &#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE numParenPair&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE leftParenPos&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE numCommas&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE lastCommaPos&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE extractPos&#x9;&#x9;INTEGER DEFAULT 0; -- EXTRACT(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND FROM expr)
+&#x9;DECLARE castPos&#x9;&#x9;&#x9;INTEGER DEFAULT 0; -- CAST(expr AS TYPE)
+&#x9;DECLARE positionPos &#x9;INTEGER DEFAULT 0; -- POSITION(expr IN expr)
+&#x9;DECLARE quote&#x9;&#x9;&#x9;INTEGER DEFAULT 0; -- 0=off, 1=on -- quotes come in pairs so turn on when 1st one found and turn off when second one found.  Everything in between is ignored.
+&#x9;DECLARE isNumber&#x9;&#x9;INTEGER;
+
+&#x9;set function = &apos;&apos;;
+&#x9;set columnList =&apos;&apos;;
+&#x9;set columnExpression = TRIM(columnExpression);
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]&apos;);
+&#x9;end if;
+
+&#x9;set i = 1;
+&#x9;set exprLen = LENGTH(columnExpression);
+&#x9;WHILE (i &lt;= exprLen) DO
+&#x9;&#x9;set ch = SUBSTRING(columnExpression,i,1);
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;ch=[&apos;||ch||&apos;]&apos;);
+&#x9;&#x9;end if;
+&#x9;&#x9;-- If a separator is found then detect specific functions
+&#x9;&#x9;IF (POSITION(ch IN separators) &gt; 0 or i = exprLen) THEN
+&#x9;&#x9;&#x9;IF (i = exprLen) THEN
+&#x9;&#x9;&#x9;&#x9;set word = word || ch;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (UPPER(function) = &apos;EXTRACT&apos; and UPPER(TRIM(word)) = &apos;FROM&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;set extractPos = i;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (UPPER(function) = &apos;CAST&apos; and UPPER(TRIM(word)) = &apos;AS&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;set castPos = i - 3;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (UPPER(function) = &apos;POSITION&apos; and UPPER(TRIM(word)) = &apos;IN&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;set positionPos = i - 3;
+&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;word=[&apos;||NVL(word,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set word = &apos;&apos;;
+&#x9;&#x9;END IF;
+&#x9;
+&#x9;&#x9;-- Look for functions and concat pipes &apos;||&apos;
+&#x9;&#x9;CASE ch
+&#x9;&#x9;&#x9;WHEN &apos;(&apos; THEN 
+&#x9;&#x9;&#x9;&#x9;set numParenPair = numParenPair + 1;
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;left paren found=[&apos;||NVL(ch,&apos;null&apos;)||&apos;]  i=&apos;||i||&apos;  numParenPair=&apos;||numParenPair||&apos;  lastCommaPos=&apos;||lastCommaPos||&apos;  leftParenPos=&apos;||leftParenPos);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;if (numParenPair = 1) then -- found first function in the expression
+&#x9;&#x9;&#x9;&#x9;&#x9;set leftParenPos = i;
+&#x9;&#x9;&#x9;&#x9;&#x9;set function = trim(substring(columnExpression,1,i-1));
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;WHEN &apos;)&apos; THEN
+&#x9;&#x9;&#x9;&#x9;set numParenPair = numParenPair - 1;
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;right paren found=[&apos;||NVL(ch,&apos;null&apos;)||&apos;]  i=&apos;||i||&apos;  numParenPair=&apos;||numParenPair||&apos;  lastCommaPos=&apos;||lastCommaPos||&apos;  leftParenPos=&apos;||leftParenPos);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;IF (numParenPair = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;ch=[&apos;||NVL(ch,&apos;null&apos;)||&apos;]  i=&apos;||i||&apos;  numParenPair=&apos;||numParenPair||&apos;  lastCommaPos=&apos;||lastCommaPos||&apos;  leftParenPos=&apos;||leftParenPos);
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (positionPos &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression = trim(substring(columnExpression,leftParenPos+1,positionPos-leftParenPos));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression2 = trim(substring(columnExpression,positionPos+3,i-positionPos-3));
+&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;expression=&apos;||NVL(expression,&apos;null&apos;)||&apos; expression2=&apos;||NVL(expression2,&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;elseif (extractPos &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression = trim(substring(columnExpression,extractPos,i-extractPos));
+&#x9;&#x9;&#x9;&#x9;&#x9;elseif (castPos &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression = trim(substring(columnExpression,leftParenPos+1,castPos-leftParenPos));
+&#x9;&#x9;&#x9;&#x9;&#x9;elseif (lastCommaPos &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression = trim(substring(columnExpression,lastCommaPos+1,i-lastCommaPos-1));
+&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression = trim(substring(columnExpression,leftParenPos+1,i-leftParenPos-1));
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;expression=&apos;||NVL(expression,&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/isNumber(expression, isNumber);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (isNumber = 0 and expression IS NOT NULL AND LENGTH(&apos;|&apos;||expression||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (columnList IS NOT NULL AND LENGTH(&apos;|&apos;||columnList||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnList = columnList || sep;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnList = columnList || expression;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/isNumber(expression2, isNumber);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (isNumber = 0 and expression2 IS NOT NULL AND LENGTH(&apos;|&apos;||expression2||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (columnList IS NOT NULL AND LENGTH(&apos;|&apos;||columnList||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnList = columnList || sep;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnList = columnList || expression2;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;WHEN &apos;,&apos; THEN
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;ch=[&apos;||NVL(ch,&apos;null&apos;)||&apos;]  i=&apos;||i||&apos;  numParenPair=&apos;||numParenPair||&apos;  lastCommaPos=&apos;||lastCommaPos||&apos;  leftParenPos=&apos;||leftParenPos);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;IF (numParenPair = 1) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;set numCommas = numCommas + 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (lastCommaPos &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression = trim(substring(columnExpression,lastCommaPos+1,i-lastCommaPos-1));
+&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set expression = trim(substring(columnExpression,leftParenPos+1,i-leftParenPos-1));
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;expression=&apos;||expression);
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/isNumber(expression, isNumber);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (isNumber = 0 and expression IS NOT NULL AND LENGTH(&apos;|&apos;||expression||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (columnList IS NOT NULL AND LENGTH(&apos;|&apos;||columnList||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnList = columnList || sep;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnList = columnList || expression;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;set lastCommaPos = i;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;set word = word || ch;
+&#x9;&#x9;END CASE;
+&#x9;&#x9;set i = i + 1;
+&#x9;END WHILE;
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;if (positionPos &gt; 0) then
+&#x9;&#x9;&#x9;-- POSITION(&apos; &apos; IN LPAD (TRIM (RPAD (col) ) )  ) 
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;Function Pattern: POSITION(expr1 IN expr2)&apos;);
+&#x9;&#x9;elseif (extractPos &gt; 0) then
+&#x9;&#x9;&#x9;-- cast (col1 as varchar(255))
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;Function Pattern: CAST(expr as TYPE)&apos;);
+&#x9;&#x9;elseif (extractPos &gt; 0) then
+&#x9;&#x9;&#x9;-- EXTRACT (&lt;field name&gt; FROM &lt;value&gt;)
+&#x9;&#x9;&#x9;-- EXTRACT(DAY FROM orders.OrderDate)
+&#x9;&#x9;&#x9;-- EXTRACT(YEAR FROM INTERVAL &apos;499-11&apos; YEAR(3) TO MONTH)
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;Function Pattern: EXTRACT(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND FROM expr)&apos;);
+&#x9;&#x9;elseif (numCommas &gt; 0) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;pattern found (function): [func(expr1,expr2,...)]&apos;);
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;pattern found (function): [func(expr1)]&apos;);
+&#x9;&#x9;end if;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;Return function=[&apos;||NVL(function,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;Return columnList=[&apos;||NVL(columnList,&apos;null&apos;)||&apos;]&apos;);
+&#x9;end if;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1554898146649</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:1:Customized" type="STRING">datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed;datatype.changed</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

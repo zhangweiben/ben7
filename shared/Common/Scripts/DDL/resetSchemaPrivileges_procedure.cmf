@@ -1,0 +1,110 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="resetSchemaPrivileges" path="/shared/Common/Scripts/DDL/resetSchemaPrivileges" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <parameters></parameters>
+  <security>
+    <owner user="nobody" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/Utilities/repository/copyResourcesPrivilegesV2" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="updatePrivilegesRecursively" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="copyPrivilegeMode" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="inCopyPrivilegeEntries" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/Common/Scripts/DDL/Manual_DDL_Mappings" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="Published_Container_Path">
+        <datatype type="STRING" minLength="9" maxLength="33" trailingSpaces="false"/>
+      </element>
+      <element name="Physical_Container_Path">
+        <datatype type="STRING" minLength="62" maxLength="99" trailingSpaces="false"/>
+      </element>
+      <element name="Shared_Physical_Schema_Name">
+        <datatype type="STRING" minLength="22" maxLength="43" trailingSpaces="false"/>
+      </element>
+      <element name="Shared_Published_Schema_Name">
+        <datatype type="STRING" minLength="8" maxLength="29" trailingSpaces="false"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/Common/Scripts/DDL/PrintAndLog" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="message" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">PROCEDURE resetSchemaPrivileges()
+BEGIN
+&#x9;DECLARE success&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;BIT;
+&#x9;DECLARE faultResponse &#x9;&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE copyPrivilegeEntries&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE sourceType&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR DEFAULT &apos;CONTAINER&apos;;
+&#x9;DECLARE destinationType&#x9;&#x9;&#x9;&#x9;CONSTANT VARCHAR DEFAULT &apos;CONTAINER&apos;;
+&#x9;DECLARE publishedCatalogPath&#x9;&#x9; &#x9;CONSTANT VARCHAR DEFAULT &apos;/services/databases/TDV/ADM/&apos;;
+&#x9;DECLARE DDL_Mapping_Failed &#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE publishedSchemaPathAndName  VARCHAR;
+
+&#x9;CALL /shared/Common/Scripts/DDL/PrintAndLog(&apos;Resetting privileges on the tables in all shared schemas&apos;);
+ &#x9;FOR r AS SELECT Published_Container_Path, Physical_Container_Path, Shared_Physical_Schema_Name, Shared_Published_Schema_Name FROM /shared/Common/Scripts/DDL/Manual_DDL_Mappings DO
+&#x9;&#x9;IF r.Shared_Physical_Schema_Name IS NOT NULL THEN
+&#x9;&#x9;&#x9;SET publishedSchemaPathAndName = publishedCatalogPath || r.Shared_Published_Schema_Name;
+
+&#x9;&#x9;&#x9;CALL /shared/Common/Scripts/DDL/PrintAndLog(&apos;Resetting privileges on all tables in schema: &apos; || publishedSchemaPathAndName);
+
+&#x9;&#x9;&#x9;SET copyPrivilegeEntries = 
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;    &lt;resource:copyPrivilegeEntry&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;      &lt;resource:srcResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;        &lt;resource:path&gt;&apos; || CAST(XMLTEXT(publishedSchemaPathAndName) AS LONGVARCHAR) || &apos;&lt;/resource:path&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;        &lt;resource:type&gt;&apos; || CAST(XMLTEXT(sourceType) AS LONGVARCHAR) || &apos;&lt;/resource:type&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;      &lt;/resource:srcResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;      &lt;resource:dstResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;        &lt;resource:path&gt;&apos; || CAST(XMLTEXT(r.Physical_Container_Path) AS LONGVARCHAR) || &apos;&lt;/resource:path&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;        &lt;resource:type&gt;&apos; || CAST(XMLTEXT(destinationType) AS LONGVARCHAR) || &apos;&lt;/resource:type&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;      &lt;/resource:dstResource&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;    &lt;/resource:copyPrivilegeEntry&gt;&apos;||CHR(10)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos;&apos;;
+
+&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/copyResourcesPrivilegesV2(1, 1, copyPrivilegeEntries, success, faultResponse);
+
+&#x9;&#x9;&#x9;IF success &lt;&gt; 1 THEN
+&#x9;&#x9;&#x9;&#x9;CALL /shared/Common/Scripts/DDL/PrintAndLog(&apos;Failed to reset schema privileges: &apos; || CAST(faultResponse AS LONGVARCHAR));
+&#x9;&#x9;&#x9;&#x9;RAISE DDL_Mapping_Failed VALUE CAST(faultResponse AS LONGVARCHAR);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END IF;
+   END FOR;
+   CALL /shared/Common/Scripts/DDL/PrintAndLog(&apos;Finished resetting the privileges on the tables in all shared schemas&apos;);
+END
+</attribute>
+  <attribute name="creationDate" type="LONG">1572496377614</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1574041664130</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">na</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">aiu0920</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1572496377614</attribute>
+</metadata>

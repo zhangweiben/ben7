@@ -1,0 +1,418 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="updateGroupsDriver" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/updateGroupsDriver" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="Datasource" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Environment_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Organization" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Project" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="SubProject" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Group_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Domain_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="preview" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="forceDomainAsComposite" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1Console" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1CISLog" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1ReadOnly" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="rowsProcessed" direction="OUT" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="logOutput" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="printConsole" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="printLog" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="inLogOutput" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="addLogOutput" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="outLogOutput" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/getGroups" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Environment_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Organization" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Project" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="SubProject" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Group_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Domain_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="rownum">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="sheetRownum">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="datasource">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sheetName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Organization">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Project">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="SubProject">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="GroupName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Description">
+            <datatype type="STRING" maxLength="4000"/>
+          </element>
+          <element name="Domain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Env Type">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Access">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Unlock">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Config_R">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Config_M">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Resources_R">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Resources_M">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Status_R">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Status_M">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Users_R">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Users_M">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="IsActive">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/user/createGroup" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="groupName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="groupDomain" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="groupPrivileges" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="annotation" direction="IN">
+        <datatype type="STRING" maxLength="1024"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* updateGroupsDriver:
+
+&#x9;Reads the Composite_Resource_Privileges_IM or _RISK.xlsx spreadsheet and creates or updates groups. 
+&#x9;&#x9;sheets: Group_List
+ &#x9;If the domain is &quot;composite&quot; and the group does not exist then the group is created.
+&#x9;If the domain is &quot;composite&quot; and the group does exist then the group is updated.
+&#x9;If the domain is LDAP and the group does not exist then the group is NOT created and not updated.
+&#x9;If the domain is LDAP and the group does exist then the group is updated.
+
+&#x9;Input:
+&#x9;&#x9;Datasource&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: the datasource where the groups are stored.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;If not parameter is provided the default value is used from defaultValues.datasource.  Possible values include:
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEL - Excel spreadsheet which gets uploaded to each CIS server.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DB_LLE - SQL Server database for lower level environments.  Basically it is used for testing purposes and developing new functionality.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DB_PROD - SQL Server production database.  This connection should always be used unless developing new functionality.
+&#x9;&#x9;Environment_Name VARCHAR(255), &#x9;-- REQUIRED FILTER: The Composite server environment in which to get/update studio rights for: [DEV, TEST, UAT, PROD]
+&#x9;&#x9;Organization&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the organization such as ORG1 or ORG2
+&#x9;&#x9;Project&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the project that is hosted on CIS for this &quot;Env Type&quot;.  This provides a filter for only applying privileges for the given project.  If left blank, all projects will be updated.
+&#x9;&#x9;SubProject&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the sub-project that is hosted on CIS for this &quot;Env Type&quot;.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;This provides a filter for only applying privileges for the given sub-project.  If left blank, all rows for the project will be updated.
+&#x9;&#x9;Group_Name &#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The group name for which to get/update studio rights.
+&#x9;&#x9;Domain_Name &#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The domain name in which to get/update studio rights.
+&#x9;&#x9;preview&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- N or null(default)=Do not preview.  Execute the update groups.  Y=preview what will get set but don&apos;t actually execute the update groups.
+&#x9;&#x9;forceDomainAsComposite &#x9;CHAR(1),-- OPTIONAL PARAM: Y=true, N=false. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    Provides a way to force a conversion of the group from an LDAP domain name like &quot;ldap&quot; to a the &quot;composite&quot; domain.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    This is useful when setting up the privileges for testing with composite groups that mirror the LDAP groups.  This way the spreadsheet does not have to be modified.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    For example, the LDAP group Composite_Servicing_Dev is automatically converted to the composite domain group composite_servicing_dev.
+&#x9;&#x9;inDebug1&#x9;&#x9;&#x9;CHAR(1),&#x9;-- N/Null=No debug, Y(default)=Debug.  Determines whether to capture any debug output and return it in logOutput.
+&#x9;&#x9;inDebug1Console&#x9;&#x9;CHAR(1), &#x9;-- N/Null (default)=No debug, Y=Debug console.  Determines whether to print the studio console window or not.
+&#x9;&#x9;inDebug1CISLog&#x9;&#x9;CHAR(1), &#x9;-- N/Null (default)=No debug, Y=Debug log.  Determines whether to print to the CIS log or not.
+&#x9;&#x9;inDebug1ReadOnly&#x9;CHAR(1), &#x9;-- N/Null (default)=No debug, Y=Debug for READ only messages
+&#x9;Output:
+&#x9;&#x9;rowsProcessed&#x9;INTEGER&#x9;&#x9;&#x9;-- number of rows processed from the spreadsheet
+&#x9;&#x9;logOutput&#x9;&#x9;LONGVARCHAR&#x9;&#x9;-- The output log that gets printed to the command line console is also output
+
+&#x9;Exceptions:  Exception may be thrown.
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE updateGroupsDriver(
+&#x9;IN Datasource&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: the datasource where the groups are stored.
+    IN Environment_Name &#x9;&#x9;VARCHAR(255), &#x9;-- REQUIRED FILTER: The Composite server environment in which to get/update studio rights for: [DEV, TEST, UAT, PROD]
+&#x9;IN Organization&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the organization such as ORG1 or ORG2
+&#x9;IN Project&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the project that is hosted on CIS for this &quot;Env Type&quot;.  This provides a filter for only applying privileges for the given project.  If left blank, all projects will be updated.
+&#x9;IN SubProject&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the sub-project that is hosted on CIS for this &quot;Env Type&quot;.  This provides a filter for only applying privileges for the given sub-project.  If left blank, all rows for the sub-projects will be updated.
+    IN Group_Name &#x9;&#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The group name for which to get/update studio rights.
+    IN Domain_Name &#x9;&#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The domain name in which to get/update studio rights.
+&#x9;IN preview&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- N or null(default)=Do not preview.  Execute the update groups.  Y=preview what will get set but don&apos;t actually execute the update groups.
+&#x9;IN forceDomainAsComposite &#x9;CHAR(1),&#x9;&#x9;-- OPTIONAL PARAM: Y=true, N=false.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    Provides a way to force a conversion of the group from an LDAP domain name like &quot;ldap&quot; to a the &quot;composite&quot; domain.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    This is useful when setting up the privileges for testing with composite groups that mirror the LDAP groups.  This way the spreadsheet does not have to be modified.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    For example, the LDAP group Composite_Servicing_Dev is automatically converted to the composite domain group composite_servicing_dev.
+&#x9;IN inDebug1&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- N/Null=No debug, Y (default)=Debug.  Determines whether to capture any debug output and return it in logOutput.
+&#x9;IN inDebug1Console&#x9;&#x9;&#x9;CHAR(1), &#x9;&#x9;-- N/Null (default)=No debug, Y=Debug console.  Determines whether to print the studio console window or not.
+&#x9;IN inDebug1CISLog&#x9;&#x9;&#x9;CHAR(1), &#x9;&#x9;-- N/Null (default)=No debug, Y=Debug log.  Determines whether to print to the CIS log or not.
+&#x9;IN inDebug1ReadOnly&#x9;&#x9;&#x9;CHAR(1), &#x9;&#x9;-- N/Null (default)=No debug, Y=Debug for READ only messages
+&#x9;OUT rowsProcessed&#x9;&#x9;&#x9;INTEGER,&#x9;&#x9;-- number of rows processed from the spreadsheet
+&#x9;OUT logOutput&#x9;&#x9;&#x9;&#x9;LONGVARCHAR&#x9;&#x9;-- The output log that gets printed to the command line console is also output
+)
+BEGIN
+&#x9;DECLARE moduleName &#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;updateGroupsDriver&apos;;
+&#x9;DECLARE debug1&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1),&apos;Y&apos;);
+&#x9;DECLARE debug1Console&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1Console),&apos;N&apos;);
+&#x9;DECLARE debug1CISLog&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1CISLog),&apos;N&apos;);
+&#x9;DECLARE debug1ReadOnly&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1ReadOnly),&apos;N&apos;);
+&#x9;DECLARE debug2&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;N&apos;;
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE rowString&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE message&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE groupName&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE domainName&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE rightsList&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE newline&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT CHR(10);
+&#x9;DECLARE datasource_&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.datasource;
+
+&#x9;IF (Datasource IS NOT NULL AND LENGTH(Datasource) &gt; 0) THEN
+&#x9;&#x9;set datasource_ = Datasource;
+&#x9;END IF;
+
+&#x9;set logOutput = &apos;&apos;;
+&#x9;-- Print out the input filters
+&#x9;set message = &apos;INPUT FILTERS:&apos;||newline;
+    if (Environment_Name is not null and LENGTH(TRIM(Environment_Name)) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Environment_Name=&apos;||Environment_Name||newline;
+&#x9;end if;
+    if (Organization is not null and LENGTH(TRIM(Organization)) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Organization=&apos;||Organization||newline;
+&#x9;end if;
+    if (Project is not null and LENGTH(TRIM(Project)) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Project=&apos;||Project||newline;
+&#x9;end if;
+    if (Group_Name is not null and LENGTH(TRIM(Group_Name)) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Group_Name=&apos;||Group_Name||newline;
+&#x9;end if;
+    if (Domain_Name is not null and LENGTH(TRIM(Domain_Name)) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Domain_Name=&apos;||Domain_Name||newline;
+&#x9;end if;
+&#x9;IF (UPPER(debug1) = &apos;Y&apos;) THEN
+ &#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||message, logOutput);
+&#x9;END IF;
+
+&#x9;-- Print out the preview Mode
+&#x9;IF (preview is not null and UPPER(preview) = &apos;Y&apos;) THEN
+&#x9;&#x9;IF (UPPER(debug1) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;set message = &apos;PREVIEW MODE ONLY.  NO GROUPS/STUDIO RIGHTS WILL BE UPDATED or CREATED.&apos;||newline;
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||message, logOutput);
+&#x9;&#x9;END IF;
+&#x9;ELSE
+&#x9;&#x9;IF (UPPER(debug1) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;set message = &apos;UPDATE MODE.  GROUPS/STUDIO RIGHTS WILL BE UPDATED or CREATED.&apos;||&apos;|&apos;||newline;
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||message, logOutput);
+&#x9;&#x9;END IF;
+&#x9;END IF;
+
+&#x9;set rowsProcessed = 0;
+&#x9;FOR r AS 
+&#x9;&#x9;SELECT * FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/getGroups(datasource_, Environment_Name, Organization, Project, SubProject, Group_Name, Domain_Name, debug1)
+&#x9;DO
+&#x9;&#x9;-- Get the user or group
+&#x9;&#x9;set groupName = null;
+&#x9;&#x9;if (r.GroupName is not null or LENGTH(TRIM(r.GroupName)) &gt; 0) then
+&#x9;&#x9;&#x9;set groupName = TRIM(r.GroupName);
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- Process the row as long their is a resourcePath and the environment type passed in matches the non-null environment type in the spreadsheet.
+&#x9;&#x9;if (groupName is not null) then
+&#x9;&#x9;&#x9;set rowsProcessed = rowsProcessed + 1;
+
+&#x9;&#x9;&#x9;-- Get the domain
+&#x9;&#x9;&#x9;set domainName = null;
+&#x9;&#x9;&#x9;set message = &apos;&apos;;
+&#x9;&#x9;&#x9;if (forceDomainAsComposite is not null and upper(forceDomainAsComposite) = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;set domainName = &apos;composite&apos;;
+&#x9;&#x9;&#x9;&#x9;set message = &apos;FORCE DOMAIN=composite   &apos;;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;if (r.&quot;Domain&quot; is not null or LENGTH(TRIM(r.&quot;Domain&quot;)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set domainName = TRIM(r.&quot;Domain&quot;);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;-- Set the privilege list:   Access&#x9;Unlock&#x9;Config_R&#x9;Config_M&#x9;Resources_R&#x9;  Resources_M&#x9;Status_R&#x9;Status_M&#x9;Users_R&#x9;Users_M
+&#x9;&#x9;&#x9;set rightsList = &apos;&apos;;
+&#x9;&#x9;&#x9;if ((r.Access is null &#x9;&#x9;or LENGTH(TRIM(r.Access))=0&#x9;&#x9;&#x9;or r.Access = &apos;N&apos;) and 
+&#x9;&#x9;&#x9;&#x9;(r.Unlock is null &#x9;&#x9;or LENGTH(TRIM(r.Unlock))=0&#x9;&#x9;&#x9;or r.Unlock = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Config_R is null &#x9;or LENGTH(TRIM(r.Config_R))=0&#x9;&#x9;or r.Config_R = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Config_M is null &#x9;or LENGTH(TRIM(r.Config_M))=0&#x9;&#x9;or r.Config_M = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Resources_R is null &#x9;or LENGTH(TRIM(r.Resources_R))=0&#x9;or r.Resources_R = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Resources_M is null &#x9;or LENGTH(TRIM(r.Resources_M))=0&#x9;or r.Resources_M = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Status_R is null &#x9;or LENGTH(TRIM(r.Status_R))=0&#x9;&#x9;or r.Status_R = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Status_M is null &#x9;or LENGTH(TRIM(r.Status_M))=0&#x9;&#x9;or r.Status_M = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Users_R is null &#x9;&#x9;or LENGTH(TRIM(r.Users_R))=0&#x9;&#x9;or r.Users_R = &apos;N&apos;) and
+&#x9;&#x9;&#x9;&#x9;(r.Users_M is null &#x9;&#x9;or LENGTH(TRIM(r.Users_M))=0&#x9;&#x9;or r.Users_M = &apos;N&apos;)) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set rightsList = &apos;NONE&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;if (r.Access is not null &#x9;&#x9;and (TRIM(r.Access) = &apos;X&apos; &#x9;&#x9;or TRIM(r.Access) = &apos;Y&apos;)) &#x9;&#x9;then set rightsList = rightsList || &apos;ACCESS_TOOLS &apos;;    end if;
+&#x9;&#x9;&#x9;if (r.Unlock is not null &#x9;&#x9;and (TRIM(r.Unlock) = &apos;X&apos; &#x9;&#x9;or TRIM(r.Unlock) = &apos;Y&apos;)) &#x9;&#x9;then set rightsList = rightsList || &apos;UNLOCK_RESOURCE &apos;;   end if;
+&#x9;&#x9;&#x9;if (r.Config_R is not null &#x9;&#x9;and (TRIM(r.Config_R) = &apos;X&apos; &#x9;or TRIM(r.Config_R) = &apos;Y&apos;)) &#x9;then set rightsList = rightsList || &apos;READ_ALL_CONFIG &apos;; end if;
+&#x9;&#x9;&#x9;if (r.Config_M is not null &#x9;&#x9;and (TRIM(r.Config_M) = &apos;X&apos; &#x9;or TRIM(r.Config_M) = &apos;Y&apos;)) &#x9;then set rightsList = rightsList || &apos;MODIFY_ALL_CONFIG &apos;;  end if;
+&#x9;&#x9;&#x9;if (r.Resources_R is not null &#x9;and (TRIM(r.Resources_R) = &apos;X&apos; &#x9;or TRIM(r.Resources_R) = &apos;Y&apos;))&#x9;then set rightsList = rightsList || &apos;READ_ALL_RESOURCES &apos;;  end if;
+&#x9;&#x9;&#x9;if (r.Resources_M is not null &#x9;and (TRIM(r.Resources_M) = &apos;X&apos; &#x9;or TRIM(r.Resources_M) = &apos;Y&apos;))&#x9;then set rightsList = rightsList || &apos;MODIFY_ALL_RESOURCES &apos;;  end if;
+&#x9;&#x9;&#x9;if (r.Status_R is not null &#x9;&#x9;and (TRIM(r.Status_R) = &apos;X&apos; &#x9;or TRIM(r.Status_R) = &apos;Y&apos;)) &#x9;then set rightsList = rightsList || &apos;READ_ALL_STATUS &apos;;  end if;
+&#x9;&#x9;&#x9;if (r.Status_M is not null &#x9;&#x9;and (TRIM(r.Status_M) = &apos;X&apos;&#x9;&#x9;or TRIM(r.Status_M) = &apos;Y&apos;)) &#x9;then set rightsList = rightsList || &apos;MODIFY_ALL_STATUS &apos;;   end if;
+&#x9;&#x9;&#x9;if (r.Users_R is not null &#x9;&#x9;and (TRIM(r.Users_R) = &apos;X&apos; &#x9;&#x9;or TRIM(r.Users_R) = &apos;Y&apos;))&#x9;&#x9;then set rightsList = rightsList || &apos;READ_ALL_USERS &apos;;   end if;
+&#x9;&#x9;&#x9;if (r.Users_M is not null &#x9;&#x9;and (TRIM(r.Users_M) = &apos;X&apos; &#x9;&#x9;or TRIM(r.Users_M) = &apos;Y&apos;)) &#x9;&#x9;then set rightsList = rightsList || &apos;MODIFY_ALL_USERS &apos;;   end if;
+&#x9;&#x9;&#x9;set rightsList = TRIM(rightsList);
+
+&#x9;&#x9;&#x9;set rowString = &apos;Row=&apos;||r.rownum||&apos; SheetRow=&apos;||r.sheetRownum||&apos; Sheet=&apos;||r.sheetName||
+&#x9;&#x9;&#x9;&#x9;&apos; groupName=&apos;||groupName || &apos; domainName=&apos;||domainName ||&apos; rightsList=&apos;||rightsList;
+
+&#x9;&#x9;&#x9;IF (UPPER(debug1) = &apos;Y&apos;) THEN
+ &#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||message || rowString||&apos;|&apos;||newline, logOutput);
+&#x9;&#x9;&#x9;END IF;
+&#x9;
+&#x9;&#x9;&#x9;IF (preview is null or UPPER(preview) = &apos;N&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/&quot;user&quot;/createGroup(debug2, groupName, domainName, rightsList, r.Description);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END IF;
+&#x9;END FOR;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1386352480098</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

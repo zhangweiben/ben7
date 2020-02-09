@@ -1,0 +1,123 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="replaceSymbol" path="/shared/ASAssets/BestPractices_v81/Procedures/retrieveName/replaceSymbol" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="direction" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inReplaceStr" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="outReplaceStr" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <attribute name="Script" type="STRING">/*
+&#x9;replaceSymbol - Replace the &lt;TAB&gt;&lt;CR&gt;&lt;LF&gt; symbols present in the annotation field which comes from the spreadsheet to real values and allow the reverse.
+&#x9;&#x9;&lt;TAB&gt;=CHR(9)
+&#x9;&#x9;&lt;CR&gt;=CHR(13)
+&#x9;&#x9;&lt;LF&gt;=CHR(10)
+
+&#x9;IN
+&#x9;&#x9;direction - the direction in which to convert.
+&#x9;&#x9;&#x9;&apos;F&apos; = convert &lt;TAB&gt; to CHR(9)
+&#x9;&#x9;&#x9;&apos;R&apos; = convert CHR(9) to &lt;TAB&gt;
+&#x9;&#x9;inReplaceStr - the incoming string to replace the symbols
+&#x9;OUT
+&#x9;&#x9;outReplaceStr - the converted string
+
+&#x9;Exceptions:  none
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;04/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new for modifications for Best Practices 7.0
+&#x9;10/21/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.1.0&#x9;&#x9;&#x9;8.0: added the ability to reverse the symbols.
+&#x9;11/21/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;8.1.5: Put in conditions to check for existence instead of just doing a blanket replace which is more expensive than a condition.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE replaceSymbol(
+&#x9;IN  direction&#x9;&#x9;CHAR(1),
+&#x9;IN&#x9;inReplaceStr&#x9;LONGVARCHAR, 
+&#x9;OUT outReplaceStr&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;set outReplaceStr = inReplaceStr;
+
+&#x9;IF (outReplaceStr is not null and LENGTH(outReplaceStr) &gt; 0) then
+&#x9;&#x9;IF (direction = &apos;F&apos;) then
+&#x9;&#x9;&#x9;-- Convert the &lt;TAB&gt;&lt;CR&gt;&lt;LF&gt; symbols present in the annotation field which comes from the spreadsheet to real values
+&#x9;&#x9;&#x9;--Replace &lt;TAB&gt; symbol with a real tab
+&#x9;&#x9;&#x9;IF (INSTR(outReplaceStr,&apos;&lt;TAB&gt;&apos;) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;set outReplaceStr = REPLACE(outReplaceStr,&apos;&lt;TAB&gt;&apos;,chr(9)); -- Tab
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;--Replace &lt;CR&gt;&lt;LF&gt; symbol with a real carriage return/line feed
+&#x9;&#x9;&#x9;IF (INSTR(outReplaceStr,&apos;&lt;CR&gt;&apos;) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;set outReplaceStr = REPLACE(outReplaceStr,&apos;&lt;CR&gt;&apos;,chr(13)); -- Carriage return
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (INSTR(outReplaceStr,&apos;&lt;LF&gt;&apos;) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;set outReplaceStr = REPLACE(outReplaceStr,&apos;&lt;LF&gt;&apos;,chr(10)); -- Line Feed
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;ELSE -- &apos;R&apos; reverse
+&#x9;&#x9;&#x9;-- Convert the real values CHR(9),CHR(13),CHR(10) to symbols &lt;TAB&gt;&lt;CR&gt;&lt;LF&gt; symbols
+&#x9;&#x9;&#x9;--Replace a real tab, CHR(9) with a &lt;TAB&gt; symbol
+&#x9;&#x9;&#x9;IF (INSTR(outReplaceStr,chr(9)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;set outReplaceStr = REPLACE(outReplaceStr,chr(9),&apos;&lt;TAB&gt;&apos;); -- Tab
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;--Replace a real carriage return/line feed with a &lt;CR&gt;&lt;LF&gt; symbol
+&#x9;&#x9;&#x9;IF (INSTR(outReplaceStr,chr(13)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;set outReplaceStr = REPLACE(outReplaceStr,chr(13),&apos;&lt;CR&gt;&apos;); -- Carriage return
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (INSTR(outReplaceStr,chr(10)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;set outReplaceStr = REPLACE(outReplaceStr,chr(10),&apos;&lt;LF&gt;&apos;); -- Line Feed
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END IF;
+&#x9;END IF;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1513829825991</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

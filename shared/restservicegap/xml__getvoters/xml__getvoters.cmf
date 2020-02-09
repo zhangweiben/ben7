@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="xml_getvoters" path="/shared/restservicegap/xml_getvoters" type="DATA_SOURCE" subtype="XML_FILE" changeToken="0">
+  <security>
+    <owner user="admin" domain="composite"/>
+  </security>
+  <attribute name="OAuthConfig" type="NULL"/>
+  <attribute name="autoAddChildren" type="BOOLEAN">false</attribute>
+  <attribute name="cacheStatusAndTrackingDS" type="STRING"/>
+  <attribute name="charset" type="STRING">&lt;auto detect&gt;</attribute>
+  <attribute name="creationDate" type="LONG">1494827385317</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="driverName" type="STRING">File-XML</attribute>
+  <attribute name="filters" type="STRING">*.xml</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1514361924474</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="local" type="BOOLEAN">false</attribute>
+  <attribute name="name" type="STRING">xml_getvoters</attribute>
+  <attribute name="noNamespaceSchemaLocation" type="STRING"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1494827385317</attribute>
+  <attribute name="root" type="STRING"/>
+  <attribute name="schemaLocation" type="STRING"/>
+  <attribute name="type" type="STRING">XmlFile</attribute>
+  <attribute name="url" type="STRING">http://qa-ws-win-1:8080/xml2xml/GetVoters.xml</attribute>
+</metadata>

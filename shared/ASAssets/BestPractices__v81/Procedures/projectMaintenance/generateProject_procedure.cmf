@@ -1,0 +1,968 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="generateProject" path="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/generateProject" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="projectPath" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="scriptsPath" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="generateTestFolder" direction="IN" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="overwrite" direction="IN" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="message" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/resource/MoveResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="path" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="type" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="targetContainerPath" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="newName" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceName" type="STRING" maxLength="255"/>
+      </element>
+      <element name="overwrite" direction="IN">
+        <datatype type="BOOLEAN"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/lib/resource/ResourceExists" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="path" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="type" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="version" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceVersion" type="STRING" maxLength="255"/>
+      </element>
+      <element name="exists" direction="OUT">
+        <datatype type="BOOLEAN"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/rebindGenerationScripts" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="startingResourceFolder" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="rebindOldFolder" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="rebindNewFolder" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resultMessage" direction="OUT">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/getUtilitiesVersion" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="version" direction="OUT">
+        <datatype type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/copyResources" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="sourceFolderPath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="targetFolderPath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/createAllFolders" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inSourceFolderPath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/destroyResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getResourceListRecursive" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="resourceTreeList" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="name">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resPath">
+            <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+          </element>
+          <element name="resType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="creationDate">
+            <datatype type="DATETIME"/>
+          </element>
+          <element name="creationDateBigint">
+            <datatype type="INTEGER"/>
+          </element>
+          <element name="creatorUserDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="creatorUserName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="lastModifiedDate">
+            <datatype type="DATETIME"/>
+          </element>
+          <element name="lastModifiedDateBigint">
+            <datatype type="INTEGER"/>
+          </element>
+          <element name="lastModifiedUserDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="lastModifiedUserName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getScriptText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inSubType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="scriptText" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getUsedResourcesCursor" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="usedResCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="id">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="mode" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="folderName" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="folderPath" direction="OUT">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/updateSqlScript" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="scripttext" direction="INOUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/updateTrigger" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="enabled" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="conditionType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="actionType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="triggerAttrVect" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="TriggerType" type="TREE" refId="257">
+              <element name="trName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="trValue">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="attributeVect" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="AttributeType" type="TREE" refId="513">
+              <element name="attrName">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="attrType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="attrValue">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="769"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="769"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* generateProject:
+
+&#x9;This procedure is used to copy the DataAbstraction_GENERIC_Template to your named project path.
+&#x9;If the project path already exists, this procedure will not copy over it.   You must delete it
+&#x9;first before running this procedure again.  
+
+&#x9;This procedure is used to configure a new project with the correct paths
+
+&#x9;Input: 
+&#x9;&#x9;debug - Y=debug, N=do not debug
+
+&#x9;&#x9;projectPath - the full project path
+&#x9;&#x9;&#x9;e.g. /shared/PROJECT1
+
+&#x9;&#x9;scriptsPath&#x9;- the full path to the new project scripts folder.  
+&#x9;&#x9;&#x9;e.g. /shared/PROJECT1/_scripts
+
+&#x9;&#x9;&#x9;1=generate Test folder, 
+&#x9;&#x9;&#x9;0 or null=do not generate Test folder (default)
+&#x9;&#x9;generateTestFolder - determine whether to generate the Test folder or not
+
+&#x9;&#x9;&#x9;1=overwrite the project
+&#x9;&#x9;&#x9;0=do not overwrite the project
+&#x9;&#x9;overwrite
+&#x9;Output:
+&#x9;&#x9;message - a resulting message 
+&#x9;&#x9;(you must click refresh upon completion for Studio to recognize changes to the new project)
+
+&#x9;Exceptions:  ex
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;04/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;11/26/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;B.P. 8.1.5: Added a REPLACE in defaultValues section: 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set scriptText = REPLACE(scriptText, &apos;8.1;&apos;, CAST(bestPracticesVersionDefault AS VARCHAR)||&apos;;&apos;);
+&#x9;03/01/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced /shared/ASAssets/Utilities/repository/resourceExists with /lib/resource/ResourceExists
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE generateProject(
+&#x9;&#x9;-- Y=debug, N=do not debug
+&#x9;IN debug&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;
+
+&#x9;&#x9;-- the full path to a project including the project name
+&#x9;IN projectPath&#x9;&#x9;&#x9;VARCHAR(4000), 
+
+&#x9;&#x9;-- the full path to the new project scripts folder.  e.g. /shared/PROJECT1/_scripts
+&#x9;IN scriptsPath&#x9;&#x9;&#x9;VARCHAR(4000),
+
+&#x9;&#x9;-- 1=generate test folder, 0 or null (default)=do not generate test folder
+&#x9;IN generateTestFolder&#x9;BIT,
+
+&#x9;&#x9;-- determine whether to overwrite the taget project path or not
+&#x9;&#x9;-- 1=overwrite the target project
+&#x9;&#x9;-- 0 or null=do not overwrite the target project
+&#x9;IN overwrite&#x9;&#x9;&#x9;BIT,
+
+&#x9;OUT message&#x9;&#x9;&#x9;&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;generateProject&apos;;
+&#x9;DECLARE overwrite_&#x9;&#x9;&#x9;&#x9;BIT DEFAULT NVL(overwrite,0);
+&#x9;DECLARE success&#x9;&#x9;&#x9;&#x9;&#x9;BIT; -- true(1) or false(0)
+&#x9;DECLARE faultResponse &#x9;&#x9;&#x9;XML;
+&#x9;DECLARE createResponse &#x9;&#x9;&#x9;XML;
+&#x9;DECLARE result&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255);
+&#x9;DECLARE resultMessage&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE bestPracticesRootPath&#x9;VARCHAR(4000) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.bestPracticesRootPath;
+&#x9;DECLARE utilitiesRootPath&#x9;&#x9;VARCHAR(4000) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.utilitiesRootPath;
+&#x9;DECLARE templatePath&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT bestPracticesRootPath||&apos;/DataAbstraction_GENERIC_Template&apos;;
+&#x9;DECLARE templateScriptsPath&#x9;&#x9;VARCHAR(4000) DEFAULT templatePath||&apos;/_scripts&apos;;
+&#x9;DECLARE docDriverPath &#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE docRootPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.docDefaultRootPath;
+&#x9;DECLARE bestPracticesVersionDefault DOUBLE DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.bestPracticesVersion;
+&#x9;DECLARE derivedScriptPath &#x9;&#x9;VARCHAR(4096);
+&#x9;DECLARE projectPathReserved&#x9;&#x9;VARCHAR(4096);
+&#x9;DECLARE scriptsPathReserved&#x9;&#x9;VARCHAR(4096);
+&#x9;DECLARE projectName&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE projectNameReserved&#x9;&#x9;VARCHAR;
+&#x9;DECLARE resourcePath&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE scriptText&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE procedureParams&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE sleep&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 5;
+&#x9;DECLARE sleepCount&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE maxSleepCount&#x9;&#x9;&#x9;INTEGER DEFAULT 5;
+&#x9;DECLARE version&#x9;&#x9;&#x9;&#x9;&#x9;DOUBLE;
+&#x9;DECLARE minVersion&#x9;&#x9;&#x9;&#x9;DOUBLE DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.minVersion;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE curs&#x9;&#x9;&#x9;&#x9;&#x9;CURSOR(basePath VARCHAR(4000));
+&#x9;DECLARE sqlStatement&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE resourcePathList &#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE triggerAttrVect&#x9;&#x9;&#x9;VECTOR(/shared/ASAssets/Utilities/repository/updateTrigger.TriggerType);
+&#x9;DECLARE resourceExists&#x9;&#x9;&#x9;BOOLEAN;
+
+&#x9;-- Apply reserved path to project path destination
+&#x9;call /shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath(projectPath, null, projectPathReserved);
+&#x9;-- Apply reserved path to scripts path desitnation
+&#x9;call /shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath(scriptsPath, null, scriptsPathReserved);
+&#x9;-- Get the project name
+&#x9;call /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(projectPathReserved, &apos;E&apos;, projectNameReserved, resourcePath);
+&#x9;-- Get the project name
+&#x9;call /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(projectPath, &apos;E&apos;, projectName, resourcePath);
+
+&#x9;/***************************************************************
+&#x9; * Make sure the Utilities are up to date
+&#x9; ***************************************************************/
+&#x9;call /shared/ASAssets/Utilities/getUtilitiesVersion(version);
+&#x9;if (version &lt;  minVersion) then
+&#x9;&#x9;raise ex value &apos;Utilities &apos;||minVersion||&apos; or higher is required&apos;;
+&#x9;end if;
+&#x9;
+&#x9;/***************************************************************
+&#x9; * Don&apos;t overwrite the project if it already exists unless overwrite=1
+&#x9; ***************************************************************/
+&#x9;call /lib/resource/ResourceExists(projectPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;if (resourceExists and overwrite_ = 0) then
+&#x9;&#x9;raise ex value &apos;Resource already exists.  Delete it first and try again. Resource path=&apos;||projectPath;
+&#x9;end if;
+
+&#x9;/***************************************************************
+&#x9; * Destroy the new resource if it exists when overwrite = 1
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;call /lib/resource/ResourceExists(projectPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;if (resourceExists and overwrite_ = 1) then
+&#x9;&#x9;&#x9;-- Destroy the resource
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/destroyResource(projectPath,null,&apos;CONTAINER&apos;,success,createResponse,faultResponse);
+
+&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;/***************************************************************
+&#x9; * Copy DataAbstraction_GENERIC_Template to new project folder
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;copyResources: templatePath=&apos;||templatePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;copyResources: projectPath=&apos;||projectPath);
+&#x9;&#x9;-- Copy the Data Abtraction Generic Template
+&#x9;&#x9;call /shared/ASAssets/Utilities/repository/copyResources(templatePath, projectPath, success, faultResponse);
+&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;/***************************************************************
+&#x9; * Move the template /_scripts to scriptsPath
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Generate the target folders
+&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createAllFolders(scriptsPath, success, faultResponse);
+&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;end if;
+&#x9;&#x9;-- Get the scripts path and name
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;moveResources: projectPath=&apos;||projectPath||&apos;/_scripts&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;moveResources: scriptsPath=&apos;||scriptsPath);
+
+&#x9;&#x9;call /lib/resource/ResourceExists(scriptsPath||&apos;/_Custom&apos;,&apos;CONTAINER&apos;,null,resourceExists);
+&#x9;&#x9;IF (NOT resourceExists) THEN
+&#x9;&#x9;&#x9;call /lib/resource/MoveResource(projectPath||&apos;/_scripts/_Custom&apos;, &#x9;&#x9;&apos;CONTAINER&apos;, scriptsPath, &apos;_Custom&apos;, true);
+&#x9;&#x9;END IF;
+&#x9;&#x9;call /lib/resource/ResourceExists(scriptsPath||&apos;/Configure&apos;,&apos;CONTAINER&apos;,null,resourceExists);
+&#x9;&#x9;IF (NOT resourceExists) THEN
+&#x9;&#x9;&#x9;call /lib/resource/MoveResource(projectPath||&apos;/_scripts/Configure&apos;, &#x9;&apos;CONTAINER&apos;, scriptsPath, &apos;Configure&apos;, true);
+&#x9;&#x9;END IF;
+&#x9;&#x9;call /lib/resource/ResourceExists(scriptsPath||&apos;/Constants&apos;,&apos;CONTAINER&apos;,null,resourceExists);
+&#x9;&#x9;IF (NOT resourceExists) THEN
+&#x9;&#x9;&#x9;call /lib/resource/MoveResource(projectPath||&apos;/_scripts/Constants&apos;, &#x9;&apos;CONTAINER&apos;, scriptsPath, &apos;Constants&apos;, true);
+&#x9;&#x9;END IF;
+&#x9;&#x9;call /lib/resource/ResourceExists(scriptsPath||&apos;/Display&apos;,&apos;CONTAINER&apos;,null,resourceExists);
+&#x9;&#x9;IF (NOT resourceExists) THEN
+&#x9;&#x9;&#x9;call /lib/resource/MoveResource(projectPath||&apos;/_scripts/Display&apos;, &#x9;&#x9;&apos;CONTAINER&apos;, scriptsPath, &apos;Display&apos;, true);
+&#x9;&#x9;END IF;
+&#x9;&#x9;call /lib/resource/ResourceExists(scriptsPath||&apos;/Documentation&apos;,&apos;CONTAINER&apos;,null,resourceExists);
+&#x9;&#x9;IF (NOT resourceExists) THEN
+&#x9;&#x9;&#x9;call /lib/resource/MoveResource(projectPath||&apos;/_scripts/Documentation&apos;, &apos;CONTAINER&apos;, scriptsPath, &apos;Documentation&apos;, true);
+&#x9;&#x9;END IF;
+&#x9;&#x9;call /lib/resource/ResourceExists(scriptsPath||&apos;/Generate&apos;,&apos;CONTAINER&apos;,null,resourceExists);
+&#x9;&#x9;IF (NOT resourceExists) THEN
+&#x9;&#x9;&#x9;call /lib/resource/MoveResource(projectPath||&apos;/_scripts/Generate&apos;, &#x9;&#x9;&apos;CONTAINER&apos;, scriptsPath, &apos;Generate&apos;, true);
+&#x9;&#x9;END IF;
+&#x9;&#x9;call /lib/resource/ResourceExists(scriptsPath||&apos;/Rebind&apos;,&apos;CONTAINER&apos;,null,resourceExists);
+&#x9;&#x9;IF (NOT resourceExists) THEN
+&#x9;&#x9;&#x9;call /lib/resource/MoveResource(projectPath||&apos;/_scripts/Rebind&apos;, &#x9;&#x9;&apos;CONTAINER&apos;, scriptsPath, &apos;Rebind&apos;, true);
+&#x9;&#x9;END IF;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;/***************************************************************
+&#x9; * Update project basePath in /Constants/defaultValues
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Get the defaultValues procedure script text 
+&#x9;&#x9;set resourcePath = scriptsPath||&apos;/Constants/defaultValues&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;getScriptText: resourcePath=&apos;||resourcePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/repository/getScriptText(resourcePath,&apos;PROCEDURE&apos;,&apos;SQL_SCRIPT_PROCEDURE&apos;,scriptText);
+
+&#x9;&#x9;-- Replace the version number
+&#x9;&#x9;set scriptText = REPLACE(scriptText, &apos;8.1;&apos;, CAST(bestPracticesVersionDefault AS VARCHAR)||&apos;;&apos;);
+
+&#x9;&#x9;-- Replace the basePath with the reserved project path
+&#x9;&#x9;set scriptText = REPLACE(scriptText, templatePath, projectPathReserved);
+
+&#x9;&#x9;-- Replace the scriptsPath with the derived path in this text: REPLACE(basePath||&apos;/&quot;_scripts&quot;&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;&#x9;set derivedScriptPath = REPLACE(scriptsPath, projectPath, &apos;&apos;);
+&#x9;&#x9;call  /shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath(derivedScriptPath, null, derivedScriptPath);
+&#x9;&#x9;set scriptText = REPLACE(scriptText, &apos;/&quot;_scripts&quot;&apos;, derivedScriptPath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;getScriptText: derivedScriptPath=&apos;||derivedScriptPath);
+
+&#x9;&#x9;-- Replace the default database path &quot;/services/databases/DataAbstraction_GENERIC_Template&quot; with the &quot;/services/databases/&lt;project_name&gt;&quot; path
+&#x9;&#x9;set scriptText = REPLACE(scriptText, &apos;/services/databases/DataAbstraction_GENERIC_Template&apos;, &apos;/services/databases/&apos;||projectNameReserved);
+
+&#x9;&#x9;-- Update the defaultValue procedure with the new script text
+&#x9;&#x9;call /shared/ASAssets/Utilities/repository/updateSqlScript(resourcePath,scriptText,success,createResponse,faultResponse);
+&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;/***************************************************************
+&#x9; * Rebind all procedures found in /_scripts directory
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Rebind the generation scripts &quot;/_scripts/Constants&quot; path
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;rebindGenerationScripts: startingPath=&apos;||scriptsPath); --/shared/TEST1/_scripts
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;rebindGenerationScripts:   rebindFrom=&apos;||templateScriptsPath); -- /shared/BestPractices/DataAbstraction_GENERIC_Template/_scripts
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;rebindGenerationScripts:     rebindTo=&apos;||scriptsPath); -- /shared/TEST1/_scripts
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/rebindGenerationScripts(debug, scriptsPath, templateScriptsPath, scriptsPath, result, resultMessage);
+&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;raise ex value cast(resultMessage as longvarchar);
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;/***************************************************************
+&#x9; * Update Documentation trigger parameter paths
+&#x9; ***************************************************************/
+&#x9;-- Set the documentation driver
+&#x9;set docDriverPath = scriptsPath||&apos;/Documentation/documentationDriverWrapper&apos;;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Update Documentation Trigger for documentationTrigger_Application_Client_Published
+&#x9;&#x9;set resourcePath = scriptsPath||&apos;/Documentation/documentationTrigger_Application_Published&apos;;
+&#x9;&#x9;set procedureParams = &apos;&apos;&apos;applicationPublishedPath_&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;doc_BestPractices_Application_Published.txt&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:    resourcePath=&apos;||resourcePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:   docDriverPath=&apos;||docDriverPath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger: procedureParams=&apos;||procedureParams);
+&#x9;&#x9;-- Set up the trigger vector to be passed into updateTrigger()
+&#x9;&#x9;SET triggerAttrVect = VECTOR[
+&#x9;&#x9;&#x9;(&apos;procedurePath&apos;, &#x9;&#x9;&#x9;docDriverPath),
+&#x9;&#x9;&#x9;(&apos;procedureParams&apos;, &#x9;&#x9;procedureParams),
+&#x9;&#x9;&#x9;(&apos;procedureExhaustCursors&apos;, &apos;0&apos;),
+&#x9;&#x9;&#x9;(&apos;maxEventsQueued&apos;, &#x9;&#x9;&apos;1&apos;)
+&#x9;&#x9;];
+
+&#x9;&#x9;-- Update the trigger
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/updateTrigger(
+&#x9;&#x9;&#x9;&#x9;resourcePath, &#x9;&#x9;&#x9;-- fullResourcePath
+&#x9;&#x9;&#x9;&#x9;0, &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- enabled
+&#x9;&#x9;&#x9;&#x9;&apos;TIMER&apos;, &#x9;&#x9;&#x9;&#x9;-- conditionType
+&#x9;&#x9;&#x9;&#x9;&apos;PROCEDURE&apos;, &#x9;&#x9;&#x9;-- actionType,
+&#x9;&#x9;&#x9;&#x9;triggerAttrVect,
+&#x9;&#x9;&#x9;&#x9;NULL, &#x9;&#x9;&#x9;&#x9;&#x9;-- attributeVect,&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;success,
+&#x9;&#x9;&#x9;&#x9;createResponse,
+&#x9;&#x9;&#x9;&#x9;faultResponse
+&#x9;&#x9;&#x9;);
+
+&#x9;&#x9;-- Update Documentation Trigger for documentationTrigger_Application_Client_Services
+&#x9;&#x9;set resourcePath = scriptsPath||&apos;/Documentation/documentationTrigger_Application_Services&apos;;
+&#x9;&#x9;set procedureParams = &apos;&apos;&apos;applicationServicesPath_&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;doc_BestPractices_Application_Services.txt&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:    resourcePath=&apos;||resourcePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:   docDriverPath=&apos;||docDriverPath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger: procedureParams=&apos;||procedureParams);
+&#x9;&#x9;-- Set up the trigger vector to be passed into updateTrigger()
+&#x9;&#x9;SET triggerAttrVect = VECTOR[
+&#x9;&#x9;&#x9;(&apos;procedurePath&apos;, &#x9;&#x9;&#x9;docDriverPath),
+&#x9;&#x9;&#x9;(&apos;procedureParams&apos;, &#x9;&#x9;procedureParams),
+&#x9;&#x9;&#x9;(&apos;procedureExhaustCursors&apos;, &apos;0&apos;),
+&#x9;&#x9;&#x9;(&apos;maxEventsQueued&apos;, &#x9;&#x9;&apos;1&apos;)
+&#x9;&#x9;];
+
+&#x9;&#x9;-- Update the trigger
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/updateTrigger(
+&#x9;&#x9;&#x9;&#x9;resourcePath, &#x9;&#x9;&#x9;-- fullResourcePath
+&#x9;&#x9;&#x9;&#x9;0, &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- enabled
+&#x9;&#x9;&#x9;&#x9;&apos;TIMER&apos;, &#x9;&#x9;&#x9;&#x9;-- conditionType
+&#x9;&#x9;&#x9;&#x9;&apos;PROCEDURE&apos;, &#x9;&#x9;&#x9;-- actionType,
+&#x9;&#x9;&#x9;&#x9;triggerAttrVect,
+&#x9;&#x9;&#x9;&#x9;NULL, &#x9;&#x9;&#x9;&#x9;&#x9;-- attributeVect,&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;success,
+&#x9;&#x9;&#x9;&#x9;createResponse,
+&#x9;&#x9;&#x9;&#x9;faultResponse
+&#x9;&#x9;&#x9;);
+
+&#x9;&#x9;-- Update Documentation Trigger for documentationTrigger_Application_Client_Views
+&#x9;&#x9;set resourcePath = scriptsPath||&apos;/Documentation/documentationTrigger_Application_Views&apos;;
+&#x9;&#x9;set procedureParams = &apos;&apos;&apos;applicationViewsPath_&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;doc_BestPractices_Application_Views.txt&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:    resourcePath=&apos;||resourcePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:   docDriverPath=&apos;||docDriverPath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger: procedureParams=&apos;||procedureParams);
+&#x9;&#x9;-- Set up the trigger vector to be passed into updateTrigger()
+&#x9;&#x9;SET triggerAttrVect = VECTOR[
+&#x9;&#x9;&#x9;(&apos;procedurePath&apos;, &#x9;&#x9;&#x9;docDriverPath),
+&#x9;&#x9;&#x9;(&apos;procedureParams&apos;, &#x9;&#x9;procedureParams),
+&#x9;&#x9;&#x9;(&apos;procedureExhaustCursors&apos;, &apos;0&apos;),
+&#x9;&#x9;&#x9;(&apos;maxEventsQueued&apos;, &#x9;&#x9;&apos;1&apos;)
+&#x9;&#x9;];
+
+&#x9;&#x9;-- Update the trigger
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/updateTrigger(
+&#x9;&#x9;&#x9;&#x9;resourcePath, &#x9;&#x9;&#x9;-- fullResourcePath
+&#x9;&#x9;&#x9;&#x9;0, &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- enabled
+&#x9;&#x9;&#x9;&#x9;&apos;TIMER&apos;, &#x9;&#x9;&#x9;&#x9;-- conditionType
+&#x9;&#x9;&#x9;&#x9;&apos;PROCEDURE&apos;, &#x9;&#x9;&#x9;-- actionType,
+&#x9;&#x9;&#x9;&#x9;triggerAttrVect,
+&#x9;&#x9;&#x9;&#x9;NULL, &#x9;&#x9;&#x9;&#x9;&#x9;-- attributeVect,&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;success,
+&#x9;&#x9;&#x9;&#x9;createResponse,
+&#x9;&#x9;&#x9;&#x9;faultResponse
+&#x9;&#x9;&#x9;);
+
+&#x9;&#x9;-- Update Documentation Trigger for documentationTrigger_Business_Business_Views
+&#x9;&#x9;set resourcePath = scriptsPath||&apos;/Documentation/documentationTrigger_Business_Business&apos;;
+&#x9;&#x9;set procedureParams = &apos;&apos;&apos;businessBusinessPath_&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;doc_BestPractices_Business_Business.txt&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:    resourcePath=&apos;||resourcePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:   docDriverPath=&apos;||docDriverPath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger: procedureParams=&apos;||procedureParams);
+&#x9;&#x9;-- Set up the trigger vector to be passed into updateTrigger()
+&#x9;&#x9;SET triggerAttrVect = VECTOR[
+&#x9;&#x9;&#x9;(&apos;procedurePath&apos;, &#x9;&#x9;&#x9;docDriverPath),
+&#x9;&#x9;&#x9;(&apos;procedureParams&apos;, &#x9;&#x9;procedureParams),
+&#x9;&#x9;&#x9;(&apos;procedureExhaustCursors&apos;, &apos;0&apos;),
+&#x9;&#x9;&#x9;(&apos;maxEventsQueued&apos;, &#x9;&#x9;&apos;1&apos;)
+&#x9;&#x9;];
+
+&#x9;&#x9;-- Update the trigger
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/updateTrigger(
+&#x9;&#x9;&#x9;&#x9;resourcePath, &#x9;&#x9;&#x9;-- fullResourcePath
+&#x9;&#x9;&#x9;&#x9;0, &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- enabled
+&#x9;&#x9;&#x9;&#x9;&apos;TIMER&apos;, &#x9;&#x9;&#x9;&#x9;-- conditionType
+&#x9;&#x9;&#x9;&#x9;&apos;PROCEDURE&apos;, &#x9;&#x9;&#x9;-- actionType,
+&#x9;&#x9;&#x9;&#x9;triggerAttrVect,
+&#x9;&#x9;&#x9;&#x9;NULL, &#x9;&#x9;&#x9;&#x9;&#x9;-- attributeVect,&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;success,
+&#x9;&#x9;&#x9;&#x9;createResponse,
+&#x9;&#x9;&#x9;&#x9;faultResponse
+&#x9;&#x9;&#x9;);
+
+&#x9;&#x9;-- Update Documentation Trigger for documentationTrigger_Business_Logical_Views
+&#x9;&#x9;set resourcePath = scriptsPath||&apos;/Documentation/documentationTrigger_Business_Logical&apos;;
+&#x9;&#x9;set procedureParams = &apos;&apos;&apos;businessLogicalPath_&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;doc_BestPractices_Business_Logical.txt&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:    resourcePath=&apos;||resourcePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:   docDriverPath=&apos;||docDriverPath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger: procedureParams=&apos;||procedureParams);
+&#x9;&#x9;-- Set up the trigger vector to be passed into updateTrigger()
+&#x9;&#x9;SET triggerAttrVect = VECTOR[
+&#x9;&#x9;&#x9;(&apos;procedurePath&apos;, &#x9;&#x9;&#x9;docDriverPath),
+&#x9;&#x9;&#x9;(&apos;procedureParams&apos;, &#x9;&#x9;procedureParams),
+&#x9;&#x9;&#x9;(&apos;procedureExhaustCursors&apos;, &apos;0&apos;),
+&#x9;&#x9;&#x9;(&apos;maxEventsQueued&apos;, &#x9;&#x9;&apos;1&apos;)
+&#x9;&#x9;];
+
+&#x9;&#x9;-- Update the trigger
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/updateTrigger(
+&#x9;&#x9;&#x9;&#x9;resourcePath, &#x9;&#x9;&#x9;-- fullResourcePath
+&#x9;&#x9;&#x9;&#x9;0, &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- enabled
+&#x9;&#x9;&#x9;&#x9;&apos;TIMER&apos;, &#x9;&#x9;&#x9;&#x9;-- conditionType
+&#x9;&#x9;&#x9;&#x9;&apos;PROCEDURE&apos;, &#x9;&#x9;&#x9;-- actionType,
+&#x9;&#x9;&#x9;&#x9;triggerAttrVect,
+&#x9;&#x9;&#x9;&#x9;NULL, &#x9;&#x9;&#x9;&#x9;&#x9;-- attributeVect,&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;success,
+&#x9;&#x9;&#x9;&#x9;createResponse,
+&#x9;&#x9;&#x9;&#x9;faultResponse
+&#x9;&#x9;&#x9;);
+
+&#x9;&#x9;-- Update Documentation Trigger for documentationTrigger_DATABASE
+&#x9;&#x9;set resourcePath = scriptsPath||&apos;/Documentation/documentationTrigger_DATABASE&apos;;
+&#x9;&#x9;set procedureParams = &apos;&apos;&apos;compositeDatabasePath_&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;doc_BestPractices_DATABASE.txt&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;,&apos;&apos;&apos;&apos;&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:    resourcePath=&apos;||resourcePath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger:   docDriverPath=&apos;||docDriverPath);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateTrigger: procedureParams=&apos;||procedureParams);
+&#x9;&#x9;-- Set up the trigger vector to be passed into updateTrigger()
+&#x9;&#x9;SET triggerAttrVect = VECTOR[
+&#x9;&#x9;&#x9;(&apos;procedurePath&apos;, &#x9;&#x9;&#x9;docDriverPath),
+&#x9;&#x9;&#x9;(&apos;procedureParams&apos;, &#x9;&#x9;procedureParams),
+&#x9;&#x9;&#x9;(&apos;procedureExhaustCursors&apos;, &apos;0&apos;),
+&#x9;&#x9;&#x9;(&apos;maxEventsQueued&apos;, &#x9;&#x9;&apos;1&apos;)
+&#x9;&#x9;];
+
+&#x9;&#x9;-- Update the trigger
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/updateTrigger(
+&#x9;&#x9;&#x9;&#x9;resourcePath, &#x9;&#x9;&#x9;-- fullResourcePath
+&#x9;&#x9;&#x9;&#x9;0, &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- enabled
+&#x9;&#x9;&#x9;&#x9;&apos;TIMER&apos;, &#x9;&#x9;&#x9;&#x9;-- conditionType
+&#x9;&#x9;&#x9;&#x9;&apos;PROCEDURE&apos;, &#x9;&#x9;&#x9;-- actionType,
+&#x9;&#x9;&#x9;&#x9;triggerAttrVect,
+&#x9;&#x9;&#x9;&#x9;NULL, &#x9;&#x9;&#x9;&#x9;&#x9;-- attributeVect,&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;success,
+&#x9;&#x9;&#x9;&#x9;createResponse,
+&#x9;&#x9;&#x9;&#x9;faultResponse
+&#x9;&#x9;&#x9;);
+
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+
+&#x9;/***************************************************************
+&#x9; * Verify basePath has been updated
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Perform verifications on base path
+&#x9;&#x9;set sqlStatement = &apos;SELECT * from &apos;|| scriptsPathReserved||&apos;/Constants/getBasePath()&apos;;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:    sqlStatement=&apos;||sqlStatement);
+&#x9;&#x9;open curs for sqlStatement;
+&#x9;&#x9;fetch curs into resourcePath;
+&#x9;&#x9;close curs;
+&#x9;&#x9;if (resourcePath != projectPathReserved) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:        basePath and projectPath DO NOT MATCH.&apos;);
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:        basePath=&apos;||NVL(resourcePath,&apos;null&apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:    projectPath=&apos;||projectPathReserved);
+&#x9;&#x9;&#x9;raise ex value &apos;The base path from getBasePath()=[&apos;||NVL(resourcePath,&apos;null&apos;)||&apos;] is not equal to the projectPath=[&apos;||projectPathReserved||&apos;]&apos;;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:        basePath and projectPath MATCH.&apos;);
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:        basePath=&apos;||NVL(resourcePath,&apos;null&apos;));
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:    projectPath=&apos;||projectPathReserved);
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;/***************************************************************
+&#x9; * Verify rebind paths have been updated
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Verify rebind worked correctly
+&#x9;&#x9;for r as select * from /shared/ASAssets/Utilities/repository/getResourceListRecursive(projectPath, &apos;CONTAINER&apos;) do
+&#x9;&#x9;&#x9;if (r.resType != &apos;CONTAINER&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;    INSPECTED: &apos;||r.resPath);
+&#x9;&#x9;&#x9;&#x9;for u as select * from /shared/ASAssets/Utilities/repository/getUsedResourcesCursor(r.resPath, r.resType) do
+&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(templatePath||&apos;/&apos; IN u.resourcePath||&apos;/&apos;) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (resourcePathList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourcePathList = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourcePathList = resourcePathList || &apos;, &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourcePathList = resourcePathList || u.resourcePath;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;end for;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end for;
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;&apos;);
+&#x9;&#x9;if (resourcePathList is not null) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:    resourcePathList not rebound=[&apos;||NVL(resourcePathList,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;raise ex value &apos;The following resources were not rebound: &apos;||resourcePathList;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;verify:    all resources successfully rebound.&apos;);
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;/***************************************************************
+&#x9; * Generate the Test folder if the user requested it
+&#x9; ***************************************************************/
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;if (generateTestFolder is not null and generateTestFolder = 1) then
+&#x9;&#x9;call /lib/resource/ResourceExists(projectPath||&apos;/Test&apos;, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;&#x9;if (NOT resourceExists) then
+&#x9;&#x9;&#x9;&#x9;-- Copy the Application directory to Test
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;generateTest:      Copy Application folder=[&apos;||NVL(projectPath||&apos;/Test/Application&apos;,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/copyResources(templatePath||&apos;/Application&apos;, projectPath||&apos;/Test/Application&apos;, success, faultResponse);
+&#x9;&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;-- Copy the Business directory to Test
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;generateTest:      Copy Business folder=[&apos;||NVL(projectPath||&apos;/Test/Business&apos;,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/copyResources(templatePath||&apos;/Business&apos;, projectPath||&apos;/Test/Business&apos;, success, faultResponse);
+&#x9;&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;-- Copy the Physical directory to Test
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;generateTest:      Copy Physical folder=[&apos;||NVL(projectPath||&apos;/Test/Physical&apos;,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/copyResources(templatePath||&apos;/Physical&apos;, projectPath||&apos;/Test/Physical&apos;, success, faultResponse);
+&#x9;&#x9;&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;generateTest:    Resource already exists=[&apos;||NVL(projectPath||&apos;/Test&apos;,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;end if;
+&#x9;else
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;generateTest:    User chose not to create a Test folder.&apos;);
+&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;set message = &apos;Project [&apos;||NVL(projectPath,&apos;null&apos;)||&apos;] successfully configured.  Click the refresh button in Studio.&apos;;
+&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, message);
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564600547051</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

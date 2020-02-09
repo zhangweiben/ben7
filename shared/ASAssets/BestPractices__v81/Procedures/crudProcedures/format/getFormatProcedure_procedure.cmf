@@ -1,0 +1,98 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="getFormatProcedure" path="/shared/ASAssets/BestPractices_v81/Procedures/crudProcedures/format/getFormatProcedure" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="colType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="formatProcedure" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <attribute name="Script" type="STRING">/*
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE getFormatProcedure(
+&#x9;IN colType&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;OUT formatProcedure&#x9;&#x9;VARCHAR
+)
+BEGIN
+&#x9;DECLARE len&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE columnType&#x9;VARCHAR;
+
+&#x9;set len = POSITION(&apos;(&apos; IN colType);
+&#x9;IF (len = 0) THEN
+&#x9;&#x9;set len = LENGTH(colType);
+&#x9;ELSE
+&#x9;&#x9;set len = len - 1;
+&#x9;END IF;
+&#x9;set columnType = UPPER(SUBSTRING(colType,1,len));
+&#x9;CASE columnType
+&#x9;&#x9;WHEN &apos;VARCHAR&apos; &#x9; THEN set formatProcedure = &apos;formatString&apos;;
+&#x9;&#x9;WHEN &apos;CHAR&apos; &#x9; THEN set formatProcedure = &apos;formatString&apos;;
+&#x9;&#x9;WHEN &apos;DOUBLE&apos; &#x9; THEN set formatProcedure = &apos;formatDouble&apos;;
+&#x9;&#x9;WHEN &apos;DECIMAL&apos; &#x9; THEN set formatProcedure = &apos;formatDecimal&apos;;
+&#x9;&#x9;WHEN &apos;NUMERIC&apos; &#x9; THEN set formatProcedure = &apos;formatDecimal&apos;;
+&#x9;&#x9;WHEN &apos;TIMESTAMP&apos; THEN set formatProcedure = &apos;formatTimestamp&apos;;
+&#x9;&#x9;WHEN &apos;DATE&apos; &#x9; THEN set formatProcedure = &apos;formatDate&apos;;
+&#x9;&#x9;WHEN &apos;TIME&apos; &#x9; THEN set formatProcedure = &apos;formatTime&apos;;
+&#x9;&#x9;WHEN &apos;INTEGER&apos; &#x9; THEN set formatProcedure = &apos;formatInteger&apos;;
+&#x9;&#x9;WHEN &apos;SMALLINT&apos;  THEN set formatProcedure = &apos;formatInteger&apos;;
+&#x9;&#x9;WHEN &apos;TINYINT&apos; &#x9; THEN set formatProcedure = &apos;formatInteger&apos;;
+&#x9;&#x9;WHEN &apos;INT&apos; &#x9; &#x9; THEN set formatProcedure = &apos;formatInteger&apos;;
+&#x9;&#x9;WHEN &apos;BIT&apos; &#x9; &#x9; THEN set formatProcedure = &apos;formatInteger&apos;;
+&#x9;&#x9;WHEN &apos;BIGINT&apos; &#x9; THEN set formatProcedure = &apos;formatBigint&apos;;
+&#x9;&#x9;WHEN &apos;FLOAT&apos; &#x9; THEN set formatProcedure = &apos;formatFloat&apos;;
+&#x9;&#x9;WHEN &apos;REAL&apos; &#x9; THEN set formatProcedure = &apos;formatFloat&apos;;
+&#x9;&#x9;WHEN &apos;CLOB&apos; &#x9; THEN set formatProcedure = &apos;formatClob&apos;;
+&#x9;&#x9;WHEN &apos;BLOB&apos; &#x9; THEN set formatProcedure = null;
+&#x9;&#x9;ELSE set formatProcedure = null;
+&#x9;END CASE;&#x9;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1513829976555</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

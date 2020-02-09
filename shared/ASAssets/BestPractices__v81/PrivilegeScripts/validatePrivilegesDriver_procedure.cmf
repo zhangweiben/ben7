@@ -1,0 +1,2291 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="validatePrivilegesDriver" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/validatePrivilegesDriver" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="Datasource" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Environment_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Organization" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Project" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="SubProject" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Sheet_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Resource_Path" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="Resource_Type" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Name_" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Name_Type" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="Domain_Name" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="forceDomainAsComposite" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1Console" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1CISLog" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug1ReadOnly" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inDebug2" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="inBypassErrors" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="validPrivileges" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="rowsProcessed" direction="OUT" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="invalidPrivilegeList" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="invalidResourceList" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="invalidNameList" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="logOutput" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/lib/resource/ResourceExists" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="path" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="type" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="version" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceVersion" type="STRING" maxLength="255"/>
+      </element>
+      <element name="exists" direction="OUT">
+        <datatype type="BOOLEAN"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/services/databases/system/DUAL" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="DUMMY">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="printConsole" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="printLog" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="inLogOutput" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="addLogOutput" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="outLogOutput" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getResourcePrivileges" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="nameTypeFilter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="domainFilter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="privilegeEntryType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="includeNameEqualFilter" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="includeNameLikeFilter" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="excludeNameNotEqualFilter" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="excludeNameNotLikeFilter" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="includePrivsEqualFilter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="includePrivsLikeFilter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="excludePrivsNotEqualFilter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="excludePrivsNotLikeFilter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="includeColumnPrivs" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="path">
+            <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+          </element>
+          <element name="type">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="name">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nameType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="domain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="privs">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="combinedPrivs">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="inheritedPrivs">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="p_N">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_R">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_W">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_E">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_S">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_U">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_I">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_D">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="p_G">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_N">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_R">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_W">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_E">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_S">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_U">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_I">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_D">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="c_G">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_N">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_R">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_W">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_E">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_S">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_U">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_I">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_D">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="i_G">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getSQLPrivileges" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Environment_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Organization" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Project" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="SubProject" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Sheet_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Resource_Path" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Resource_Type" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Name_" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Name_Type" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Domain_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="sqlStatement" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="fromClause" direction="OUT">
+        <datatype type="STRING" maxLength="2048"/>
+      </element>
+      <element name="whereClause" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/getPrivileges" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Environment_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Organization" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Project" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="SubProject" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Sheet_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Resource_Path" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Resource_Type" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Name_" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Name_Type" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Domain_Name" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="rownum">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="sheetRownum">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="datasource">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sheetName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="privilegeType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Organization">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Project">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="SubProject">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Resource Path">
+            <datatype type="STRING" maxLength="4000"/>
+          </element>
+          <element name="Resource Type">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Recurse Dependencies">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Recurse Dependents">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Recurse Child">
+            <datatype type="STRING" maxLength="3"/>
+          </element>
+          <element name="Revoke All">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Name">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Name Type">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Domain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Env Type">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="OrderPrecedence">
+            <datatype type="STRING" minLength="1" maxLength="1"/>
+          </element>
+          <element name="R">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="W">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="E">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="S">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="U">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="I">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="D">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="G">
+            <datatype type="STRING" maxLength="1"/>
+          </element>
+          <element name="Owner">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Owner Domain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="Comments">
+            <datatype type="STRING" maxLength="4000"/>
+          </element>
+          <element name="Initialize">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="isActive">
+            <datatype type="STRING" minLength="1" maxLength="1"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getBasicResourceCursor" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="name">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="path">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="type">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="id">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="changeid">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="version">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="introspectState">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ownerDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ownerName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactLevel">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactMessage">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="scriptText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="childCount">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="dataSourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="1024"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="proprietaryModel">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+          <element name="columnName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="columnType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeBaseType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="nativeType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getUsedResourcesCursor" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="usedResCursor" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="id">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="tableType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="explicitlyDesigned">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="sqlText">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/user/getDomainGroups" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inDomainName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="name">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="domainName">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="id">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="explicitRights">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="effectiveRights">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="inheritedRights">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+          <element name="annotation">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/user/getUser" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="userName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="userDomain" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="userExists" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="userExplicitRights" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="userEffectiveRights" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="userInheritedRights" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/TextUtils/RegexReplace" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="Input Text" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Regular Expression" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Replacement Text" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Occurrence" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/extractDelimitedText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inputString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="delimiter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="occurrence" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseInputText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseOutput" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="trimText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="includeDelimiter" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="object">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* validatePrivilegesDriver:
+
+&#x9;This procedure is used to validate privileges by reading the privileges from an excel spreadsheet - Composite_Resource_Privileges_IM or _RISK.xlsx
+&#x9;and validate the resource path exists and the name (USER or GROUP) exists in the specified domain and the privilege is set according to the spreadsheet
+&#x9;or database setting for the filter applied.
+&#x9;&#x9;sheets: Privileges_shared &#x9;&#x9;- Update privileges for /shared
+&#x9;&#x9;&#x9;    Privileges_databases &#x9;- Update privileges for /services/databases
+&#x9;&#x9;&#x9;&#x9;Privileges_webservices &#x9;- Update privileges for /services/webservices
+
+&#x9;Input:
+&#x9;&#x9;Datasource&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: the datasource where the privileges are stored.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;If not parameter is provided the default value is used from defaultValues.datasource.  Possible values include:
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEL - Excel spreadsheet which gets uploaded to each CIS server.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DB_LLE - SQL Server database for lower level environments.  Basically it is used for testing purposes and developing new functionality.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DB_PROD - SQL Server production database.  This connection should always be used unless developing new functionality.
+&#x9;&#x9;Batch_Privileges INTEGER,&#x9;&#x9;-- REQUIRED_FILTER: 1=Batch all privileges for the same path, type and recursion setting. 0=Process each spreadsheet line separately (no batching).
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When the resource path in the spreadsheet changes, a batch is executed.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When the resource type in the spreadsheet changes, a batch is executed.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;When the recursion identifier in the spreadsheet changes, a batch is executed.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;A group of rows with like recursion may only be batched together otherwise the meaning of the privilege setting is not the same.
+&#x9;&#x9;Environment_Name VARCHAR(255), &#x9;-- REQUIRED FILTER: The Composite server environment in which to get/update privileges for: [DEV, TEST, UAT, PROD]
+&#x9;&#x9;Organization&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the organization such as ORG1 or ORG2
+&#x9;&#x9;Project&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: The name of the project that is hosted on CIS for this &quot;Env Type&quot;.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;This provides a filter for only applying privileges for the given project.  If left blank, all projects will be updated.
+&#x9;&#x9;SubProject&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the sub-project that is hosted on CIS for this &quot;Env Type&quot;.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;This provides a filter for only applying privileges for the given sub-project.  If left blank, all rows for the project will be updated.
+&#x9;&#x9;Sheet_Name &#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The name of the Excel spreadsheet in which to get/update privileges from: [shared, databases, webservices]
+&#x9;&#x9;Resource_Path &#x9;LONGVARCHAR,&#x9;-- OPTIONAL FILTER: The resource path in which to get/update privileges.  It may contain a wildcard &quot;%&quot;.
+&#x9;&#x9;Resource_Type &#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The resource type in which to get/update privileges.  It is always upper case. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--  This will only be used when no &quot;Resource_Path&quot; or a single &quot;Resource_Path&quot; is provided.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--  It is not used when a list of &quot;Resource_Path&quot; entries are provided.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;E.g. DATA_SOURCE - a published datasource or physical metadata datasource.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; CONTAINER - a folder path, a catalog or schema path.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; COLUMN - a column from a table
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; LINK - a published table or procedure.  If it resides in the path /services and points to a TABLE or PROCEDURE then it is a LINK.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; TABLE - a view in the /shared path.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; PROCEDURE a procedure in the /shared path.
+&#x9;&#x9;Name_ &#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The user/group name in which to get/update privileges.
+&#x9;&#x9;Name_Type&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: Valid values are USER or GROUP
+&#x9;&#x9;Domain_Name &#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The domain name in which to get/update privileges.
+&#x9;&#x9;forceDomainAsComposite &#x9;CHAR(1),-- OPTIONAL PARAM: Y=true, N=false. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    Provides a way to force a conversion of the group from an LDAP domain name like &quot;ldap&quot; to a the &quot;composite&quot; domain.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    This is useful when setting up the privileges for testing with composite groups that mirror the LDAP groups.  This way the spreadsheet does not have to be modified.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    For example, the LDAP group Composite_Servicing_Dev is automatically converted to the composite domain group composite_servicing_dev.
+&#x9;&#x9;inDebug1&#x9;&#x9;&#x9;CHAR(1),&#x9;-- N/Null=No debug, Y(default)=Debug.  Determines whether to capture any debug output and return it in logOutput.
+&#x9;&#x9;inDebug1Console&#x9;&#x9;CHAR(1), &#x9;-- N/Null (default)=No debug, Y=Debug console.  Determines whether to print the studio console window or not.
+&#x9;&#x9;inDebug1CISLog&#x9;&#x9;CHAR(1), &#x9;-- N/Null (default)=No debug, Y=Debug log.  Determines whether to print to the CIS log or not.
+&#x9;&#x9;inDebug1ReadOnly&#x9;CHAR(1), &#x9;-- N/Null (default)=No debug, Y=Debug for READ only messages
+&#x9;&#x9;inBypassErrors&#x9;&#x9;CHAR(1)&#x9;&#x9;-- Bypass errors.  Throw exception when paths not found.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--   N/Null (default) Do not bypass errors.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--   Y=bypass resource not found errors but report them.
+&#x9;Output:
+&#x9;&#x9;validPrivileges&#x9;&#x9;&#x9;VARCHAR,&#x9;- true=if all privileges are validated.  false=if one or more privileges are invalid.
+&#x9;&#x9;rowsProcessed&#x9;&#x9;&#x9;INTEGER&#x9;&#x9;- The number of rows processed.  If zero then no rows selected so look at your filter parameters.
+&#x9;&#x9;invalidPrivilegeList&#x9;LONGVARCHAR - Pipe separated list of invalid privileges that do not match how they are supposed to be according to spreadsheet or database settings.
+&#x9;&#x9;invalidResourceList&#x9;&#x9;LONGVARCHAR - Pipe separated list of invalid resource paths that do not exist.
+&#x9;&#x9;invalidNameList&#x9;&#x9;&#x9;LONGVARCHAR&#x9;- Pipe separated list of name, nameType, and domain combination that does not exist.
+&#x9;&#x9;logOutput&#x9;&#x9;&#x9;&#x9;LONGVARCHAR&#x9;- The output log that gets printed to the command line console is also output
+
+&#x9;Exceptions:  Exception may be thrown.
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE validatePrivilegesDriver(
+&#x9;IN Datasource&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- RECOMMENDED FILTER: the datasource where the privileges are stored.
+    IN Environment_Name &#x9;&#x9;VARCHAR(255), &#x9;-- REQUIRED FILTER: The Composite server environment in which to get/update privileges for: [DEV, TEST, UAT, PROD]
+&#x9;IN Organization&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the organization such as ORG1 or ORG2
+&#x9;IN Project&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the project that is hosted on CIS for this &quot;Env Type&quot;.  This provides a filter for only applying privileges for the given project.  If left blank, all projects will be updated.
+&#x9;IN SubProject&#x9;&#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The name of the sub-project that is hosted on CIS for this &quot;Env Type&quot;.  This provides a filter for only applying privileges for the given sub-project.  If left blank, all rows for the sub-projects will be updated.
+    IN Sheet_Name &#x9;&#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The name of the Excel spreadsheet in which to get/update privileges from: [Privileges_initialize, Privileges_shared, Privileges_databases, Privileges_webservices]
+    IN Resource_Path &#x9;&#x9;&#x9;LONGVARCHAR,&#x9;-- OPTIONAL FILTER: The resource path in which to get/update privileges.  It may contain a wildcard &quot;%&quot;.
+&#x9;IN Resource_Type &#x9;&#x9;&#x9;VARCHAR(255),&#x9;-- OPTIONAL FILTER: The resource type in which to get/update privileges.  It is always upper case. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--  This will only be used when no &quot;Resource_Path&quot; or a single &quot;Resource_Path&quot; is provided.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--  It is not used when a list of &quot;Resource_Path&quot; entries are provided.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;E.g. DATA_SOURCE - a published datasource or physical metadata datasource.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; CONTAINER - a folder path, a catalog or schema path.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; COLUMN - a column from a table
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; LINK - a published table or procedure.  If it resides in the path /services and points to a TABLE or PROCEDURE then it is a LINK.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; TABLE - a view in the /shared path.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9; PROCEDURE a procedure in the /shared path.
+    IN Name_ &#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The user/group name in which to get/update privileges.
+    IN Name_Type&#x9;&#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: Valid values are USER or GROUP
+    IN Domain_Name &#x9;&#x9;&#x9;&#x9;VARCHAR(255), &#x9;-- OPTIONAL FILTER: The domain name in which to get/update privileges.
+&#x9;IN forceDomainAsComposite &#x9;CHAR(1),&#x9;&#x9;-- OPTIONAL PARAM: Y=true, N=false. 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    Provides a way to force a conversion of the group from an LDAP domain name like &quot;ldap&quot; to a the &quot;composite&quot; domain.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    This is useful when setting up the privileges for testing with composite groups that mirror the LDAP groups.  This way the spreadsheet does not have to be modified.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    For example, the LDAP group Composite_Servicing_Dev is automatically converted to the composite domain group composite_servicing_dev.
+&#x9;IN inDebug1&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- N/Null=No debug, Y (default)=Debug.  Determines whether to capture any debug output and return it in logOutput.
+&#x9;IN inDebug1Console&#x9;&#x9;&#x9;CHAR(1), &#x9;&#x9;-- N/Null (default)=No debug, Y=Debug console.  Determines whether to print the studio console window or not.
+&#x9;IN inDebug1CISLog&#x9;&#x9;&#x9;CHAR(1), &#x9;&#x9;-- N/Null (default)=No debug, Y=Debug log.  Determines whether to print to the CIS log or not.
+&#x9;IN inDebug1ReadOnly&#x9;&#x9;&#x9;CHAR(1), &#x9;&#x9;-- N/Null (default)=No debug, Y=Debug for READ only messages
+&#x9;IN inDebug2&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- N/Null (default)=No debug, Y=Debug for 2nd and 3rd tier procedures (deep debug)
+&#x9;IN inBypassErrors&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- Bypass errors.  Throw exception when paths not found.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--   N/Null (default) Do not bypass errors.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--   Y=bypass resource not found errors but report them.
+&#x9;OUT validPrivileges&#x9;&#x9;&#x9;VARCHAR,&#x9;&#x9;-- true=if all privileges are validated.  false=if one or more privileges are invalid.
+&#x9;OUT rowsProcessed&#x9;&#x9;&#x9;INTEGER,&#x9;&#x9;-- The number of rows processed.  If zero then no rows selected so look at your filter parameters.
+&#x9;OUT invalidPrivilegeList&#x9;LONGVARCHAR,&#x9;-- Pipe separated list of invalid pivileges
+&#x9;OUT invalidResourceList&#x9;&#x9;LONGVARCHAR,&#x9;-- Pipe separated list of invalid resource paths that do not exist.
+&#x9;OUT invalidNameList&#x9;&#x9;&#x9;LONGVARCHAR,&#x9;-- Pipe separated list of name, nameType, and domain combination that does not exist.
+&#x9;OUT logOutput&#x9;&#x9;&#x9;&#x9;LONGVARCHAR&#x9;&#x9;-- The output log that gets printed to the command line console is also output
+)
+BEGIN
+&#x9;DECLARE moduleName &#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;validatePrivilegesDriver&apos;;
+&#x9;DECLARE debug1&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1),&apos;Y&apos;);
+&#x9;DECLARE debug1Console&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1Console),&apos;N&apos;);
+&#x9;DECLARE debug1CISLog&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1CISLog),&apos;N&apos;);
+&#x9;DECLARE debug1ReadOnly&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug1ReadOnly),&apos;N&apos;);
+&#x9;DECLARE debug2&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inDebug2),&apos;N&apos;);
+&#x9;DECLARE bypassErrors&#x9;&#x9;&#x9;CHAR(1) DEFAULT NVL(UPPER(inBypassErrors), &apos;N&apos;);-- N/Null (default) Do not bypass errors, Y=bypass resource not found errors but report them.
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE errType&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE sqlStatement&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE fromClause&#x9;&#x9;&#x9;&#x9;VARCHAR(2048);
+&#x9;DECLARE whereClause&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE errMessage&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE colName&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE colExists&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE parentPath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE parentPaths&#x9;&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE resourcePath&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT null;
+&#x9;DECLARE resourceType&#x9;&#x9;&#x9;VARCHAR DEFAULT null;
+&#x9;DECLARE prevResourcePath&#x9;&#x9;LONGVARCHAR DEFAULT null;
+&#x9;DECLARE prevResourceType&#x9;&#x9;VARCHAR DEFAULT null;
+&#x9;DECLARE prevResourcePathType&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE currResourcePathType&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE resourceExists&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE resourceName&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE getPrivsResourcePath&#x9;LONGVARCHAR;
+&#x9;DECLARE getPrivsResourceType&#x9;VARCHAR;
+&#x9;DECLARE userExists&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE userExplicitRights&#x9;&#x9;VARCHAR(255);
+&#x9;DECLARE userEffectiveRights&#x9;&#x9;VARCHAR(255);
+&#x9;DECLARE userInheritedRights&#x9;&#x9;VARCHAR(255);
+&#x9;DECLARE groupExists&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE nameValue&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE nameType&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE domainName&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE validNameTypeDomainName&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE revokeAll&#x9;&#x9;&#x9;&#x9;BOOLEAN DEFAULT false;
+&#x9;DECLARE rowString&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE rownum&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE message&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE messageName&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE messagePath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE messagePriv&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE messagePrivParent&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE messagePrivOutOfScope&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE privOutOfScopeNum&#x9;&#x9;INTEGER;
+&#x9;DECLARE project&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE subProject&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE newline&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT CHR(10);
+&#x9;DECLARE srcPrivilegeList&#x9;&#x9;VARCHAR;&#x9;-- datasource privileges (from spreadsheet or database)
+&#x9;DECLARE actualPrivilegeList&#x9;&#x9;VARCHAR;&#x9;-- actual set privileges
+&#x9;DECLARE privReason&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE privReadString&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE privStringTemp&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE matchPrivs&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE matchPrivsRead&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE privRowFound&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;-- The string used to track the list of paths to set READ privilege.
+&#x9;DECLARE privReadStr1&#x9;&#x9;&#x9;LONGVARCHAR;&#x9;--Format: &quot;Resource Path&quot;::&quot;Resource Type&quot;::Name::&quot;Name Type&quot;::&quot;Domain&quot;|[repeat format]
+&#x9;DECLARE privReadStr2&#x9;&#x9;&#x9;LONGVARCHAR;&#x9;--Format: &quot;Resource Path&quot;::&quot;Resource Type&quot;::Name::&quot;Name Type&quot;::&quot;Domain&quot;|[repeat format]
+&#x9;-- The string used to track the list of explicitly set paths for non-READ privileges.
+&#x9;DECLARE privReadAppliedStr1&#x9;&#x9;LONGVARCHAR; &#x9;--Format: &quot;Resource Path&quot;::&quot;Resource Type&quot;::Name::&quot;Name Type&quot;::&quot;Domain&quot;|[repeat format]
+&#x9;DECLARE privReadAppliedStr2&#x9;&#x9;LONGVARCHAR;&#x9;--Format: &quot;Resource Path&quot;::&quot;Resource Type&quot;::Name::&quot;Name Type&quot;::&quot;Domain&quot;|[repeat format]
+&#x9;DECLARE datasource_&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.datasource;
+&#x9;-- Variables for Validate Privilege Category
+&#x9;DECLARE grandparentPath&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE category&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE userDomain&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT NULL;
+&#x9;DECLARE privReadStr&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;--Format: &quot;Resource Path&quot;::&quot;Resource Type&quot;::Name::&quot;Name Type&quot;::&quot;Domain&quot;::privilege::Owner::&quot;Owner Domain&quot;|
+&#x9;DECLARE LONGVARCHARlen&#x9;&#x9;&#x9;INTEGER DEFAULT 2147483647;
+&#x9;DECLARE resourceTypeTmp&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;CONTAINER&apos;;
+&#x9;DECLARE denyReadPrivilegesNameList&#x9;LONGVARCHAR DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.denyReadPrivilegesNameList;
+&#x9;DECLARE denyName&#x9;&#x9;&#x9;&#x9;BOOLEAN DEFAULT false;
+&#x9;-- Variables for Validate Privilege Read Folders
+&#x9;DECLARE validStatus&#x9;&#x9;&#x9;&#x9;INTEGER;&#x9;-- 1=valid, 0=invalid
+&#x9;DECLARE privReasonRead&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE status&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE pos&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE srcRec&#x9;&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/TypeDefinitions.privilegeRowType;
+&#x9;DECLARE actualPrivilegeListRead&#x9;VARCHAR;
+&#x9;DECLARE actual_READ&#x9;&#x9;&#x9;&#x9;BIT;
+&#x9;DECLARE TYPE privRowType&#x9;&#x9;ROW (
+&#x9;&#x9;resourcePath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;resourceType&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;name&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;nameType&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR,
+&#x9;&#x9;domainName&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR
+&#x9;);
+&#x9;DECLARE privRec &#x9;&#x9;&#x9;&#x9;privRowType;
+&#x9;DECLARE priv&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE privRow&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE j,k&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE start2&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE pos1,pos2,lastpos1&#x9;&#x9;INTEGER;
+&#x9;DECLARE object&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE moreToDo1,moreToDo2&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE objectList1,objectList2&#x9;LONGVARCHAR;
+&#x9;DECLARE expression1,expression2&#x9;VARCHAR;
+&#x9;DECLARE explen1,explen2,poslen&#x9;INTEGER;
+
+
+&#x9;IF (Datasource IS NOT NULL AND LENGTH(Datasource) &gt; 0) THEN
+&#x9;&#x9;set datasource_ = Datasource;
+&#x9;END IF;
+
+&#x9;set logOutput = &apos;&apos;;
+&#x9;-- Print out the input filters
+&#x9;set message = &apos;INPUT FILTERS:&apos;||newline;
+
+    if (Environment_Name is not null and LENGTH(Environment_Name) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Environment_Name=&apos;||NVL(Environment_Name, &apos; &apos;)||newline;
+&#x9;end if;
+    if (Organization is not null and LENGTH(Organization) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Organization=&apos;||NVL(Organization, &apos; &apos;)||newline;
+&#x9;end if;
+    if (Project is not null and LENGTH(Project) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Project=&apos;||NVL(Project, &apos; &apos;)||newline;
+&#x9;end if;
+     if (SubProject is not null and LENGTH(SubProject) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; SubProject=&apos;||NVL(SubProject, &apos; &apos;)||newline;
+&#x9;end if;
+    if (Sheet_Name is not null and LENGTH(Sheet_Name) &gt; 0) then
+&#x9;&#x9;if (POSITION(&apos;shared&apos; in Sheet_Name) &gt; 0 or POSITION(&apos;data&apos; in Sheet_Name) &gt; 0 or POSITION(&apos;web&apos; in Sheet_Name) &gt; 0) then
+&#x9;&#x9;&#x9;set message = message || &apos; Sheet_Name=&apos;||NVL(Sheet_Name, &apos; &apos;)||newline;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;raise ex value &apos;The Sheet_Name value [&apos;||TRIM(NVL(Sheet_Name, &apos; &apos;))||&apos;] is invalid.  It may be [Privileges_shared|shared, Privileges_databases|databases, Privileges_webservices|webservices].&apos;;
+&#x9;&#x9;end if;
+&#x9;end if;
+    if (Resource_Path is not null and LENGTH(Resource_Path) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Resource_Path=&apos;||NVL(Resource_Path, &apos; &apos;)||newline;
+&#x9;end if;
+    if (Name_ is not null and LENGTH(Name_) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Name_=&apos;||NVL(Name_, &apos; &apos;)||newline;
+&#x9;end if;
+    if (Name_Type is not null and LENGTH(Name_Type) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Name_Type=&apos;||NVL(Name_Type, &apos; &apos;)||newline;
+&#x9;end if;
+    if (Domain_Name is not null and LENGTH(Domain_Name) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; Domain_Name=&apos;||NVL(Domain_Name, &apos; &apos;)||newline;
+&#x9;end if;
+    if (forceDomainAsComposite is not null and LENGTH(forceDomainAsComposite) &gt; 0) then
+&#x9;&#x9;set message = message || &apos; forceDomainAsComposite=&apos;||NVL(CAST(forceDomainAsComposite AS VARCHAR), &apos; &apos;)||newline;
+&#x9;end if;
+
+&#x9;IF (debug1 = &apos;Y&apos;) THEN
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||message, logOutput);
+&#x9;END IF;
+
+&#x9;-- Get the SQL Statement for logging purposes
+&#x9;CALL /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getSQLPrivileges(datasource_, Environment_Name, Organization, Project, SubProject, Sheet_Name, Resource_Path, Resource_Type, Name_, Name_Type, Domain_Name, debug1, sqlStatement, fromClause, whereClause);
+
+&#x9;-- Process the spreadsheet and look for resource paths that do not exist in order to &quot;fail fast&quot;
+&#x9;IF (debug1 = &apos;Y&apos;) THEN
+&#x9;&#x9;set message = &apos;VALIDATE ALL RESOURCE PATHS&apos;||&apos;|&apos;||newline;
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||message, logOutput);
+&#x9;&#x9;set message = &apos;SQL STATEMENT FOR SELECTING PRIVILEGES ::&apos;||sqlStatement||&apos;|&apos;||newline;
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||message, logOutput);
+&#x9;END IF;
+
+&#x9;SET rownum = 0;
+&#x9;SET validPrivileges = &apos;true&apos;;
+&#x9;FOR src AS 
+&#x9;&#x9;&#x9;SELECT * 
+&#x9;&#x9;&#x9;FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/getPrivileges(datasource_, Environment_Name, Organization, Project, SubProject, Sheet_Name, Resource_Path, Resource_Type, Name_, Name_Type, Domain_Name, &apos;N&apos;)
+&#x9;&#x9;&#x9;UNION
+&#x9;&#x9;&#x9;-- This lone record signifies the last record.  The code will check for rownum=-1.  This is required because of the code that checks for the difference between current path and previous path.
+&#x9;&#x9;&#x9;SELECT -1, null, null, null, null, null, null, null, &apos;/services/databases/system/DUAL&apos;, &apos;TABLE&apos;, null, null, null, null, &apos;admin&apos;, &apos;USER&apos;, &apos;composite&apos;, &apos;DEV&apos;, null, null, null, null, null, null, null, null, null, null, null, null, null, null
+&#x9;&#x9;&#x9;FROM /services/databases/system/DUAL
+&#x9;DO
+&#x9;&#x9;-- set variables
+&#x9;&#x9;set rownum = rownum + 1;
+&#x9;&#x9;-- Source Privilege record
+&#x9;&#x9;set srcRec = src;
+&#x9;&#x9;if (srcRec.R is not null and (srcRec.R = &apos;X&apos; or srcRec.R = &apos;Y&apos;)) then set srcRec.R = &apos;Y&apos;; else set srcRec.R = &apos;N&apos;; end if;
+&#x9;&#x9;if (srcRec.W is not null and (srcRec.W = &apos;X&apos; or srcRec.W = &apos;Y&apos;)) then set srcRec.W = &apos;Y&apos;; else set srcRec.W = &apos;N&apos;; end if;
+&#x9;&#x9;if (srcRec.E is not null and (srcRec.E = &apos;X&apos; or srcRec.E = &apos;Y&apos;)) then set srcRec.E = &apos;Y&apos;; else set srcRec.E = &apos;N&apos;; end if;
+&#x9;&#x9;if (srcRec.S is not null and (srcRec.S = &apos;X&apos; or srcRec.S = &apos;Y&apos;)) then set srcRec.S = &apos;Y&apos;; else set srcRec.S = &apos;N&apos;; end if;
+&#x9;&#x9;if (srcRec.U is not null and (srcRec.U = &apos;X&apos; or srcRec.U = &apos;Y&apos;)) then set srcRec.U = &apos;Y&apos;; else set srcRec.U = &apos;N&apos;; end if;
+&#x9;&#x9;if (srcRec.I is not null and (srcRec.I = &apos;X&apos; or srcRec.I = &apos;Y&apos;)) then set srcRec.I = &apos;Y&apos;; else set srcRec.I = &apos;N&apos;; end if;
+&#x9;&#x9;if (srcRec.D is not null and (srcRec.D = &apos;X&apos; or srcRec.D = &apos;Y&apos;)) then set srcRec.D = &apos;Y&apos;; else set srcRec.D = &apos;N&apos;; end if;
+&#x9;&#x9;if (srcRec.G is not null and (srcRec.G = &apos;X&apos; or srcRec.G = &apos;Y&apos;)) then set srcRec.G = &apos;Y&apos;; else set srcRec.G = &apos;N&apos;; end if;
+
+&#x9;&#x9;--call print(&apos;rownum=&apos;||rownum);
+&#x9;&#x9;set resourcePath = src.&quot;Resource Path&quot;;
+&#x9;&#x9;set resourceType = src.&quot;Resource Type&quot;;
+&#x9;&#x9;set nameValue = src.Name;
+&#x9;&#x9;set nameType = src.&quot;Name Type&quot;;
+&#x9;&#x9;set domainName = src.&quot;Domain&quot;;
+&#x9;&#x9;if (src.&quot;Revoke All&quot; is not null and UPPER(src.&quot;Revoke All&quot;) = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;set revokeAll = true;
+&#x9;&#x9;end if;
+&#x9;&#x9;if (forceDomainAsComposite is not null and upper(forceDomainAsComposite) = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;set nameValue = LOWER(nameValue);
+&#x9;&#x9;&#x9;set domainName = &apos;composite&apos;;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- Validate key variables
+&#x9;&#x9;if (resourcePath is null or length(resourcePath) = 0) then
+&#x9;&#x9;&#x9;raise ex value &apos;&quot;Resource Path&quot; may not be null or empty.&apos;||&apos;  Sheet=&apos;||TRIM(NVL(CAST(src.sheetName AS VARCHAR),&apos; &apos;))||&apos; SheetRow=&apos;||TRIM(NVL(CAST(src.sheetRownum AS VARCHAR),&apos; &apos;));
+&#x9;&#x9;end if;
+&#x9;&#x9;if (resourceType is null or length(resourcePath) = 0) then
+&#x9;&#x9;&#x9;raise ex value &apos;&quot;Resource Type&quot; may not be null or empty.&apos;||&apos;  Sheet=&apos;||TRIM(NVL(CAST(src.sheetName AS VARCHAR),&apos; &apos;))||&apos; SheetRow=&apos;||TRIM(NVL(CAST(src.sheetRownum AS VARCHAR),&apos; &apos;));
+&#x9;&#x9;end if;
+&#x9;&#x9;if (nameValue is null or length(nameValue) = 0) then
+&#x9;&#x9;&#x9;raise ex value &apos;&quot;Name&quot; may not be null or empty.&apos;||&apos;  Sheet=&apos;||TRIM(NVL(CAST(src.sheetName AS VARCHAR),&apos; &apos;))||&apos; SheetRow=&apos;||TRIM(NVL(CAST(src.sheetRownum AS VARCHAR),&apos; &apos;));
+&#x9;&#x9;end if;
+&#x9;&#x9;if (nameType is null or length(nameType) = 0) then
+&#x9;&#x9;&#x9;raise ex value &apos;&quot;Name Type&quot; may not be null or empty.&apos;||&apos;  Sheet=&apos;||TRIM(NVL(CAST(src.sheetName AS VARCHAR),&apos; &apos;))||&apos; SheetRow=&apos;||TRIM(NVL(CAST(src.sheetRownum AS VARCHAR),&apos; &apos;));
+&#x9;&#x9;end if;
+&#x9;&#x9;if (domainName is null or length(domainName) = 0) then
+&#x9;&#x9;&#x9;raise ex value &apos;&quot;Domain&quot; may not be null or empty.&apos;||&apos;  Sheet=&apos;||TRIM(NVL(CAST(src.sheetName AS VARCHAR),&apos; &apos;))||&apos; SheetRow=&apos;||TRIM(NVL(CAST(src.sheetRownum AS VARCHAR),&apos; &apos;));
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- If double quotes exist around any part of the path then remove the double quotes
+&#x9;&#x9;IF (INSTR(resourcePath, &apos;&quot;&apos;) &gt; 0) then
+&#x9;&#x9;&#x9;CALL/shared/ASAssets/Utilities/string/TextUtils/RegexReplace(resourcePath, &apos;&quot;&quot;&apos;, &apos;&quot;&quot;=dq=&apos;, 0, resourcePath);
+&#x9;&#x9;&#x9;CALL/shared/ASAssets/Utilities/string/TextUtils/RegexReplace(resourcePath, &apos;(&quot;=dq=|&quot;(?!&quot;))&apos;, &apos;&apos;, 0, resourcePath);
+&#x9;&#x9;END IF;
+
+&#x9;&#x9;-- Create the row string to display
+&#x9;&#x9;set rowString = &apos;ROW=&apos;||TRIM(NVL(CAST(rownum AS VARCHAR),&apos; &apos;))||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  Sheet=&apos;||TRIM(NVL(CAST(src.sheetName AS VARCHAR),&apos; &apos;))||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  SheetRow=&apos;||TRIM(NVL(CAST(src.sheetRownum AS VARCHAR),&apos; &apos;))||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  ResPath=&apos;||TRIM(NVL(resourcePath,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  ResType=&apos;||TRIM(NVL(resourceType,&apos; &apos;)) ||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  Name=&apos;||TRIM(NVL(nameValue,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  NameType=&apos;||TRIM(NVL(nameType,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  Domain=&apos;||TRIM(NVL(domainName,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  RevokeAll=&apos;||TRIM(NVL(src.&quot;Revoke All&quot;, &apos; &apos;))||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  R=&apos;||TRIM(NVL(src.R,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  W=&apos;||TRIM(NVL(src.W,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  E=&apos;||TRIM(NVL(src.E,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  S=&apos;||TRIM(NVL(src.S,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  U=&apos;||TRIM(NVL(src.U,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  I=&apos;||TRIM(NVL(src.I,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  D=&apos;||TRIM(NVL(src.D,&apos; &apos;)) || 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;  G=&apos;||TRIM(NVL(src.G,&apos; &apos;));
+
+&#x9;&#x9;-- Set the current path and type combination
+&#x9;&#x9;set currResourcePathType = resourcePath || &apos;::&apos; || resourceType;
+
+&#x9;&#x9;/*****************************************************
+&#x9;&#x9; * Validate the name, name type, domain combination
+&#x9;&#x9; *****************************************************/
+&#x9;&#x9;set messageName = &apos;&apos;;
+&#x9;&#x9;if (src.rownum != -1) then -- Don&apos;t validate the last row which is a dummy row
+&#x9;&#x9;&#x9;if (UPPER(nameType) = &apos;USER&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;/* &#x9;getUser(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IN debug &#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1),-- e.g. Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IN userName&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IN userDomain &#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUT userExists&#x9;&#x9;&#x9;&#x9;BIT,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUT userExplicitRights&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUT userEffectiveRights&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OUT userInheritedRights&#x9;&#x9;VARCHAR(255) )  */
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/repository/&quot;user&quot;/getUser(&apos;N&apos;, nameValue, domainName, userExists, userExplicitRights, userEffectiveRights, userInheritedRights);
+&#x9;&#x9;&#x9;&#x9;if (userExists = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageName = &apos;USER NOT FOUND: USER=&apos;||TRIM(NVL(nameValue,&apos; &apos;))||&apos; DOMAIN=&apos;||TRIM(NVL(domainName,&apos; &apos;))||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (invalidNameList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidNameList = message;
+&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(message IN invalidNameList) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidNameList = invalidNameList || newline || messageName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;elseif (UPPER(nameType) = &apos;GROUP&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;select count(*) cnt into groupExists
+&#x9;&#x9;&#x9;&#x9;&#x9;from /shared/ASAssets/Utilities/repository/&quot;user&quot;/getDomainGroups(domainName) 
+&#x9;&#x9;&#x9;&#x9;&#x9;where name = nameValue;
+&#x9;&#x9;&#x9;&#x9;if (groupExists = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;set messageName = &apos;GROUP NOT FOUND: GROUP=&apos;||TRIM(NVL(nameValue,&apos; &apos;))||&apos; DOMAIN=&apos;||TRIM(NVL(domainName,&apos; &apos;))||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (invalidNameList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidNameList = messageName;
+&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(message IN invalidNameList) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidNameList = invalidNameList || newline || messageName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;set messageName = &apos;NAME TYPE INVALID: &apos;||TRIM(NVL(nameType,&apos; &apos;))||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;if (invalidNameList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set invalidNameList = messageName;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(message IN invalidNameList) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidNameList = invalidNameList || newline || messageName;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;/*****************************************************
+&#x9;&#x9; * Validate the resource path and type
+&#x9;&#x9; *****************************************************/
+&#x9;&#x9;set messagePath = &apos;&apos;;
+&#x9;&#x9;if (src.rownum = -1) then -- Check for the last row to signify the end of the privileges
+&#x9;&#x9;&#x9;set resourceExists = true;
+&#x9;&#x9;elseif (src.rownum != -1 and resourceType != &apos;COLUMN&apos;) then
+&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(resourcePath, resourceType, null, resourceExists);
+&#x9;&#x9;&#x9;if (not resourceExists) then
+&#x9;&#x9;&#x9;&#x9;-- If bypassErrors=&apos;N&apos; and the resource does not exist then change the validPrivilegesPath to false
+&#x9;&#x9;&#x9;&#x9;if (bypassErrors = &apos;N&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set errType = &apos;ACTUAL RES NOT FOUND: &apos;;
+&#x9;&#x9;&#x9;&#x9;--call print(errType||&apos;resourceType=[&apos;||resourceType||&apos;]  resourcePath=[&apos;||resourcePath||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;if (invalidResourceList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = errType || rowString ||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = invalidResourceList || newline || errType || rowString ||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set messagePath = errType||&apos;resourceType=[&apos;||resourceType||&apos;]  resourcePath=[&apos;||resourcePath||&apos;]&apos;||&apos;|&apos;;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;SET colName = null;
+&#x9;&#x9;&#x9;SET parentPath = null;
+&#x9;&#x9;&#x9;SET pos = INSTR(resourcePath, &apos;/&apos;, -1, 1);
+&#x9;&#x9;&#x9;IF (pos &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;SET colName = SUBSTRING(resourcePath, pos+1);
+&#x9;&#x9;&#x9;&#x9;SET parentPath = SUBSTRING(resourcePath, 1, pos-1);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;BEGIN
+&#x9;&#x9;&#x9;&#x9;set resourceExists = false;
+&#x9;&#x9;&#x9;&#x9;for p as select * from /shared/ASAssets/Utilities/repository/getBasicResourceCursor(parentPath, NULL) DO
+&#x9;&#x9;&#x9;&#x9;&#x9;if (p.&quot;type&quot; = &apos;TABLE&apos; or p.&quot;type&quot; = &apos;LINK&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourceExists = true;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;select count(*) cnt into colExists 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;from /shared/ASAssets/Utilities/repository/getBasicResourceCursor_SQL_TABLE(p.&quot;path&quot;, p.&quot;type&quot;) 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;where columnName = colName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (colExists = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourceExists = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If bypassErrors=&apos;N&apos; and the resource does not exist then change the validPrivilegesPath to false
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (bypassErrors = &apos;N&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set errType = &apos;LINKED COL NOT FOUND: &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--call print(errType||&apos;   Linked path=[&apos;||p.&quot;path&quot;||&apos;] type=&apos;||p.&quot;type&quot;||&apos;  colName=&apos;||TRIM(NVL(colName,&apos; &apos;))||&apos;  dependentPath=[&apos;||parentPath||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (invalidResourceList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = errType || rowString||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = invalidResourceList || newline || errType || rowString ||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePath = errType||&apos;   Linked path=[&apos;||p.&quot;path&quot;||&apos;] type=&apos;||p.&quot;type&quot;||&apos;  colName=&apos;||TRIM(NVL(colName,&apos; &apos;))||&apos;  dependentPath=[&apos;||parentPath||&apos;]&apos;||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;end for;
+&#x9;&#x9;&#x9;EXCEPTION
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;set resourceExists = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- If bypassErrors=&apos;N&apos; and the resource does not exist then change the validPrivilegesPath to false
+&#x9;&#x9;&#x9;&#x9;&#x9;if (bypassErrors = &apos;N&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;set errType = &apos;PARENT RES NOT FOUND: &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;--call print(errType||&apos;parentPath=[&apos;||parentPath||&apos;]  resourcePath=[&apos;||resourcePath||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (invalidResourceList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = errType || rowString ||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = invalidResourceList || newline || errType || rowString ||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;set messagePath = errType||&apos;parentPath=[&apos;||parentPath||&apos;]  resourcePath=[&apos;||resourcePath||&apos;]&apos;||&apos;|&apos;;
+&#x9;&#x9;&#x9;END;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;/*****************************************************
+&#x9;&#x9; * Validate the privileges
+&#x9;&#x9; *****************************************************/
+&#x9;&#x9;set messagePriv = &apos;&apos;;
+&#x9;&#x9;set messagePrivParent = &apos;&apos;;
+&#x9;&#x9;if (resourceExists) then
+&#x9;&#x9;&#x9;/*****************************************************
+&#x9;&#x9;&#x9; * Validate privileges not in the list
+&#x9;&#x9;&#x9; *****************************************************/
+&#x9;&#x9;&#x9;-- The rows coming through here are ordered such that any pairs of rows for COLUMN based security will have the &quot;Revoke All&quot; be the first in the pair
+&#x9;&#x9;&#x9;--   because the SQL is order with &quot;Revoke All&quot; DESC which makes any records with Y occur before N.
+&#x9;&#x9;&#x9;--   This is important because this logic should only be checked once and can only be done on the next pass through this cursor.
+&#x9;&#x9;&#x9;-- The objective is to look for privileges that are not supposed to be set after performing a &quot;Revoke All&quot; when updating privileges.
+&#x9;&#x9;&#x9;-- Validate the resource path privileges that are outside the valid set of privileges when the resource path changes.
+&#x9;&#x9;&#x9;-- However, if the resources does not exist then this entire section is sipped.
+&#x9;&#x9;&#x9;if (prevResourcePathType != &apos;&apos; and currResourcePathType != prevResourcePathType and revokeAll) then
+&#x9;&#x9;&#x9;&#x9;/*
+&#x9;&#x9;&#x9;&#x9;&#x9;Get Lineage for Published Resource Column
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;If resourcePath in /services/databases and resourceType = COLUMN then get the lineage to the view immediately publishing to the database.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;This is where the actual privileges are set.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Make sure the resource exists before performing any logic.
+&#x9;&#x9;&#x9;&#x9;*/
+&#x9;&#x9;&#x9;&#x9;SET getPrivsResourcePath = prevResourcePath;
+&#x9;&#x9;&#x9;&#x9;SET getPrivsResourceType = prevResourceType;
+&#x9;&#x9;&#x9;&#x9;IF (INSTR(getPrivsResourcePath, &apos;/services/databases/&apos;) &gt; 0 AND prevResourceType = &apos;COLUMN&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Get the parent path
+&#x9;&#x9;&#x9;&#x9;&#x9;--CALL /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(getPrivsResourcePath, &apos;E&apos;, resourceName, parentPath);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET pos = INSTR(getPrivsResourcePath, &apos;/&apos;, -1, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = SUBSTRING(getPrivsResourcePath, pos+1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = SUBSTRING(getPrivsResourcePath, 1, pos-1);
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET getPrivsResourceType = &apos;LINK&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Determine if the parent resource of the COLUMN exists.
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /lib/resource/ResourceExists(parentPath, getPrivsResourceType, null, resourceExists);
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (resourceExists) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Retrieve the first level depth resource in the lineage.  This is the view where the privileges are actually set.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Privileges do not get set on the published resource for COLUMN level privileges.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FOR r AS select * from /shared/ASAssets/Utilities/repository/getUsedResourcesCursor(parentPath, getPrivsResourceType) DO
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set getPrivsResourcePath = r.resourcePath||&apos;/&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set getPrivsResourceType = r.resourceType;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;-- Determine if the parent resource exists
+&#x9;&#x9;&#x9;&#x9;CALL /lib/resource/ResourceExists(getPrivsResourcePath, getPrivsResourceType, null, resourceExists);
+&#x9;&#x9;&#x9;&#x9;IF (resourceExists) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;FOR r AS 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- 2016-07-11 (mtinius):  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;WHERE privs != &apos;NONE&apos; returns only the actual privileges.  privs != &apos;NONE&apos;, it means a privilege of some kind is set.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;This eliminates all of the inherited privileges which we don&apos;t care about.   This equates to fewer privilege rows to loop through.  Inherited Privileges cannot be explicitly set or changed.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT * FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getResourcePrivileges(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;getPrivsResourcePath, getPrivsResourceType, null, null, &apos;privs&apos;, null, null, null, null, null, null, &apos;NONE&apos;, null, null, debug2)
+&#x9;&#x9;&#x9;&#x9;&#x9;DO
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If the name type + name + domain combination is not found in the validNameTypeDomainName string and the privs are SELECT or EXECUTE then 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--   this is a combination that should not be set and therefore there is a privilege error
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (INSTR(validNameTypeDomainName, r.nameType || &apos;::&apos; || r.name || &apos;::&apos; || r.&quot;domain&quot; || &apos;|&apos;) = 0 AND
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;( (r.p_S is not null and r.p_S=1) OR (r.p_E is not null and r.p_E=1) )
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set privOutOfScopeNum = privOutOfScopeNum + 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- These are the actual privileges from the resource in Composite
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeList = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_R is not null and r.p_R=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;R &apos;; &#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_W is not null and r.p_W=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;W &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_E is not null and r.p_E=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;E &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_S is not null and r.p_S=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;S &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_U is not null and r.p_U=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;U &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_I is not null and r.p_I=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;I &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_D is not null and r.p_D=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;D &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (r.p_G is not null and r.p_G=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;G &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeList = TRIM(actualPrivilegeList);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (LENGTH(actualPrivilegeList) = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeList = &apos;NONE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--call print(&apos;**************************************************************************************&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--call print(&apos;Invalid Privilege&apos;|| r.nameType || &apos;::&apos; || r.name || &apos;::&apos; || r.&quot;domain&quot; || &apos;|  actualPrivilegeList=&apos;||actualPrivilegeList);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--call print(&apos;**************************************************************************************&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (LENGTH(messagePrivOutOfScope) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePrivOutOfScope = &apos;STATUS=INVALID PRIVILEGE SET OUT OF SCOPE:  Path:[&apos;||TRIM(NVL(prevResourcePath,&apos; &apos;)) ||&apos;,  &apos;||TRIM(NVL(prevResourceType,&apos; &apos;))||&apos;] &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePrivOutOfScope = messagePrivOutOfScope || &apos;, &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePrivOutOfScope = messagePrivOutOfScope || &apos;(&apos;||privOutOfScopeNum||&apos;. &apos;||TRIM(NVL(r.name,&apos; &apos;))||&apos;/&apos;||TRIM(NVL(r.nameType,&apos; &apos;))||&apos;/&apos;||TRIM(NVL(r.&quot;domain&quot;,&apos; &apos;))||&apos;/PRIVILEGES=&apos;||actualPrivilegeList||&apos;)&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (privOutOfScopeNum &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePrivOutOfScope = messagePrivOutOfScope || &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(messagePrivOutOfScope) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (invalidPrivilegeList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidPrivilegeList = messagePrivOutOfScope||newline;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(messagePrivOutOfScope IN invalidPrivilegeList) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidPrivilegeList = invalidPrivilegeList||messagePrivOutOfScope||newline;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (src.rownum != -1 and debug1 = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, messagePrivOutOfScope||newline, logOutput);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;-- Reset the variables
+&#x9;&#x9;&#x9;&#x9;set revokeAll = false;
+&#x9;&#x9;&#x9;&#x9;set validNameTypeDomainName = nameType || &apos;::&apos; || nameValue || &apos;::&apos; || domainName || &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;set messagePrivOutOfScope = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;set privOutOfScopeNum = 0;
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;set validNameTypeDomainName = validNameTypeDomainName || nameType || &apos;::&apos; || nameValue || &apos;::&apos; || domainName || &apos;|&apos;;
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;/*****************************************************
+&#x9;&#x9;&#x9; * Validate privileges in the list
+&#x9;&#x9;&#x9; *****************************************************/
+&#x9;&#x9;&#x9;if (src.rownum != -1) then -- Check for the last row to signify the end of the privileges
+&#x9;&#x9;&#x9;&#x9;-- These are the privileges from the data source spreadsheet or database. [How they should be set]
+&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;Set the privilege list to NONE when all privileges are null or set to N
+&#x9;&#x9;&#x9;&#x9;set srcPrivilegeList = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.R is not null and (TRIM(srcRec.R) = &apos;X&apos; or TRIM(srcRec.R) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;R &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.W is not null and (TRIM(srcRec.W) = &apos;X&apos; or TRIM(srcRec.W) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;W &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.E is not null and (TRIM(srcRec.E) = &apos;X&apos; or TRIM(srcRec.E) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;E &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.S is not null and (TRIM(srcRec.S) = &apos;X&apos; or TRIM(srcRec.S) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;S &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.U is not null and (TRIM(srcRec.U) = &apos;X&apos; or TRIM(srcRec.U) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;U &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.I is not null and (TRIM(srcRec.I) = &apos;X&apos; or TRIM(srcRec.I) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;I &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.D is not null and (TRIM(srcRec.D) = &apos;X&apos; or TRIM(srcRec.D) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;D &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;if (srcRec.G is not null and (TRIM(srcRec.G) = &apos;X&apos; or TRIM(srcRec.G) = &apos;Y&apos;)) then set srcPrivilegeList = srcPrivilegeList || &apos;G &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;set srcPrivilegeList = TRIM(srcPrivilegeList);
+&#x9;&#x9;&#x9;&#x9;if (LENGTH(srcPrivilegeList) = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;set srcPrivilegeList = &apos;NONE&apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;/*
+&#x9;&#x9;&#x9;&#x9;&#x9;Get Lineage for Published Resource Column
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;If resourcePath in /services/databases and resourceType = COLUMN then get the lineage to the view immediately publishing to the database.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;This is where the actual privileges are set
+&#x9;&#x9;&#x9;&#x9;*/
+&#x9;&#x9;&#x9;&#x9;SET getPrivsResourcePath = resourcePath;
+&#x9;&#x9;&#x9;&#x9;IF (INSTR(getPrivsResourcePath, &apos;/services/databases/&apos;) &gt; 0 AND resourceType = &apos;COLUMN&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Get the parent path
+&#x9;&#x9;&#x9;&#x9;&#x9;--CALL /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(getPrivsResourcePath, &apos;E&apos;, resourceName, parentPath);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET pos = INSTR(getPrivsResourcePath, &apos;/&apos;, -1, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = SUBSTRING(getPrivsResourcePath, pos+1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = SUBSTRING(getPrivsResourcePath, 1, pos-1);
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Retrieve the first level depth resource
+&#x9;&#x9;&#x9;&#x9;&#x9;FOR r AS select * from /shared/ASAssets/Utilities/repository/getUsedResourcesCursor(parentPath, &apos;LINK&apos;) DO
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set getPrivsResourcePath = r.resourcePath||&apos;/&apos;||resourceName;
+&#x9;&#x9;&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;/* Validate the privileges
+&#x9;&#x9;&#x9;&#x9;&#x9;IN resourcePath &#x9;&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourcePath,
+&#x9;&#x9;&#x9;&#x9;&#x9;IN resourceType &#x9;&#x9;&#x9;&#x9;/lib/resource/ResourceDefs.ResourceType,
+&#x9;&#x9;&#x9;&#x9;&#x9;IN nameTypeFilter &#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN domainFilter&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR, &#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN includeNameEqualFilter &#x9;&#x9;LONGVARCHAR,--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN includeNameLikeFilter &#x9;&#x9;LONGVARCHAR,--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN excludeNameNotEqualFilter&#x9;LONGVARCHAR,--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN excludeNameNotLikeFilter&#x9;&#x9;LONGVARCHAR,--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN includePrivsEqualFilter&#x9;&#x9;VARCHAR, &#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN includePrivsLikeFilter&#x9;&#x9;VARCHAR, &#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN excludePrivsNotEqualFilter&#x9;VARCHAR, &#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN excludePrivsNotLikeFilter&#x9;VARCHAR, &#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN includeColumnPrivs&#x9;&#x9;&#x9;BIT,&#x9; &#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;&#x9;IN debug&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1), &#x9;--[optional]
+&#x9;&#x9;&#x9;&#x9;   OUT result &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CURSOR ResultType&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_N&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- NONE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_R&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- READ
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_W&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- WRITE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_E&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- EXECUTE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_S&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- SELECT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_U&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- UPDATE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_I&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- INSERT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_D&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- DELETE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;p_G&#x9;&#x9;&#x9;&#x9;&#x9;BIT,-- GRANT&#x9;&#x9;&#x9;*/
+&#x9;&#x9;&#x9;&#x9;set privReason = &apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;set privReadString = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;set actualPrivilegeList = &apos;NONE&apos;;
+&#x9;&#x9;&#x9;&#x9;set privRowFound = false;
+&#x9;&#x9;&#x9;&#x9;set matchPrivs = true;
+&#x9;&#x9;&#x9;&#x9;set matchPrivsRead = true;
+&#x9;&#x9;&#x9;&#x9;IF (UPPER(debug2) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;CALl PRINT(moduleName||&apos;  Invoke getResourcePrivileges(&apos;||TRIM(NVL(getPrivsResourcePath,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(resourceType,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(nameType,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(domainName,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(nameValue,&apos; &apos;))||&apos;)&apos;);
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;FOR actual AS 
+&#x9;&#x9;&#x9;&#x9;&#x9;-- 2016-07-11 (mtinius):  
+&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;WHERE privs != &apos;NONE&apos; returns only the actual privileges.  privs != &apos;NONE&apos;, it means a privilege of some kind is set.  
+&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;This eliminates all of the inherited privileges which we don&apos;t care about.   This equates to fewer privilege rows to loop through.  Inherited Privileges cannot be explicitly set or changed.
+&#x9;&#x9;&#x9;&#x9;&#x9;SELECT * FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getResourcePrivileges(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;getPrivsResourcePath, resourceType, nameType, domainName, &apos;privs&apos;, nameValue, null, null, null, null, null, null, null, null, debug2)
+&#x9;&#x9;&#x9;&#x9;DO
+&#x9;&#x9;&#x9;&#x9;&#x9;set privRowFound = true;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- These are the actual privileges from the resource in Composite
+&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeList = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_R is not null and actual.p_R=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;R &apos;; &#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_W is not null and actual.p_W=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;W &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_E is not null and actual.p_E=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;E &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_S is not null and actual.p_S=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;S &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_U is not null and actual.p_U=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;U &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_I is not null and actual.p_I=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;I &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_D is not null and actual.p_D=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;D &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_G is not null and actual.p_G=1) then &#x9;set actualPrivilegeList = actualPrivilegeList || &apos;G &apos;;  end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeList = TRIM(actualPrivilegeList);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (LENGTH(actualPrivilegeList) = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeList = &apos;NONE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;set privStringTemp = &apos;&apos;;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_R AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.R != priv) THEN &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privStringTemp = privStringTemp || &apos;R &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_W AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.W != priv) THEN&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privStringTemp = privStringTemp || &apos;W &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_E AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.E != priv AND resourceType IN (&apos;CONTAINER&apos;,&apos;PROCEDURE&apos;)) THEN &#x9;&#x9;SET privStringTemp = privStringTemp || &apos;E &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_S AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.S != priv AND resourceType IN (&apos;CONTAINER&apos;,&apos;TABLE&apos;,&apos;COLUMN&apos;)) THEN&#x9;SET privStringTemp = privStringTemp || &apos;S &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_U AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.U != priv AND resourceType IN (&apos;CONTAINER&apos;,&apos;TABLE&apos;)) THEN&#x9;&#x9;&#x9;SET privStringTemp = privStringTemp || &apos;U &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_I AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.I != priv AND resourceType IN (&apos;CONTAINER&apos;,&apos;TABLE&apos;)) THEN&#x9;&#x9;&#x9;SET privStringTemp = privStringTemp || &apos;I &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_D AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.D != priv AND resourceType IN (&apos;CONTAINER&apos;,&apos;TABLE&apos;)) THEN&#x9;&#x9;&#x9;SET privStringTemp = privStringTemp || &apos;D &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Convert actual privilege to Y or N
+&#x9;&#x9;&#x9;&#x9;&#x9;set priv = CAST(actual.p_G AS VARCHAR);
+&#x9;&#x9;&#x9;&#x9;&#x9;if (priv is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;Y&apos; IN priv) &gt; 0) or (POSITION(&apos;T&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( (POSITION(&apos;N&apos; IN priv) &gt; 0) or (POSITION(&apos;F&apos; IN priv) &gt; 0) ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;1&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;Y&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(&apos;0&apos; IN priv) &gt; 0)  then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set priv = &apos;N&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcRec.G != priv) THEN&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privStringTemp = privStringTemp || &apos;G &apos;;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Look for mismatch in privileges between source and actual CIS resource
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcPrivilegeList != actualPrivilegeList) THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(privStringTemp) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReason = &apos;Missing privileges: &apos;||TRIM(privStringTemp);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug2 = &apos;Y&apos;) THEN call print(&apos;NOT A MATCH:  &apos;||TRIM(NVL(privReason,&apos;  &apos;))); END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET  matchPrivs = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;&#x9;&#x9;IF (UPPER(debug2) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;CALl PRINT(moduleName||&apos; :  Result getResourcePrivileges: privRowFound=&apos;||cast(privRowFound as varchar)||&apos;,  matchPrivs=&apos;||cast(matchPrivs as varchar)||&apos;,  actualPrivilegeList=&apos;||TRIM(NVL(actualPrivilegeList,&apos; &apos;)));
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;IF (NOT privRowFound) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (srcPrivilegeList &lt;&gt; actualPrivilegeList) THEN -- actualPrivilegeList=NONE when no privilege is found for this &quot;name,nameType,domain&quot; triplet.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug2 = &apos;Y&apos;) THEN call print(&apos;PRIVILEGE NOT SET&apos;); END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET  matchPrivs = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReason = &apos;Privilege not set&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;/*********************************
+&#x9;&#x9;&#x9;&#x9; * BEGIN Validate Privilege Category
+&#x9;&#x9;&#x9;&#x9; *********************************/
+&#x9;&#x9;&#x9;&#x9;-- Capture the privileges for READ only on ancestor folders
+/*
+&#x9;&#x9;&#x9;&#x9;CALL /shared/Common/privilegeScripts/Helpers/validatePrivilegeCategoryV4(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;debug2,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;resourcePath,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;resourceType,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;nameValue,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;nameType,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;domainName,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- The string used to track the list of paths to set READ privilege.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;privReadStr1,&#x9;--Format: &quot;Resource Path&quot;::&quot;Resource Type&quot;::Name::&quot;Name Type&quot;::&quot;Domain&quot;|[repeat format]
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;privReadStr2,&#x9;--Format: &quot;Resource Path&quot;::&quot;Resource Type&quot;::Name::&quot;Name Type&quot;::&quot;Domain&quot;|[repeat format]
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;parentPaths,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;errType,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;errMessage
+&#x9;&#x9;&#x9;&#x9;&#x9;);
+*/
+&#x9;&#x9;&#x9;&#x9;-- Initialize variables
+&#x9;&#x9;&#x9;&#x9;SET errMessage = NULL;
+
+&#x9;&#x9;&#x9;&#x9;-- Initialize the previous already applied privilege string
+&#x9;&#x9;&#x9;&#x9;IF (privReadStr1 IS NULL) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadStr1 = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;IF (privReadStr2 IS NULL) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadStr2 = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;-- Determine IF the current group/domain is in the deny list
+&#x9;&#x9;&#x9;&#x9;IF (POSITION(nameValue||&apos;/&apos;||domainName IN denyReadPrivilegesNameList) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;set denyName = true;
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;-- If the current name/domain is not denied then process it
+&#x9;&#x9;&#x9;&#x9;IF (NOT denyName) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;--CALL /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(resourcePath, &apos;E&apos;, resourceName, parentPath);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET pos = INSTR(resourcePath, &apos;/&apos;, -1, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = SUBSTRING(resourcePath, pos+1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = SUBSTRING(resourcePath, 1, pos-1);
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- If the origial path is a COLUMN type then get the parent (container) of the parent (table)
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (resourceType = &apos;COLUMN&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--CALL /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(parentPath, &apos;E&apos;, resourceName, parentPath);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos = INSTR(parentPath, &apos;/&apos;, -1, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = SUBSTRING(parentPath, pos+1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = SUBSTRING(parentPath, 1, pos-1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;WHILE (parentPath IS NOT NULL AND LENGTH(parentPath) &gt; 0) DO
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Set the parent path to a CONTAINER type by default
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceTypeTmp = &apos;CONTAINER&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If the parent path is in the &quot;/services/databases&quot; path then get the grand parent path in order to determine if the parent path is a DATA_SOURCE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (POSITION(&apos;/services/databases/&apos; IN parentPath) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If the grandparentPath=/services/databases then this is a DATA_SOURCE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--CALL /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(parentPath, &apos;E&apos;, resourceName, grandparentPath);&#x9;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET grandparentPath = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos = INSTR(parentPath, &apos;/&apos;, -1, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = SUBSTRING(parentPath, pos+1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET grandparentPath = SUBSTRING(parentPath, 1, pos-1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (grandparentPath = &apos;/services/databases&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set resourceTypeTmp = &apos;DATA_SOURCE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Check to see IF the parent path exists before proceeding
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (POSITION(&apos;RESFOUND:&apos;||parentPath||&apos;,&apos; IN parentPaths) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceExists = true;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSEIF (POSITION(&apos;NOTFOUND:&apos;||parentPath||&apos;,&apos; IN parentPaths) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceExists = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /lib/resource/ResourceExists(parentPath, resourceTypeTmp, null, resourceExists);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (resourceExists) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPaths = parentPaths || &apos;RESFOUND:&apos;||parentPath||&apos;,&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPaths = parentPaths || &apos;NOTFOUND:&apos;||parentPath||&apos;,&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Only log the fact that the resource does not exist once for the invoking procedure
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (errMessage IS NULL) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET errMessage = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET errMessage = errMessage || &apos;, &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET errType = &apos;PARENT RES NOT FOUND: &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET errMessage = errMessage||&apos;ParentPath=&apos;||TRIM(NVL(parentPath,&apos;  &apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Continue if the resource exists
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (resourceExists) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/services/databases/&apos; IN parentPath) &gt; 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/services/databases&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/services/webservices/&apos; IN parentPath) &gt; 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 2;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/services/webservices&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/shared/&apos; IN parentPath) &gt; 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 3;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/shared&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/policy/cache/&apos; IN parentPath) &gt; 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 4;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/policy/cache&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/policy/security/&apos; IN parentPath) &gt; 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 5;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/policy/security&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/security/rowlevel/filters/&apos; IN parentPath) &gt; 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 6;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/security/rowlevel/filters&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/users/composite/&apos; IN parentPath) &gt; 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 7;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/users/composite&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN POSITION(&apos;/users/&apos; IN parentPath) &gt; 0 AND POSITION(&apos;/users/composite/&apos; IN parentPath) = 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 8;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (userDomain IS NULL) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Get the user domain in the string - /users/ldap/nbkid
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set pos = INSTR(parentPath, &apos;/&apos;, 1, 2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set pos1 = INSTR(parentPath, &apos;/&apos;, 1, 3);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (pos &gt; 0 and pos1 = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set userDomain = TRIM(SUBSTRING(parentPath, pos+1));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;elseif (pos &gt; 0 and pos1 &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set userDomain = TRIM(SUBSTRING(parentPath, pos+1, pos1-pos-1));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set userDomain = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--call print(&apos;userDomain=&apos;||userDomain);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (parentPath = &apos;/users/&apos;||userDomain) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET category = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END CASE;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (category &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadStr = TRIM(NVL(parentPath,&apos;  &apos;))||&apos;::&apos;||resourceTypeTmp||&apos;::&apos;||TRIM(NVL(nameValue,&apos;  &apos;))||&apos;::&apos;||TRIM(NVL(nameType,&apos;  &apos;))||&apos;::&apos;||TRIM(NVL(domainName,&apos;  &apos;))||&apos;::&apos;;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Search for this current unique entry in the &quot;privilege read applied&quot; list.  (Already applied list.)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privRowFound = FALSE;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (POSITION(privReadStr IN privReadStr1) &gt; 0 OR POSITION(privReadStr IN privReadStr2) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privRowFound = TRUE;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Add the row to the privilege string since it was not found in the &quot;privilege read applied&quot; list.  (Already applied list.)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (NOT privRowFound) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(privReadStr1) + LENGTH(privReadStr) &lt; LONGVARCHARlen) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadStr1 = privReadStr1 || privReadStr;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug2 = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL PRINT(moduleName||&apos; : Added path to privReadStr1=&apos;||privReadStr1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSEIF (LENGTH(privReadStr2) + LENGTH(privReadStr) &lt; LONGVARCHARlen) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadStr2 = privReadStr2 || privReadStr;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug2 = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL PRINT(moduleName||&apos; : Added path to privReadStr2=&apos;||privReadStr2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RAISE ex VALUE &apos;The length of &quot;privReadStr1&quot; and &quot;privReadStr2&quot; has been exceeded.&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--CALL /shared/ASAssets/Utilities/repository/returnFolderNameAndFolderPath(parentPath, &apos;E&apos;, resourceName, parentPath);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos = INSTR(parentPath, &apos;/&apos;, -1, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET resourceName = SUBSTRING(parentPath, pos+1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET parentPath = SUBSTRING(parentPath, 1, pos-1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;END WHILE;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;if (errMessage is not null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;set messagePrivParent = errType||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Actual:[&apos;||actualPrivilegeList||&apos;]&apos;,27,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Defined:[&apos;||srcPrivilegeList||&apos;]&apos;,25,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Reason:[No parent path]&apos;,45,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Name:[&apos;||TRIM(NVL(nameValue,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(nameType,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(domainName,&apos; &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Path:[&apos;||TRIM(NVL(resourcePath,&apos; &apos;)) ||&apos;,  &apos;||TRIM(NVL(resourceType,&apos; &apos;))||&apos;]&apos;||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Add privilege message to the invalid resource list
+&#x9;&#x9;&#x9;&#x9;&#x9;if (invalidResourceList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = messagePrivParent||newline;
+&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(messagePrivParent IN invalidResourceList) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidResourceList = invalidResourceList||messagePrivParent||newline;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;/****************************************
+&#x9;&#x9;&#x9;&#x9; * END Validate Privilege Category
+&#x9;&#x9;&#x9;&#x9; ****************************************/
+
+&#x9;&#x9;&#x9;&#x9;/****************************************
+&#x9;&#x9;&#x9;&#x9; * BEGIN Validate Privilege Read Folders
+&#x9;&#x9;&#x9;&#x9; ****************************************/
+&#x9;&#x9;&#x9;&#x9;-- Validate the ancestor (parent) folders to insure they have a minimum of READ set.
+&#x9;&#x9;&#x9;&#x9;-- Initialize overall status
+&#x9;&#x9;&#x9;&#x9;SET validStatus = 1;
+
+&#x9;&#x9;&#x9;&#x9;-- Initialize the previous already applied privilege string
+&#x9;&#x9;&#x9;&#x9;IF (privReadAppliedStr1 IS NULL) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadAppliedStr1 = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;IF (privReadAppliedStr2 IS NULL) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadAppliedStr2 = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;-- Process the privilege string.   The string allows for n number of rows and provides 2 strings in case there is overflow for the contents of a single LONGVARCHAR type.
+&#x9;&#x9;&#x9;&#x9;-- Each privilege row is separated by a pipe &apos;|&apos;.  Process each row by sort them by path which is the first element in the row.
+&#x9;&#x9;&#x9;&#x9;FOR readList AS 
+&#x9;&#x9;&#x9;&#x9;&#x9;SELECT privRow FROM (
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT object privRow
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM /shared/ASAssets/Utilities/string/extractDelimitedText(privReadStr1,&apos;|&apos;,0,0,0,1,0)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE object IS NOT NULL AND LENGTH(object) &gt; 0
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;UNION
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT object privRow
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM /shared/ASAssets/Utilities/string/extractDelimitedText(privReadStr2,&apos;|&apos;,0,0,0,1,0)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE object IS NOT NULL AND LENGTH(object) &gt; 0
+&#x9;&#x9;&#x9;&#x9;&#x9;) a
+&#x9;&#x9;&#x9;&#x9;&#x9;ORDER BY privRow
+&#x9;&#x9;&#x9;&#x9;DO
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Process the current row and split out the columns within the double colon &apos;::&apos; separated list.
+&#x9;&#x9;&#x9;&#x9;&#x9;SET i = 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;&#x9;&#x9;&#x9;SET objectList2 = readList.privRow;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET expression2 = &apos;::&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo2 = true;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET explen2 = length(expression2);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET start2 = 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET lastpos1 = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET k = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHILE (moreToDo2) DO
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set k = k + 1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (k = 1) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList2, expression2, start2, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--call print(&apos;&quot;privRow&quot; start2=&apos;||start2||&apos;  pos1=&apos;||pos1||&apos;  pos1-1=&apos;||CAST(pos1-1 AS VARCHAR));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET poslen = pos1-1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (poslen &lt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET poslen = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList2, 1, poslen);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList2)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList2;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo2 = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET lastpos1 = pos1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET start2 = lastpos1+explen2;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList2, expression2, start2, 1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--call print(&apos;&quot;privRow&quot; start2=&apos;||start2||&apos;  lastpos1=&apos;||lastpos1||&apos;  pos2=&apos;||pos2||&apos;  explen2=&apos;||explen2||&apos;  pos2-lastpos1-explen2=&apos;||CAST(pos2-lastpos1-explen2 AS VARCHAR));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (lastpos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET poslen = pos2-lastpos1-explen2;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (poslen &lt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET poslen = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList2, lastpos1+explen2, poslen);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSEIF (lastpos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList2, lastpos1+explen2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo2 = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET lastpos1 = pos2;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET start2 = lastpos1+explen2;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--CALL print(&apos;priv k=&apos;||k||&apos;  object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set privRow = object;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- parse out the columns within the row.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CASE 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN k = 1  THEN SET privRec.resourcePath = TRIM(NVL(privRow,&apos; &apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN k = 2  THEN SET privRec.resourceType = TRIM(NVL(privRow,&apos; &apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN k = 3  THEN SET privRec.name = TRIM(NVL(privRow,&apos; &apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN k = 4  THEN SET privRec.nameType = TRIM(NVL(privRow,&apos; &apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN k = 5  THEN SET privRec.domainName = TRIM(NVL(privRow,&apos; &apos;));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END CASE;
+&#x9;&#x9;&#x9;&#x9;&#x9;END WHILE;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;/***************************************************
+&#x9;&#x9;&#x9;&#x9;&#x9; * FOR THE CURRENT RECORD (privRec=privReadStr1 or 2), 
+&#x9;&#x9;&#x9;&#x9;&#x9; *   SEARCH FOR EQUIVLENT RECORD IN privReadAppliedStr1.
+&#x9;&#x9;&#x9;&#x9;&#x9; * IF FOUND, EXTRACT PRIVILEGES FOR DISPLAY.
+&#x9;&#x9;&#x9;&#x9;&#x9; ***************************************************/
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Initialize string for actual privileges
+&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeListRead = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Search for this current unique entry in the &quot;privilege read applied&quot; list.  (Already applied list.)
+&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadStr = TRIM(NVL(privRec.resourcePath,&apos;  &apos;))||&apos;::&apos;||TRIM(NVL(privRec.resourceType,&apos;  &apos;))||&apos;::&apos;||TRIM(NVL(privRec.name,&apos;  &apos;))||&apos;::&apos;||TRIM(NVL(privRec.nameType,&apos;  &apos;))||&apos;::&apos;||TRIM(NVL(privRec.domainName,&apos;  &apos;))||&apos;::&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET privRowFound = FALSE;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET pos1 = POSITION(privReadStr IN privReadAppliedStr1);
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(privReadAppliedStr1, &apos;|&apos;, pos1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET actualPrivilegeListRead = SUBSTRING(privReadAppliedStr1, pos1 + LENGTH(privReadStr) + 2, pos2 - pos1 - LENGTH(privReadStr) - 2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privRowFound = TRUE;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (UPPER(debug2) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call print(moduleName||&apos; : Privilege row found.  row=&apos;||TRIM(NVL(privReadStr,&apos;  &apos;))||&apos; actualPrivilegeListRead=&apos;||actualPrivilegeListRead);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos1 = POSITION(privReadStr IN privReadAppliedStr2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(privReadAppliedStr2, &apos;|&apos;, pos1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET actualPrivilegeListRead = SUBSTRING(privReadAppliedStr2, pos1 + LENGTH(privReadStr) + 2, pos2 - pos1 - LENGTH(privReadStr) - 2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privRowFound = TRUE;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (UPPER(debug2) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call print(moduleName||&apos; : Privilege row found.  row=&apos;||TRIM(NVL(privReadStr,&apos;  &apos;))||&apos; actualPrivilegeListRead=&apos;||actualPrivilegeListRead);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;-- Print Debug
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug2 = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call print(moduleName||&apos; : privRowFound=&apos;||cast(privRowFound as varchar));
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Get the actual status
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (NOT privRowFound) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (UPPER(debug2) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALl PRINT(moduleName||&apos; : Invoke getResourcePrivileges(&apos;||TRIM(NVL(privRec.resourcePath,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(privRec.resourceType,&apos; &apos;))||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;,&apos;||TRIM(NVL(privRec.nameType,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(privRec.domainName,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(privRec.name,&apos; &apos;))||&apos;)&apos;);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET actual_READ = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FOR actual AS 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- 2016-07-11 (mtinius):  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;WHERE privs != &apos;NONE&apos; returns only the actual privileges.  privs != &apos;NONE&apos;, it means a privilege of some kind is set.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;This eliminates all of the inherited privileges which we don&apos;t care about.   This equates to fewer privilege rows to loop through.  Inherited Privileges cannot be explicitly set or changed.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT * FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getResourcePrivileges(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;privRec.resourcePath, privRec.resourceType, privRec.nameType, privRec.domainName, &apos;privs&apos;, privRec.name, null, null, null, null, null, &apos;NONE&apos;, null, null, debug2)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DO
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- These are the privileges from the data source spreadsheet or database. [How they should be set]
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;Set the privilege list to NONE when all privileges are null or set to N
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeListRead = &apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_R is not null and actual.p_R = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;R &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_W is not null and actual.p_W = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;W &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_E is not null and actual.p_E = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;E &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_S is not null and actual.p_S = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;S &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_U is not null and actual.p_U = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;U &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_I is not null and actual.p_I = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;I &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_D is not null and actual.p_D = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;D &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (actual.p_G is not null and actual.p_G = 1) then set actualPrivilegeListRead = actualPrivilegeListRead || &apos;G &apos;; end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeListRead = TRIM(actualPrivilegeListRead);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (LENGTH(actualPrivilegeListRead) = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set actualPrivilegeListRead = &apos;NONE&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET actual_READ = actual.p_R;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (UPPER(debug2) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALl PRINT(moduleName||&apos; :  Result getResourcePrivileges: actual_READ=&apos;||TRIM(NVL(CAST(actual_READ AS VARCHAR),&apos; &apos;))||&apos;,  actualPrivilegeListRead=&apos;||TRIM(NVL(actualPrivilegeListRead,&apos; &apos;)));
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Add the row to the privilege vector since it was not found in the &quot;privilege read applied&quot; list.  (Already applied list.)
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set privReasonRead = &apos;Valid&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Determine if the CONTAINER has READ set or not
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (actual_READ = 1) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET status = &apos;VALID PARENT:     Actual:[&apos;||actualPrivilegeListRead||&apos;]&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET status = &apos;INVALID PARENT:   Actual:[&apos;||actualPrivilegeListRead||&apos;]&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReasonRead = &apos;Read is required&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET validStatus = 0;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Add privilege vector rows to the &quot;privilege read applied list&quot; so the script does not duplicate effort.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- 07/11/2016 mtinius - added code to log the fact that a privilege was skipped because it is set and should not be applied again.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF ( (LENGTH(TRIM(privReadAppliedStr1)) = 0 AND LENGTH(TRIM(privReadAppliedStr2)) = 0) OR 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; (POSITION(privReadStr IN privReadAppliedStr1) = 0 AND POSITION(privReadStr IN privReadAppliedStr2) = 0)) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(privReadAppliedStr1) + LENGTH(privReadStr||&apos;::&apos;||actualPrivilegeListRead||&apos;|&apos;) &lt; LONGVARCHARlen) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadAppliedStr1 = privReadAppliedStr1 || privReadStr || &apos;::&apos; || actualPrivilegeListRead || &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug2 = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL PRINT(moduleName||&apos; : pos1=&apos;||cast(pos1 as varchar)||&apos; Added path to privReadAppliedStr1=&apos;||privReadAppliedStr1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSEIF (LENGTH(privReadAppliedStr2) + LENGTH(privReadStr||&apos;::&apos;||actualPrivilegeListRead||&apos;|&apos;) &lt; LONGVARCHARlen) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReadAppliedStr2 = privReadAppliedStr2 || privReadStr || &apos;::&apos; || actualPrivilegeListRead || &apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug2 = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALL PRINT(moduleName||&apos; : pos1=&apos;||cast(pos1 as varchar)||&apos; Added path to privReadAppliedStr2=&apos;||privReadAppliedStr2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RAISE ex VALUE &apos;The length of &quot;privReadAppliedStr1&quot; and &quot;privReadAppliedStr2&quot; has been exceeded.&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET status = &apos;SKIPPED PARENT:   Actual:[&apos;||actualPrivilegeListRead||&apos;]&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET privReasonRead = &apos;Already Validated&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (UPPER(debug2) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CALl PRINT(moduleName||&apos; :  Result status: status=&apos;||status||&apos;,  privReasonRead=&apos;||privReasonRead);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;/******************************
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; * Set Debug Information
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ******************************/
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- Create the row string to display as long as it is not the last control record that starts with resourcePath=/zzzz and resourceType=END
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (debug1ReadOnly = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET message = RPAD(&apos;STATUS=&apos;||TRIM(NVL(status,&apos; &apos;)),52,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Reason:[&apos;||privReasonRead||&apos;]&apos;,45,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Name:[&apos;||TRIM(NVL(privRec.name,&apos; &apos;)) || &apos;,&apos;||TRIM(NVL(privRec.nameType,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(privRec.domainName,&apos; &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Path:[&apos;||TRIM(NVL(privRec.resourcePath,&apos; &apos;)) || &apos;,  &apos;||TRIM(NVL(privRec.resourceType,&apos; &apos;))||&apos;]&apos;||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;IF (POSITION(&apos;STATUS=INVALID&apos; IN message) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; :    &apos;||message, logOutput);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;&#x9;&#x9;-- Reset the read vector since all changes have been applied
+&#x9;&#x9;&#x9;&#x9;SET privReadStr1 = NULL;
+&#x9;&#x9;&#x9;&#x9;SET privReadStr2 = null;
+&#x9;&#x9;&#x9;&#x9;IF (validStatus = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;set matchPrivsRead = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;/****************************************
+&#x9;&#x9;&#x9;&#x9; * END Validate Privilege Read Folders
+&#x9;&#x9;&#x9;&#x9; ****************************************/
+
+&#x9;&#x9;&#x9;&#x9;if (NOT matchPrivs OR NOT matchPrivsRead) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set validPrivileges = &apos;false&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (NOT matchPrivs) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePriv = &apos;STATUS=PRIV NO MATCH:    &apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Actual:[&apos;||actualPrivilegeList||&apos;]&apos;,27,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Defined:[&apos;||srcPrivilegeList||&apos;]&apos;,25,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Reason:[&apos;||privReason||&apos;]&apos;,45,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Name:[&apos;||TRIM(NVL(nameValue,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(nameType,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(domainName,&apos; &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Path:[&apos;||TRIM(NVL(resourcePath,&apos; &apos;)) ||&apos;,  &apos;||TRIM(NVL(resourceType,&apos; &apos;))||&apos;]&apos;||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (NOT matchPrivsRead AND privReadString IS NOT NULL AND LENGTH(privReadString) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePriv = messagePriv || privReadString;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (invalidPrivilegeList is null) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidPrivilegeList = messagePriv||newline;
+&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (POSITION(message IN invalidPrivilegeList) = 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set invalidPrivilegeList = invalidPrivilegeList||messagePriv||newline;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set messagePriv = &apos;STATUS=VALID:             &apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Actual:[&apos;||actualPrivilegeList||&apos;]&apos;,27,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Defined:[&apos;||srcPrivilegeList||&apos;]&apos;,25,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;RPAD(&apos;Reason:[Valid]&apos;,45,&apos; &apos;)||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Name:[&apos;||TRIM(NVL(nameValue,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(nameType,&apos; &apos;))||&apos;,&apos;||TRIM(NVL(domainName,&apos; &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Path:[&apos;||TRIM(NVL(resourcePath,&apos; &apos;)) ||&apos;,  &apos;||TRIM(NVL(resourceType,&apos; &apos;))||&apos;]&apos;||&apos;|&apos;;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;-- Reset the revoke all when current and previous paths are different and the revoke all was turned on
+&#x9;&#x9;&#x9;if (currResourcePathType != prevResourcePathType and revokeAll) then
+&#x9;&#x9;&#x9;&#x9;set revokeAll = false;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;IF (src.rownum != -1 and debug1 = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; : &apos;||rowString||&apos;|&apos;||newline, logOutput);
+&#x9;&#x9;&#x9;IF (LENGTH(messageName) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; :    &apos;||messageName||newline, logOutput);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (LENGTH(messagePath) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; :    &apos;||messagePath||newline, logOutput);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (LENGTH(messagePrivParent) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; :    &apos;||messagePrivParent||newline, logOutput);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;IF (LENGTH(messagePriv) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/addLogOutput(debug1Console, debug1CISLog, logOutput, moduleName||&apos; :    &apos;||messagePriv||newline, logOutput);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END IF;
+
+&#x9;&#x9;-- Set the previous path and type combination
+&#x9;&#x9;set prevResourcePathType = resourcePath || &apos;::&apos; || resourceType;
+&#x9;&#x9;set prevResourcePath = resourcePath;
+&#x9;&#x9;set prevResourceType = resourceType;
+&#x9;END FOR;
+&#x9;set rowsProcessed = rownum-1;-- Don&apos;t count the last dummy row
+END</attribute>
+  <attribute name="creationDate" type="LONG">1411683738038</attribute>
+  <attribute name="creatorUserDomain" type="STRING">ldap</attribute>
+  <attribute name="creatorUserName" type="STRING">zkxl6un</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564075714164</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">11/886</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">16/1294</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">11/681</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">16/1289</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">14/1304</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">14/1239</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">35/891</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">14/1226</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">35/881</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">17/1067</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">13/1217</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">14/1268</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">17/1072</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">12/1233</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+</metadata>

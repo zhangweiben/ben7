@@ -1,0 +1,262 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="pGroups_All_Excel" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/pGroups_All_Excel" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="groupsRowTypeV2" type="TABLE" refId="256">
+        <element name="rownum">
+          <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+        </element>
+        <element name="sheetRownum">
+          <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+        </element>
+        <element name="datasource">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="sheetName">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="ORGANIZATION_NAME">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="PROJECT_NAME">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="SUBPROJECT_NAME">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="GROUP_NAME">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="GROUP_DESC">
+          <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+        </element>
+        <element name="DOMAIN_NAME">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="ENVIRONMENT_NAME">
+          <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+        </element>
+        <element name="ACCESS_FLAG">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="UNDO_UNLOCK">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="READ_ALL_CONFIG">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="MODIFY_ALL_CONFIG">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="READ_ALL_RESOURCES">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="MODIFY_ALL_RESOURCES">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="READ_ALL_STATUS">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="MODIFY_ALL_STATUS">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="READ_ALL_USER">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="MODIFY_ALL_USER">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+        <element name="ISACTIVE">
+          <datatype name="VARCHAR" type="STRING" maxLength="1"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vGroups_All_Excel" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="rownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="sheetRownum">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="datasource">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="sheetName">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Organization">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Project">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="SubProject">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="GroupName">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Description">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="Domain">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Env Type">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="Access">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Unlock">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Config_R">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Config_M">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Resources_R">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Resources_M">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Status_R">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Status_M">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Users_R">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="Users_M">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="IsActive">
+        <datatype type="STRING" minLength="1" maxLength="1" trailingSpaces="false"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE pGroups_All_Excel(
+    OUT result PIPE   /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/TypeDefinitions.groupsRowTypeV2
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;VARCHAR DEFAULT &apos;pGroups_All_Excel&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;N&apos;;
+&#x9;DECLARE rownum&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE sheetRownum&#x9;&#x9;INTEGER DEFAULT 1;&#x9;-- Account for the header row on each sheet
+&#x9;DECLARE rec&#x9;&#x9;&#x9;&#x9;/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/TypeDefinitions.groupsRowType;
+&#x9;DECLARE project&#x9;&#x9;&#x9;VARCHAR DEFAULT null;
+&#x9;DECLARE groupName&#x9;&#x9;VARCHAR DEFAULT null;
+&#x9;DECLARE domainName&#x9;&#x9;VARCHAR DEFAULT null;
+
+&#x9;-- Process the Group_List sheet
+&#x9;FOR r AS 
+&#x9;&#x9;SELECT * FROM /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Formatting/Excel/vGroups_All_Excel
+&#x9;DO
+&#x9;&#x9;set rec = r;
+&#x9;&#x9;set rownum = rownum + 1;
+&#x9;&#x9;set sheetRownum = sheetRownum + 1;
+&#x9;&#x9;set rec.rownum = rownum;
+&#x9;&#x9;set rec.sheetRownum = sheetRownum;
+
+&#x9;&#x9;IF (rec.Organization IS NOT NULL AND LENGTH(TRIM(rec.Organization)) &gt; 0 AND
+&#x9;&#x9;&#x9;rec.Project IS NOT NULL AND LENGTH(TRIM(rec.Project)) &gt; 0 AND
+&#x9;&#x9;&#x9;rec.SubProject IS NOT NULL AND LENGTH(TRIM(rec.SubProject)) &gt; 0 AND
+&#x9;&#x9;&#x9;rec.GroupName IS NOT NULL AND LENGTH(TRIM(rec.GroupName)) &gt; 0 AND
+&#x9;&#x9;&#x9;rec.&quot;Env Type&quot; IS NOT NULL AND LENGTH(TRIM(rec.&quot;Env Type&quot;)) &gt; 0 AND
+&#x9;&#x9;&#x9;rec.&quot;Domain&quot; IS NOT NULL AND LENGTH(TRIM(rec.&quot;Domain&quot;)) &gt; 0 AND
+&#x9;&#x9;&#x9;rec.&quot;Env Type&quot; IS NOT NULL AND LENGTH(TRIM(rec.&quot;Env Type&quot;)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;INSERT INTO result VALUES(rec);
+&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;IF (upper(debug) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;call print(moduleName||&apos; : DISCARDING ROW[&apos;||rownum||&apos;]:  &apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Organization=[&apos;||TRIM(NVL(rec.Organization,&apos;  &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos; Project=[&apos;||TRIM(NVL(rec.Project,&apos;  &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos; SubProject=[&apos;||TRIM(NVL(rec.SubProject,&apos;  &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos; GroupName=[&apos;||TRIM(NVL(rec.GroupName,&apos;  &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos; &quot;Env Type&quot;=[&apos;||TRIM(NVL(rec.&quot;Env Type&quot;,&apos;  &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos; &quot;Domain&quot;=[&apos;||TRIM(NVL(rec.&quot;Domain&quot;,&apos;  &apos;))||&apos;]&apos;||
+&#x9;&#x9;&#x9;&#x9;&#x9;&apos; &quot;Env Type&quot;=[&apos;||TRIM(NVL(rec.&quot;Env Type&quot;,&apos;  &apos;))||&apos;]&apos;
+&#x9;&#x9;&#x9;&#x9;);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END IF;
+&#x9;END FOR;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1386777785435</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">10/55</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+</metadata>

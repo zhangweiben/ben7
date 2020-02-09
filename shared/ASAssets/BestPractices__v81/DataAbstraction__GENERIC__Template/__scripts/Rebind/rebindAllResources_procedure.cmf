@@ -1,0 +1,201 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="rebindAllResources" path="/shared/ASAssets/BestPractices_v81/DataAbstraction_GENERIC_Template/_scripts/Rebind/rebindAllResources" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[rebindAllResources:
+&#x9;-- Data Virtualization Best Practices --
+
+&#x9;This procedure is used to rebind all of the resources (Views) in a given starting source folder to a target
+&#x9;rebind folder.   For example, if all of the views in the Formatting Views layer are pointing to a particular 
+&#x9;data source and you want to rebind them to point to a different data source folder then this procedure
+&#x9;will accomplish that task.  This may be useful when redeploying from Dev to Test to Production or
+&#x9;simply rebinding to a different development instance of the database.  Rules:
+&#x9;&#x9;1) If a resource in the folder has both the source and the target sources present, it will
+&#x9;&#x9;&#x9;use rebindResource to do an explicit rebind.
+&#x9;&#x9;2) If a resource in the folder does not have the source present, it will rebind using explicit
+&#x9;&#x9;&#x9;text modification techniques instead of rebindResource.  The following text modification
+&#x9;&#x9;&#x9;techniques are supported for the given resource type:
+&#x9;&#x9;&#x9;&#x9;resourceType = &apos;TABLE&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;SQL_TABLE&apos; -- Regular View not a database table
+&#x9;
+&#x9;&#x9;&#x9;&#x9;resourceType = &apos;PROCEDURE&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;SQL_SCRIPT_PROCEDURE&apos; -- Custom Procedure or Parameterized query
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;EXTERNAL_SQL_PROCEDURE&apos; -- Packaged Query Procedure
+ &#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;BASIC_TRANSFORM_PROCEDURE&apos; -- XSLT Basic Transformation definition
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;XSLT_TRANSFORM_PROCEDURE&apos; -- XSLT Transformation text
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;STREAM_TRANSFORM_PROCEDURE&apos; -- XSLT Stream Transformation text
+&#x9;&#x9;3) if a resource in the folder does not have the target present, that is an error and an exception is raised.
+ 
+&#x9;Input:
+&#x9;&#x9;startingResourceFolder - the folder from which to start from and interrogate all of the resource Views in it.  
+&#x9;&#x9;&#x9;Values: path
+&#x9;&#x9;rebindFromFolder - The source &quot;used&quot; resource folder to rebind from
+&#x9;&#x9;&#x9;Values: path
+&#x9;&#x9;rebindToFolder - The target &quot;used&quot; resource folder to rebind to
+&#x9;&#x9;&#x9;Values: path
+&#x9;Output:
+&#x9;&#x9;success&#x9;- true(1) or false(0)
+&#x9;&#x9;&#x9;Values: 1 or 0
+&#x9;&#x9;faultResponse - null if succesful otherwise contains a fault resposne.
+&#x9;&#x9;&#x9;Values: Fault Resposne XML value
+
+&#x9;Exceptions:  throws exception on error
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;08/02/2010&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;05/06/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;Modified to use rebindFolder.  Modified signature
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.]]&gt;</annotation>
+  <parameters>
+    <parameter name="startingResourceFolder" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="rebindFromFolder" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="rebindToFolder" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="success" direction="OUT" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+    <parameter name="faultResponse" direction="OUT" nullable="true">
+      <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+        <schemaDatatype>
+          <datatype name="XML" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+      <attribute name="Customized" type="STRING">datatype.changed;datatype.changed</attribute>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/Utilities/repository/rebindFolder" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="startingResourceFolder" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="rebindFromFolder" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="rebindToFolder" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* 
+&#x9;rebindAllResources:
+&#x9;-- Data Virtualization Best Practices --
+
+&#x9;This procedure is used to rebind all of the resources (Views) in a given starting source folder to a target
+&#x9;rebind folder.   For example, if all of the views in the Formatting Views layer are pointing to a particular 
+&#x9;data source and you want to rebind them to point to a different data source folder then this procedure
+&#x9;will accomplish that task.  This may be useful when redeploying from Dev to Test to Production or
+&#x9;simply rebinding to a different development instance of the database.  Rules:
+&#x9;&#x9;1) If a resource in the folder has both the source and the target sources present, it will
+&#x9;&#x9;&#x9;use rebindResource to do an explicit rebind.
+&#x9;&#x9;2) If a resource in the folder does not have the source present, it will rebind using explicit
+&#x9;&#x9;&#x9;text modification techniques instead of rebindResource.  The following text modification
+&#x9;&#x9;&#x9;techniques are supported for the given resource type:
+&#x9;&#x9;&#x9;&#x9;resourceType = &apos;TABLE&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;SQL_TABLE&apos; -- Regular View not a database table
+&#x9;
+&#x9;&#x9;&#x9;&#x9;resourceType = &apos;PROCEDURE&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;SQL_SCRIPT_PROCEDURE&apos; -- Custom Procedure or Parameterized query
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;EXTERNAL_SQL_PROCEDURE&apos; -- Packaged Query Procedure
+ &#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;BASIC_TRANSFORM_PROCEDURE&apos; -- XSLT Basic Transformation definition
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;XSLT_TRANSFORM_PROCEDURE&apos; -- XSLT Transformation text
+&#x9;&#x9;&#x9;&#x9;&#x9;subtype = &apos;STREAM_TRANSFORM_PROCEDURE&apos; -- XSLT Stream Transformation text
+&#x9;&#x9;3) if a resource in the folder does not have the target present, that is an error and an exception is raised.
+ 
+&#x9;Input:
+&#x9;&#x9;startingResourceFolder - the folder from which to start from and interrogate all of the resource Views in it.  
+&#x9;&#x9;&#x9;Values: path
+&#x9;&#x9;rebindFromFolder - The source &quot;used&quot; resource folder to rebind from
+&#x9;&#x9;&#x9;Values: path
+&#x9;&#x9;rebindToFolder - The target &quot;used&quot; resource folder to rebind to
+&#x9;&#x9;&#x9;Values: path
+&#x9;Output:
+&#x9;&#x9;success&#x9;- true(1) or false(0)
+&#x9;&#x9;&#x9;Values: 1 or 0
+&#x9;&#x9;faultResponse - null if succesful otherwise contains a fault resposne.
+&#x9;&#x9;&#x9;Values: Fault Resposne XML value
+
+&#x9;Exceptions:  throws exception on error
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;08/02/2010&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;05/06/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.0.0&#x9;&#x9;&#x9;Modified to use rebindFolder.  Modified signature
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE rebindAllResources(
+&#x9;-- The start folder in which to recursively inspect.
+&#x9;--&#x9;&#x9;e.g. /shared/PROJECT/DataAbstraction/Physical/Formatting/MyDataSource
+&#x9;IN startingResourceFolder &#x9;VARCHAR(4000),
+
+&#x9;-- The folder path to rebind from.
+&#x9;--&#x9;&#x9;e.g. /shared/PROJECTPS/DataAbstraction/Physical/Metadata/MyDataSource/MySchema
+&#x9;IN rebindFromFolder&#x9;&#x9;&#x9;VARCHAR(4000),
+
+&#x9;-- The folder path to rebind to.
+&#x9;--&#x9;&#x9;e.g. /shared/PROJECTPS/DataAbstraction/Physical/Metadata/MyDataSource/MySchema2
+&#x9;IN rebindToFolder&#x9;&#x9;&#x9;VARCHAR(4000),
+&#x9;OUT success&#x9;&#x9;&#x9;&#x9;&#x9;BIT,
+&#x9;OUT faultResponse&#x9;&#x9;&#x9;XML
+)
+BEGIN
+&#x9;CALL /shared/ASAssets/Utilities/repository/rebindFolder(startingResourceFolder,rebindFromFolder,rebindToFolder,success,faultResponse);
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564598276798</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="p:4:Customized" type="STRING">datatype.changed;datatype.changed</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

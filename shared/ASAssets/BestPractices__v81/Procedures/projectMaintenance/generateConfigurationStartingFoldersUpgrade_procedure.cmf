@@ -1,0 +1,332 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="generateConfigurationStartingFoldersUpgrade" path="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/generateConfigurationStartingFoldersUpgrade" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="debug" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="sourceProjectPath" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="targetScriptsPath" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="4000"/>
+    </parameter>
+    <parameter name="message" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/resource/ResourceExists" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="path" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="type" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="version" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceVersion" type="STRING" maxLength="255"/>
+      </element>
+      <element name="exists" direction="OUT">
+        <datatype type="BOOLEAN"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/generateConfigureStartingFoldersBody" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="scriptsPath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="procBody" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/generateConfigureStartingFoldersSectionUpgrade" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="debug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="sourceProjectPath" direction="IN">
+        <datatype type="STRING" maxLength="4000"/>
+      </element>
+      <element name="procedureSection" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/getUtilitiesVersion" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="version" direction="OUT">
+        <datatype type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inPath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/createResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceSubType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/createResourceCopy" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="mode" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/updateSqlScript" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="fullResourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="scripttext" direction="INOUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* generateConfigurationStartingFoldersUpgrade:
+
+&#x9;This procedure is used to generate the ConfigureStartingFolders() procedure based on a source project
+&#x9;folder that is being upgraded from best practices version 6.0 through 6.6 to 7.x.
+
+&#x9;Input: 
+&#x9;&#x9;debug - Y=debug, N=do not debug
+&#x9;&#x9;sourceProjectPath - the full path to a source project including the project name
+&#x9;&#x9;targetScriptsPath - the full path to the target scripts path.  eg. e.g. /shared/PROJECT1/_scripts
+
+&#x9;Output:
+&#x9;&#x9;message - a resulting message 
+&#x9;&#x9;(you must click refresh upon completion for Studio to recognize changes to the new project)
+
+&#x9;Exceptions:  ex
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;04/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;03/01/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced /shared/ASAssets/Utilities/repository/resourceExists with /lib/resource/ResourceExists
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE generateConfigurationStartingFoldersUpgrade(
+&#x9;IN debug&#x9;&#x9;&#x9;&#x9;CHAR(1),&#x9;&#x9;-- Y=debug, N=do not debug
+&#x9;IN sourceProjectPath&#x9;VARCHAR(4000), &#x9;-- the full path to a source project including the project name
+&#x9;IN targetScriptsPath&#x9;VARCHAR(4000),&#x9;-- the full path to the target scripts path.
+&#x9;OUT message&#x9;&#x9;&#x9;&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;generateConfigurationStartingFoldersUpgrade&apos;;
+&#x9;DECLARE procBody&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE procSection&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE configurePath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT REPLACE(targetScriptsPath||&apos;/Configure/&apos;,&apos;//&apos;,&apos;/&apos;);
+&#x9;DECLARE constantsPath&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE configureStartingFoldersPath&#x9;VARCHAR(4000);
+&#x9;DECLARE resourceName&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;ConfigureStartingFolders&apos;;
+&#x9;DECLARE resourceExists &#x9;&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE version&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DOUBLE;
+&#x9;DECLARE minVersion&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;DOUBLE DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.minVersion;
+&#x9;DECLARE success&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;BIT; -- true(1) or false(0)
+&#x9;DECLARE faultResponse &#x9;&#x9;&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE createResponse &#x9;&#x9;&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE notEmpty&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE Empty&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+
+&#x9;-- Set default paths
+&#x9;call /shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath(REPLACE(targetScriptsPath||&apos;/Constants&apos;||&apos;/&apos;,&apos;//&apos;,&apos;/&apos;),null,constantsPath);
+&#x9;call /shared/ASAssets/Utilities/repository/RepoUtils/applyReservedListToPath(configurePath||&apos;ConfigureStartingFolders&apos;,null,configureStartingFoldersPath);
+
+&#x9;/***************************************************************
+&#x9; * Make sure the Utilities are up to date
+&#x9; ***************************************************************/
+&#x9;call /shared/ASAssets/Utilities/getUtilitiesVersion(version);
+&#x9;if (version &lt;  minVersion) then
+&#x9;&#x9;raise ex value &apos;Utilities &apos;||minVersion||&apos; or higher is required&apos;;
+&#x9;end if;
+&#x9;
+&#x9;/***************************************************************
+&#x9; * Don&apos;t continue if the project path does not exist
+&#x9; ***************************************************************/
+&#x9;call /lib/resource/ResourceExists(sourceProjectPath, &apos;CONTAINER&apos;, null, resourceExists);
+&#x9;if (NOT resourceExists) then
+&#x9;&#x9;raise ex value &apos;Resource does not exists for path=&apos;||NVL(sourceProjectPath,&apos;null&apos;);
+&#x9;end if;
+
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Initialize the procedure body
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/generateConfigureStartingFoldersBody(targetScriptsPath, procBody);
+
+&#x9;&#x9;-- Generate the procedure section for a data source
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/projectMaintenance/generateConfigureStartingFoldersSectionUpgrade(debug, sourceProjectPath, procSection);
+&#x9;&#x9;set procBody = procBody || NVL(procSection,&apos;null&apos;);
+
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+set procBody = procBody || &apos;
+END&apos;;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;-- Create a copy of the resource with mode=R to rename
+&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createResourceCopy(&apos;R&apos;, configureStartingFoldersPath, &apos;PROCEDURE&apos;, success);
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;createResource=&apos;||configurePath||resourceName);
+&#x9;&#x9;-- Create a new ConfigureStartingFolders
+&#x9;&#x9;call /shared/ASAssets/Utilities/repository/createResource(configurePath, resourceName, &apos;PROCEDURE&apos;,&apos;SQL_SCRIPT_PROCEDURE&apos;,success,createResponse,faultResponse);
+&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, &apos;updateSqlScript=&apos;||configureStartingFoldersPath);
+&#x9;&#x9;-- Update the defaultValue procedure with the new script text
+&#x9;&#x9;call /shared/ASAssets/Utilities/repository/updateSqlScript(configureStartingFoldersPath,procBody,success,createResponse,faultResponse);
+&#x9;&#x9;if (faultResponse is not null) then
+&#x9;&#x9;&#x9;raise ex value cast(faultResponse as longvarchar);
+&#x9;&#x9;end if;
+&#x9;EXCEPTION
+&#x9;&#x9;ELSE raise ex value cast(CURRENT_EXCEPTION.TRACE as longvarchar);
+&#x9;END;
+
+&#x9;set message = &apos;[&apos;||NVL(configurePath||resourceName,&apos;null&apos;)||&apos;] successfully configured.  Click the refresh button in Studio.&apos;;
+&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName, debug, message);
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

@@ -1,0 +1,542 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="performSupportingTableMaintenance" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/performSupportingTableMaintenance" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="datasource" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="performInsert" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="organization" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="projectName" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="subprojectList" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="domainNameList" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="environmentNameList" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="message" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="scriptType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="scriptMapping" direction="OUT">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_01_ORGANIZATION_TYPE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="setInactive" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="performDelete" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="inORGANIZATION_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="message" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_02_DOMAIN_TYPE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="setInactive" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="performDelete" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="inDOMAIN_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="message" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_03_ENVIRONMENT_TYPE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="setInactive" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="performDelete" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="inENVIRONMENT_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="message" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_04_PROJECT_TYPE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="setInactive" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="performDelete" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="inPROJECT_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inORGANIZATION_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="message" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_05_SUBPROJECT_TYPE" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="datasource" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="setInactive" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="performDelete" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="inSUBPROJECT_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inPROJECT_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inORGANIZATION_NAME" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="message" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*&#x9;performSupportingTableMaintenance:
+&#x9;----------------------------------
+
+&#x9;This procedure is used to perform table maintenance on the supporting tables in the database.
+&#x9;&#x9;&#x9;Table Name&#x9;&#x9;&#x9;Require Fields
+&#x9;&#x9;&#x9;------------------&#x9;------------------
+&#x9;&#x9;&#x9;ORGANIZATION_TYPE:&#x9;ORGANIZATION_NAME
+&#x9;&#x9;&#x9;PROJECT_TYPE:&#x9;&#x9;ORGANIZATION_NAME
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PROJECT_NAME
+&#x9;&#x9;&#x9;SUBPROJECT_TYPE:&#x9;SUBPROJECT_NAME
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PROJECT_NAME
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ORGANIZATION_NAME
+&#x9;&#x9;&#x9;DOMAIN_TYPE:&#x9;&#x9;DOMAIN_NAME
+&#x9;&#x9;&#x9;ENVIRONMENT_TYPE:&#x9;ENVIRONMENT_NAME
+&#x9;Rules.
+&#x9;&#x9;1. performInsert:
+&#x9;&#x9;&#x9;&#x9;When performInsert=Y, perform the insert of the new row for the given table.
+&#x9;&#x9;&#x9;&#x9;When performInsert=N, do not perform the insert of the new row for the given table but display what will happen.
+&#x9;&#x9;2. organization
+&#x9;&#x9;&#x9;&#x9;Used for tables ORGANIZATION_TYPE or PROJECT_TYPE
+&#x9;&#x9;&#x9;&#x9;If not null, then test ORGANIZATION_TYPE.ORGANIZATION_NAME for existence.  
+&#x9;&#x9;&#x9;&#x9;If not exist then insert.
+&#x9;&#x9;3. projectName
+&#x9;&#x9;&#x9;&#x9;Used for table PROJECT_TYPE.ORGANIZATION_NAME and PROJECT_TYPE.PROJECT_NAME
+&#x9;&#x9;&#x9;&#x9;If projectName and organization is not null then test PROJECT_TYPE.ORGANIZATION_NAME and PROJECT_TYPE.PROJECT_NAME for existence.
+&#x9;&#x9;&#x9;&#x9;If not exist then insert.
+&#x9;&#x9;4. subprojectList
+&#x9;&#x9;&#x9;&#x9;Used for table SUBPROJECT_TYPE.SUBPROJECT_NAME and SUBPROJECT_TYPE.PROJECT_NAME and SUBPROJECT_TYPE.ORGANIZATION_NAME
+&#x9;&#x9;&#x9;&#x9;This may be a comma separated list of subprojects.
+&#x9;&#x9;&#x9;&#x9;For each subproject and project, if they are not null then test PROJECT_TYPE.SUBPROJECT_NAME and PROJECT_TYPE.PROJECT_NAME and SUBPROJECT_TYPE.ORGANIZATION_NAME for existence.
+&#x9;&#x9;&#x9;&#x9;If not exist then insert.
+&#x9;&#x9;5. domainNameList
+&#x9;&#x9;&#x9;&#x9;Used for tables DOMAIN_TYPE
+&#x9;&#x9;&#x9;&#x9;This may be a comma separated list of domain names.
+&#x9;&#x9;&#x9;&#x9;If not null, then test DOMAIN_TYPE.DOMAIN_NAME for existence.  
+&#x9;&#x9;&#x9;&#x9;If not exist then insert.
+&#x9;&#x9;6. environmentNameList
+&#x9;&#x9;&#x9;&#x9;Used for tables ENVIRONMENT_TYPE
+&#x9;&#x9;&#x9;&#x9;This may be a comma separated list of environent names.
+&#x9;&#x9;&#x9;&#x9;If not null, then test ENVIRONMENT_TYPE.ENVIRONMENT_NAME for existence.  
+&#x9;&#x9;&#x9;&#x9;If not exist then insert.
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CIS Version:&#x9;Reason:
+&#x9;--------------&#x9;------------------&#x9;------------&#x9;-------
+&#x9;03/31/2016&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.2&#x9;&#x9;&#x9;Added new as a way of inserting new privileges into PROD Oracle privilege UI database.
+&#x9;04/11/2016&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.2&#x9;&#x9;&#x9;Added the ability to insert environment type and global variables.
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE performSupportingTableMaintenance(
+&#x9;IN datasource&#x9;&#x9;&#x9;&#x9;VARCHAR(255),-- REQUIRED FILTER: DB_[LLE,PROD], The source of the groups. Refer to getPrivilegeDatasourceToScriptMapping().
+&#x9;IN performInsert&#x9;&#x9;&#x9;CHAR(1),&#x9;-- Y or N.  Y=yes perform insert.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- N=no do not perform insert but display the same messages to see what will be executed.
+&#x9;IN organization&#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9;-- leave null unless you want to insert into ORGANIZATION_TYPE and/or PROJECT_TYPE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- &#x9;&#x9;Examples (1 of): ORG1, ORG2
+&#x9;IN projectName&#x9;&#x9;&#x9;&#x9;VARCHAR,&#x9;-- leave null unless you want to insert into PROJECT_TYPE and/or SUBPROJECT_TYPE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;Examples (1 of): PROJECT1, PROJECT2
+&#x9;IN subprojectList&#x9;&#x9;&#x9;LONGVARCHAR,-- leave null unless you want to insert into SUBPROJECT_TYPE.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;This may be a comma separated list of subprojects.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;Examples (1 of): SB1, SB2, SB3
+&#x9;IN domainNameList&#x9;&#x9;&#x9;LONGVARCHAR,-- leave null unless you want to insert into DOMAIN_TYPE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;This may be a comma separated list of domain names.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- &#x9;&#x9;Examples (1 of): ldap, composite, dynamic
+&#x9;IN environmentNameList&#x9;&#x9;LONGVARCHAR,-- leave null unless you want to insert into ENVIRONMENT_TYPE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;This may be a comma separated list of environment names.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- &#x9;&#x9;Examples (1 of): DEV, UAT, PROD
+&#x9;OUT message&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR
+)
+BEGIN
+&#x9;DECLARE recCount&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE globalVar&#x9;&#x9;&#x9;&#x9;VARCHAR(4096);
+&#x9;DECLARE globalVarElem&#x9;&#x9;&#x9;VARCHAR(4096);
+&#x9;DECLARE environment&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE ownerName&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE ownerDomain&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE subproject&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE domainName&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE environmentName&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE envValid&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE j,k&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE pos1,pos2&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE object&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE moreToDo1,moreToDo2&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE objectList1,objectList2&#x9;LONGVARCHAR;
+&#x9;DECLARE expression1,expression2&#x9;VARCHAR;
+&#x9;DECLARE explen1,explen2&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE messageout&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE sqlStatement&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE scriptPath&#x9;&#x9;&#x9;&#x9;VARCHAR(4000);
+&#x9;DECLARE countCursor&#x9;&#x9;&#x9;&#x9;CURSOR(rowCount INTEGER);
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+
+&#x9;SET message = &apos;&apos;;
+
+&#x9;IF (datasource IS NOT NULL AND datasource = &apos;EXCEL&apos;) THEN
+&#x9;&#x9;raise ex value &apos;The input variable datasource=&quot;EXCEL&quot; is not valid.&apos;;
+&#x9;END IF;
+
+&#x9;-- Perform ORGANIZATION_TYPE maintenance.
+&#x9;IF (organization IS NOT NULL AND LENGTH(organization) &gt; 0) THEN
+&#x9;&#x9;IF (INSTR(organization, &apos;,&apos;) &gt; 0) THEN
+&#x9;&#x9;&#x9;raise ex value &apos;The input variable &quot;organization&quot;=[&apos;||organization||&apos;] may not be a comma separated list.&apos;;
+&#x9;&#x9;END IF;
+
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping(&apos;OT&apos;, datasource, scriptPath);
+&#x9;&#x9;set sqlStatement = 
+&#x9;&#x9;&apos;SELECT COUNT(*) recCount
+&#x9;&#x9;&#x9;FROM &apos;||scriptPath||&apos;
+&#x9;&#x9;&#x9;WHERE ISACTIVE = &apos;&apos;Y&apos;&apos; AND ORGANIZATION_NAME = &apos;&apos;&apos;||organization||&apos;&apos;&apos;&apos;;
+&#x9;&#x9;open countCursor for sqlStatement;
+&#x9;&#x9;fetch countCursor into recCount;
+&#x9;&#x9;close countCursor;
+&#x9;&#x9;-- Perform maintenance on the ORGANIZATION_TYPE table to insert the new ORGANIZATION_NAME
+&#x9;&#x9;IF (recCount = 0) THEN
+&#x9;&#x9;&#x9;IF (performInsert IS NOT NULL and UPPER(performInsert) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_01_ORGANIZATION_TYPE(datasource, null, null, organization, messageout);
+&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;ORGANIZATION_TYPE: &apos;||messageout||&apos;: ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;ORGANIZATION_TYPE: &quot;WILL BE&quot; INSERTED ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;SET message = message || &apos;ORGANIZATION_TYPE: ALREADY EXISTS ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;END IF;
+&#x9;ELSE
+&#x9;&#x9;SET message = message || &apos;ORGANIZATION_TYPE: NO INPUT VALUE PROVIDED FOR organization.&apos;||CHR(10);
+&#x9;END IF;
+
+&#x9;-- Perform PROJECT_TYPE maintenance.
+&#x9;IF (organization IS NOT NULL AND LENGTH(organization) &gt; 0 AND projectName IS NOT NULL AND LENGTH(projectName) &gt; 0) THEN
+&#x9;&#x9;IF (INSTR(projectName, &apos;,&apos;) &gt; 0) THEN
+&#x9;&#x9;&#x9;raise ex value &apos;The input variable &quot;projectName&quot;=[&apos;||projectName||&apos;] may not be a comma separated list.&apos;;
+&#x9;&#x9;END IF;
+
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping(&apos;PT&apos;, datasource, scriptPath);
+&#x9;&#x9;set sqlStatement = 
+&#x9;&#x9;&apos;SELECT COUNT(*) recCount
+&#x9;&#x9;&#x9;FROM &apos;||scriptPath||&apos;
+&#x9;&#x9;&#x9;WHERE ISACTIVE = &apos;&apos;Y&apos;&apos; AND ORGANIZATION_NAME = &apos;&apos;&apos;||organization||&apos;&apos;&apos; AND PROJECT_NAME = &apos;&apos;&apos;||projectName||&apos;&apos;&apos;&apos;;
+&#x9;&#x9;open countCursor for sqlStatement;
+&#x9;&#x9;fetch countCursor into recCount;
+&#x9;&#x9;close countCursor;
+&#x9;&#x9;-- Perform maintenance on the PROJECT_TYPE table to insert the new PROJECT_NAME and ORGANIZATION_NAME
+&#x9;&#x9;IF (recCount = 0) THEN
+&#x9;&#x9;&#x9;IF (performInsert IS NOT NULL and UPPER(performInsert) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_04_PROJECT_TYPE(datasource, null, null, projectName, organization, messageout);
+&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;PROJECT_TYPE: &apos;||messageout||&apos;: PROJECT_NAME=[&apos;||projectName||&apos;]  ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;PROJECT_TYPE: &quot;WILL BE&quot; INSERTED PROJECT_NAME=[&apos;||projectName||&apos;]  ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;SET message = message || &apos;PROJECT_TYPE: ALREADY EXISTS PROJECT_NAME=[&apos;||projectName||&apos;]  ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;END IF;
+&#x9;ELSE
+&#x9;&#x9;SET message = message || &apos;PROJECT_TYPE: NO INPUT VALUE PROVIDED FOR organization and/or projectName.&apos;||CHR(10);
+&#x9;END IF;
+
+&#x9;-- Perform SUBPROJECT_TYPE maintenance.
+&#x9;IF (projectName IS NOT NULL AND LENGTH(projectName) &gt; 0 AND subprojectList IS NOT NULL AND LENGTH(subprojectList) &gt; 0 and organization IS NOT NULL AND LENGTH(organization) &gt; 0) THEN
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = subprojectList;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;priv object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set subproject = object;
+
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping(&apos;ST&apos;, datasource, scriptPath);
+&#x9;&#x9;&#x9;&#x9;set sqlStatement = 
+&#x9;&#x9;&#x9;&#x9;&apos;SELECT COUNT(*) recCount
+&#x9;&#x9;&#x9;&#x9;&#x9;FROM &apos;||scriptPath||&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHERE ISACTIVE = &apos;&apos;Y&apos;&apos; AND PROJECT_NAME = &apos;&apos;&apos;||projectName||&apos;&apos;&apos; AND SUBPROJECT_NAME = &apos;&apos;&apos;||subproject||&apos;&apos;&apos; AND ORGANIZATION_NAME = &apos;&apos;&apos;||organization||&apos;&apos;&apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;open countCursor for sqlStatement;
+&#x9;&#x9;&#x9;&#x9;fetch countCursor into recCount;
+&#x9;&#x9;&#x9;&#x9;close countCursor;
+&#x9;&#x9;&#x9;&#x9;-- Perform maintenance on the SUBPROJECT_TYPE table to insert the new SUBPROJECT_NAME and PROJECT_NAME
+&#x9;&#x9;&#x9;&#x9;IF (recCount = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (performInsert IS NOT NULL and UPPER(performInsert) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_05_SUBPROJECT_TYPE(datasource, null, null, subproject, projectName, organization, messageout);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;SUBPROJECT_TYPE: &apos;||messageout||&apos;: SUBPROJECT_NAME=[&apos;||subproject||&apos;]  PROJECT_NAME=[&apos;||projectName||&apos;] ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;SUBPROJECT_TYPE: &quot;WILL BE&quot; INSERTED  SUBPROJECT_NAME=[&apos;||subproject||&apos;]  PROJECT_NAME=[&apos;||projectName||&apos;] ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;SUBPROJECT_TYPE: ALREADY EXISTS SUBPROJECT_NAME=[&apos;||subproject||&apos;]  PROJECT_NAME=[&apos;||projectName||&apos;] ORGANIZATION_NAME=[&apos;||organization||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+&#x9;ELSE
+&#x9;&#x9;SET message = message || &apos;SUBPROJECT_TYPE: NO INPUT VALUE PROVIDED FOR subproject and/or projectName and/or organization.&apos;||CHR(10);
+&#x9;END IF;
+
+&#x9;-- Perform DOMAIN_TYPE maintenance.
+&#x9;IF (domainNameList IS NOT NULL AND LENGTH(domainNameList) &gt; 0) THEN
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = domainNameList;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;priv object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set domainName = object;
+
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping(&apos;DT&apos;, datasource, scriptPath);
+&#x9;&#x9;&#x9;&#x9;set sqlStatement = 
+&#x9;&#x9;&#x9;&#x9;&apos;SELECT COUNT(*) recCount
+&#x9;&#x9;&#x9;&#x9;&#x9;FROM &apos;||scriptPath||&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHERE ISACTIVE = &apos;&apos;Y&apos;&apos; AND DOMAIN_NAME = &apos;&apos;&apos;||domainName||&apos;&apos;&apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;open countCursor for sqlStatement;
+&#x9;&#x9;&#x9;&#x9;fetch countCursor into recCount;
+&#x9;&#x9;&#x9;&#x9;close countCursor;
+&#x9;&#x9;&#x9;&#x9;-- Perform maintenance on the DOMAIN_TYPE table to insert the new DOMAIN_NAME
+&#x9;&#x9;&#x9;&#x9;IF (recCount = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (performInsert IS NOT NULL and UPPER(performInsert) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_02_DOMAIN_TYPE(datasource, null, null, domainName, messageout);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;DOMAIN_TYPE: &apos;||messageout||&apos;: DOMAIN_NAME=[&apos;||domainName||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;DOMAIN_TYPE: &quot;WILL BE&quot; INSERTED DOMAIN_NAME=[&apos;||domainName||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;DOMAIN_TYPE: ALREADY EXISTS DOMAIN_NAME=[&apos;||domainName||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;DOMAIN_TYPE: NO INPUT VALUE PROVIDED FOR domainName.&apos;||CHR(10);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+&#x9;ELSE
+&#x9;&#x9;SET message = message || &apos;DOMAIN_TYPE: NO INPUT VALUE PROVIDED FOR domainNameList.&apos;||CHR(10);
+&#x9;END IF;
+
+&#x9;-- Perform ENVIRONMENT_TYPE maintenance.
+&#x9;IF (environmentNameList IS NOT NULL AND LENGTH(environmentNameList) &gt; 0) THEN
+&#x9;&#x9;-- Extract the object from the object list
+&#x9;&#x9;SET objectList1 = environmentNameList;
+&#x9;&#x9;SET expression1 = &apos;,&apos;;
+&#x9;&#x9;SET explen1 = length(expression1);
+&#x9;&#x9;SET moreToDo1 = true;
+&#x9;&#x9;SET j = 0;
+&#x9;&#x9;WHILE (moreToDo1) DO
+&#x9;&#x9;&#x9;-- Extract the source column type
+&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;SET object = null;
+&#x9;&#x9;&#x9;IF (j = 1) THEN
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, 1, pos1-1);
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (LENGTH(TRIM(objectList1)) &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET object = objectList1;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET pos1 = INSTR(objectList1, expression1, 1, j-1);
+&#x9;&#x9;&#x9;&#x9;SET pos2 = INSTR(objectList1, expression1, 1, j);
+&#x9;&#x9;&#x9;&#x9;IF (pos1 &gt; 0 and pos2 &gt; 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1, pos2-pos1-explen1);
+&#x9;&#x9;&#x9;&#x9;ELSEIF (pos1 &gt; 0 and pos2 = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;SET object = SUBSTRING(objectList1, pos1+explen1);
+&#x9;&#x9;&#x9;&#x9;&#x9;SET moreToDo1 = false;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;SET object = TRIM(object);
+&#x9;&#x9;&#x9;--CALL print(&apos;priv object=[&apos;||TRIM(NVL(object,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;&#x9;IF (object IS NOT NULL and LENGTH(TRIM(object)) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;set environmentName = object;
+
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping(&apos;ET&apos;, datasource, scriptPath);
+&#x9;&#x9;&#x9;&#x9;set sqlStatement = 
+&#x9;&#x9;&#x9;&#x9;&apos;SELECT COUNT(*) recCount
+&#x9;&#x9;&#x9;&#x9;&#x9;FROM &apos;||scriptPath||&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHERE ISACTIVE = &apos;&apos;Y&apos;&apos; AND ENVIRONMENT_NAME = &apos;&apos;&apos;||environmentName||&apos;&apos;&apos;&apos;;
+&#x9;&#x9;&#x9;&#x9;open countCursor for sqlStatement;
+&#x9;&#x9;&#x9;&#x9;fetch countCursor into recCount;
+&#x9;&#x9;&#x9;&#x9;close countCursor;
+&#x9;&#x9;&#x9;&#x9;-- Perform maintenance on the ENVIRONMENT_TYPE table to insert the new ENVIRONMENT_NAME
+&#x9;&#x9;&#x9;&#x9;IF (recCount = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (performInsert IS NOT NULL and UPPER(performInsert) = &apos;Y&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/PrivilegeScripts/ModifyDBPrivileges/TableMaintenance/modify_03_ENVIRONMENT_TYPE(datasource, null, null, environmentName, messageout);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;ENVIRONMENT_TYPE: &apos;||messageout||&apos;: ENVIRONMENT_NAME=[&apos;||environmentName||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;ENVIRONMENT_TYPE: &quot;WILL BE&quot; INSERTED ENVIRONMENT_NAME=[&apos;||environmentName||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;ENVIRONMENT_TYPE: ALREADY EXISTS ENVIRONMENT_NAME=[&apos;||environmentName||&apos;]&apos;||CHR(10);
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;SET message = message || &apos;ENVIRONMENT_TYPE: NO INPUT VALUE PROVIDED FOR environmentName.&apos;||CHR(10);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END WHILE;
+&#x9;ELSE
+&#x9;&#x9;SET message = message || &apos;ENVIRONMENT_TYPE: NO INPUT VALUE PROVIDED FOR environmentNameList.&apos;||CHR(10);
+&#x9;END IF;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1459434861068</attribute>
+  <attribute name="creatorUserDomain" type="STRING">ldap_im</attribute>
+  <attribute name="creatorUserId" type="INTEGER">4306</attribute>
+  <attribute name="creatorUserName" type="STRING">zkxl6un</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1560603906783</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">4306</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1459434861068</attribute>
+</metadata>

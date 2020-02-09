@@ -1,0 +1,197 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="test_extractTextList" path="/shared/ASAssets/Utilities/examples/string/test_extractTextList" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <parameters>
+    <parameter name="selection" direction="IN" nullable="true">
+      <datatype name="SMALLINT" type="INTEGER" minValue="-32768" maxValue="32767"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="result" type="TABLE" refId="256">
+        <element name="object">
+          <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+        </element>
+      </datatype>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getScriptText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inSubType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="scriptText" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/extractTextList" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="separator" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="preserveDoubleQuotes" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="preserveSingleQuotes" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="preserveParenthesis" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="preserveQualifier" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="trimResults" direction="IN">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="textExpression">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">PROCEDURE test_extractTextList(
+&#x9;IN&#x9;selection&#x9;SMALLINT,
+&#x9;OUT result&#x9;&#x9;PIPE (object LONGVARCHAR)
+)
+BEGIN
+&#x9;DECLARE  inputString&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE  delimiter&#x9;&#x9;&#x9;&#x9;VARCHAR;&#x9;&#x9;&#x9;-- 1 or more characters such as single characters:, | / or double characters such as ||
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--&#x9;&#x9;or any repeatable combination.
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 0;
+&#x9;DECLARE preserveDoubleQuotes&#x9;BIT DEFAULT 0;
+&#x9;DECLARE preserveSingleQuotes&#x9;BIT DEFAULT 0;
+&#x9;DECLARE preserveParenthesis&#x9;&#x9;BIT DEFAULT 0;
+&#x9;DECLARE preserveQualifier&#x9;&#x9;BIT DEFAULT 0;
+&#x9;DECLARE trimResults&#x9;&#x9;&#x9;&#x9;BIT DEFAULT 0;
+&#x9;DECLARE starttime&#x9;&#x9;&#x9;&#x9;TIMESTAMP;
+
+&#x9;CASE selection
+&#x9;&#x9;WHEN 1 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;::/zzzz::END::all::GROUP::composite::NONE::::::0::0::0::OVERWRITE_APPEND::&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;::&apos;;
+&#x9;&#x9;&#x9;
+&#x9;&#x9;WHEN 2 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;,/zzzz,END,all,GROUP,composite,NONE,,,0,0,0,OVERWRITE_APPEND&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;,&apos;;
+
+&#x9;&#x9;WHEN 3 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;|/zzzz|END|all|GROUP|composite|NONE|||0|0|0|OVERWRITE_APPEND|&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;|&apos;;
+&#x9;&#x9;WHEN 4 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;/shared/ASAssets/Utilities/repository/lowerLevelProcedures/getChildResourcesXML&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;/&apos;;
+&#x9;&#x9;WHEN 5 THEN
+&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/getScriptText(&apos;/shared/ASAssets/Utilities/string/extractTextList&apos;, &apos;PROCEDURE&apos;, null, inputString);
+&#x9;&#x9;&#x9;SET delimiter = CHR(10);
+&#x9;&#x9;WHEN 6 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;/shared/ASAssets/Utilities/&quot;repository&quot;/&quot;lowerLevelProcedures&quot;/&quot;getChildResourcesXML&quot;&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;/&apos;;
+&#x9;&#x9;&#x9;SET preserveDoubleQuotes = 1;
+&#x9;&#x9;&#x9;SET preserveQualifier = 1;
+&#x9;&#x9;WHEN 7 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;&apos;&apos;orders,customers&apos;&apos;,orders,customers&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;,&apos;;
+&#x9;&#x9;&#x9;SET preserveSingleQuotes = 1;
+&#x9;&#x9;&#x9;SET preserveQualifier = 1;
+&#x9;&#x9;&#x9;SET trimResults = 0;
+&#x9;&#x9;WHEN 8 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;(orders,customers),    orders,      (customers)&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;,&apos;;
+&#x9;&#x9;&#x9;SET preserveParenthesis = 1;
+&#x9;&#x9;&#x9;SET preserveQualifier = 1;
+&#x9;&#x9;&#x9;SET trimResults = 1;
+&#x9;&#x9;WHEN 9 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;&#x9;&#x9;&#x9;&#x9;Customers.*, 
+&#x9;&#x9;&#x9;&#x9;Orders.Ship_City,
+&#x9;&#x9;&#x9;&#x9;LOWER(ship_State) as shipState,
+&#x9;&#x9;&#x9;&#x9;SUBSTRING(ship_State,1,1) as stateChar1,
+&#x9;&#x9;&#x9;&#x9;RPAD(&apos;&apos; &apos;&apos;,ship_State ,4)||&apos;&apos;, &apos;&apos;||zip as shipStateZip,
+&#x9;&#x9;&#x9;&#x9;extract(year from INTERVAL &apos;&apos;499-11&apos;&apos; YEAR(3) TO MONTH) mon,
+&#x9;&#x9;&#x9;&#x9;Orders.Ship_City||&apos;&apos;&apos;&apos;, &apos;&apos;&apos;&apos;||RPAD(ship_State,&apos;&apos; &apos;&apos;,10)||&apos;&apos;&apos;&apos;, &apos;&apos;&apos;&apos;||Zip &quot;textWithEmbedded,Commas,&quot;&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos;,&apos;;
+&#x9;&#x9;&#x9;SET preserveDoubleQuotes = 1;
+&#x9;&#x9;&#x9;SET preserveSingleQuotes = 1;
+&#x9;&#x9;&#x9;SET preserveParenthesis = 1;
+&#x9;&#x9;&#x9;SET preserveQualifier = 1;
+&#x9;&#x9;&#x9;SET trimResults = 1;
+&#x9;&#x9;WHEN 10 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;this text is separated by spaces which is the delimiter.&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos; &apos;;
+&#x9;&#x9;&#x9;SET trimResults = 1;
+&#x9;&#x9;WHEN 11 THEN
+&#x9;&#x9;&#x9;SET inputString = &apos;&quot;this text&quot; (is separated) &apos;&apos;by spaces&apos;&apos; which is the delimiter.  It is being tested &quot;with preservation&quot; &apos;&apos;characters as input&apos;&apos;.&apos;;
+&#x9;&#x9;&#x9;SET delimiter = &apos; &apos;;
+&#x9;&#x9;&#x9;SET preserveDoubleQuotes = 1;
+&#x9;&#x9;&#x9;SET preserveSingleQuotes = 1;
+&#x9;&#x9;&#x9;SET preserveParenthesis = 1;
+&#x9;&#x9;&#x9;SET preserveQualifier = 1;
+&#x9;&#x9;&#x9;SET trimResults = 1;
+
+&#x9;&#x9;ELSE
+&#x9;END CASE;
+
+&#x9;SET starttime = CURRENT_TIMESTAMP;
+&#x9;for r as 
+&#x9;&#x9;select * from /shared/ASAssets/Utilities/string/extractTextList(inputString, delimiter, preserveDoubleQuotes, preserveSingleQuotes, preserveParenthesis, preserveQualifier, trimResults)
+&#x9;do
+&#x9;&#x9;set i = i + 1;
+&#x9;&#x9;insert into result values (r);
+&#x9;end for;
+&#x9;call print(&apos;Num Records=&apos;||i);
+&#x9;call print(&apos;Duration=[&apos;||CAST(CURRENT_TIMESTAMP - starttime AS VARCHAR)||&apos;]&apos;);
+
+END</attribute>
+  <attribute name="creationDate" type="LONG">1520028977202</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564179935355</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">7/89</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/90</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1520028977202</attribute>
+</metadata>

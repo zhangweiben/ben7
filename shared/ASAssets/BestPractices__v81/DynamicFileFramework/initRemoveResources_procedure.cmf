@@ -1,0 +1,939 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="initRemoveResources" path="/shared/ASAssets/BestPractices_v81/DynamicFileFramework/initRemoveResources" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[initRemoveResources:
+
+    Use this script to dynamically remove resources corresponding to the paths passed in.
+ 
+&#x9;Input:
+&#x9;&#x9;publishDbPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully Qualified path to the Dynamic database schema in the publish area.
+&#x9;&#x9;&#x9;e.g. /services/databases/published_data_source/catalog/Dynamic
+&#x9;&#x9;publishWsPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully Qualified path to the Dynamic Web Services in the publish area.
+&#x9;&#x9;&#x9;e.g. /services/webservices/published_data_source_folder/catalog_folder/Dynamic
+&#x9;&#x9;servicesPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully qualified path to the Dynamic application services folder where the procedure will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Application/Services/Dynamic
+&#x9;&#x9;applicationPath:&#x9;&#x9;&#x9;Optional - Fully qualified path to the Dynamic application views folder where the views will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Application/Views/Dynamic
+&#x9;&#x9;businessPath:&#x9;&#x9;&#x9;&#x9;Optional - Fully qualified path to the Dynamic business logical views folder where the views will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Business/Logical/Dynamic
+&#x9;&#x9;formattingPath:&#x9;&#x9;&#x9;&#x9;Optional - Fully qualified path to the Dynamic physical formatting views folder where the views will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Physical/Formatting/Dynamic
+&#x9;&#x9;metadataPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully qualified path to the Dynamic physical metadata data source folder where the file tables will be introspeted.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Physical/Metadata/Dynamic
+
+&#x9;Output:
+&#x9;&#x9;status: SUCCESS or an exception is thrown
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;02/12/2016&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.2&#x9;&#x9;&#x9;Created new
+&#x9;02/20/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Assets Data Abstraction Best Practices
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.]]&gt;</annotation>
+  <parameters>
+    <parameter name="publishDbPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="publishWsPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="servicesPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="applicationPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="businessPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="formattingPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="metadataPath" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="result" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/lib/resource/ResourceExists" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="path" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="type" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="version" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceVersion" type="STRING" maxLength="255"/>
+      </element>
+      <element name="exists" direction="OUT">
+        <datatype type="BOOLEAN"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/generate/destroyDependentLineage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="destroyInitialResource" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="destroyEmptyParentFolder" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="fullResourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inDebug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="actionType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="id">
+            <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+          </element>
+          <element name="enabled">
+            <datatype type="INTEGER" minValue="0" maxValue="1"/>
+          </element>
+          <element name="resourceName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resourcePath">
+            <datatype type="STRING" maxLength="4096"/>
+          </element>
+          <element name="resourceType">
+            <datatype type="STRING" maxLength="40"/>
+          </element>
+          <element name="subtype">
+            <datatype type="STRING" maxLength="40"/>
+          </element>
+          <element name="ownerDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="ownerName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactLevel">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="impactMessage">
+            <datatype type="STRING" maxLength="32768"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/destroyResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+      </element>
+      <element name="resourceName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/getResourceListRecursive" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourcePath" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype referenceDefinitionSet="/lib/resource/ResourceDefs" referenceType="ResourceType" type="STRING" maxLength="40"/>
+      </element>
+      <element name="resourceTreeList" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="name">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="resPath">
+            <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="pathType" type="STRING" maxLength="4000"/>
+          </element>
+          <element name="resType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="subType">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="creationDate">
+            <datatype type="DATETIME"/>
+          </element>
+          <element name="creationDateBigint">
+            <datatype type="INTEGER"/>
+          </element>
+          <element name="creatorUserDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="creatorUserName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="lastModifiedDate">
+            <datatype type="DATETIME"/>
+          </element>
+          <element name="lastModifiedDateBigint">
+            <datatype type="INTEGER"/>
+          </element>
+          <element name="lastModifiedUserDomain">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+          <element name="lastModifiedUserName">
+            <datatype type="STRING" maxLength="255"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* initRemoveResources:
+
+    Use this script to dynamically remove resources corresponding to the paths passed in.
+ 
+&#x9;Input:
+&#x9;&#x9;publishDbPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully Qualified path to the Dynamic database schema in the publish area.
+&#x9;&#x9;&#x9;e.g. /services/databases/published_data_source/catalog/Dynamic
+&#x9;&#x9;publishWsPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully Qualified path to the Dynamic Web Services in the publish area.
+&#x9;&#x9;&#x9;e.g. /services/webservices/published_data_source_folder/catalog_folder/Dynamic
+&#x9;&#x9;servicesPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully qualified path to the Dynamic application services folder where the procedure will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Application/Services/Dynamic
+&#x9;&#x9;applicationPath:&#x9;&#x9;&#x9;Optional - Fully qualified path to the Dynamic application views folder where the views will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Application/Views/Dynamic
+&#x9;&#x9;businessPath:&#x9;&#x9;&#x9;&#x9;Optional - Fully qualified path to the Dynamic business logical views folder where the views will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Business/Logical/Dynamic
+&#x9;&#x9;formattingPath:&#x9;&#x9;&#x9;&#x9;Optional - Fully qualified path to the Dynamic physical formatting views folder where the views will be generated.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Physical/Formatting/Dynamic
+&#x9;&#x9;metadataPath:&#x9;&#x9;&#x9;&#x9;Mandatory - Fully qualified path to the Dynamic physical metadata data source folder where the file tables will be introspeted.
+&#x9;&#x9;&#x9;e.g. /shared/ex_project/Physical/Metadata/Dynamic
+
+&#x9;Output:
+&#x9;&#x9;status: SUCCESS or an exception is thrown
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;02/12/2016&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.2&#x9;&#x9;&#x9;Created new
+&#x9;02/20/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Assets Data Abstraction Best Practices
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE initRemoveResources(
+&#x9;IN&#x9;publishDbPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN&#x9;publishWsPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  servicesPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  applicationPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  businessPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  formattingPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  metadataPath&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;OUT&#x9;result&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;initRemoveResources&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;N&apos;;
+&#x9;DECLARE scriptPublishedDBPath&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT publishDbPath;
+&#x9;DECLARE scriptPublishedWSPath&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT publishWsPath;
+&#x9;DECLARE scriptApplicationServicesPath&#x9;LONGVARCHAR DEFAULT servicesPath;
+&#x9;DECLARE scriptApplicationPath&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT applicationPath;
+&#x9;DECLARE scriptBusinessPath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT businessPath;
+&#x9;DECLARE scriptFormattingPath&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT formattingPath;
+&#x9;DECLARE scriptMetadataPath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR DEFAULT metadataPath;
+&#x9;DECLARE dsCSVName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;DynamicTempFiles_CSV&apos;;
+&#x9;DECLARE dsExcelName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;DynamicTempFiles_Excel&apos;;
+&#x9;DECLARE resPath&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE resType&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;DECLARE Resource_Exists&#x9;&#x9;&#x9;&#x9;&#x9;BOOLEAN;
+&#x9;DECLARE i&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE success&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;BIT;
+&#x9;DECLARE createResponse &#x9;&#x9;&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE faultResponse&#x9;&#x9;&#x9;&#x9;&#x9;XML;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+
+&#x9;SET result = &apos;SUCCESS&apos;;
+
+&#x9;-- Validate mandatory input variables.
+&#x9;IF (publishDbPath IS NULL OR LENGTH(TRIM(publishDbPath)) = 0) THEN
+&#x9;&#x9;RAISE ex VALUE &apos;The input variable &quot;publishDbPath&quot; may not be null or empty.&apos;;
+&#x9;END IF;
+&#x9;IF (publishWsPath IS NULL OR LENGTH(TRIM(publishWsPath)) = 0) THEN
+&#x9;&#x9;RAISE ex VALUE &apos;The input variable &quot;publishWsPath&quot; may not be null or empty.&apos;;
+&#x9;END IF;
+&#x9;IF (servicesPath IS NULL OR LENGTH(TRIM(servicesPath)) = 0) THEN
+&#x9;&#x9;RAISE ex VALUE &apos;The input variable &quot;servicesPath&quot; may not be null or empty.&apos;;
+&#x9;END IF;
+&#x9;IF (metadataPath IS NULL OR LENGTH(TRIM(metadataPath)) = 0) THEN
+&#x9;&#x9;RAISE ex VALUE &apos;The input variable &quot;metadataPath&quot; may not be null or empty.&apos;;
+&#x9;END IF;
+
+&#x9;CALL PRINT(moduleName||&apos; : INPUT: &apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     publishDbPath=[&apos;||NVL(publishDbPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     publishWsPath=[&apos;||NVL(publishWsPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     servicesPath=[&apos;||NVL(servicesPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     applicationPath=[&apos;||NVL(applicationPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     businessPath=[&apos;||NVL(businessPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     formattingPath=[&apos;||NVL(formattingPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     metadataPath=[&apos;||NVL(metadataPath,&apos;null&apos;)||&apos;]&apos;);
+
+&#x9;-- Construct valid paths
+&#x9;IF (scriptPublishedDBPath IS NOT NULL AND INSTR(LOWER(scriptPublishedDBPath)||&apos;|&apos;, &apos;/dynamic|&apos;) = 0) THEN
+&#x9;&#x9;SET scriptPublishedDBPath = scriptPublishedDBPath || &apos;/Dynamic&apos;;
+&#x9;END IF;
+&#x9;IF (scriptPublishedWSPath IS NOT NULL AND INSTR(LOWER(scriptPublishedWSPath)||&apos;|&apos;, &apos;/dynamic|&apos;) = 0) THEN
+&#x9;&#x9;SET scriptPublishedWSPath = scriptPublishedWSPath || &apos;/Dynamic&apos;;
+&#x9;END IF;
+&#x9;IF (scriptApplicationServicesPath IS NOT NULL AND INSTR(LOWER(scriptApplicationServicesPath)||&apos;|&apos;, &apos;/dynamic|&apos;) = 0) THEN
+&#x9;&#x9;SET scriptApplicationServicesPath = scriptApplicationServicesPath || &apos;/Dynamic&apos;;
+&#x9;END IF;
+&#x9;IF (scriptApplicationPath IS NOT NULL AND INSTR(LOWER(scriptApplicationPath)||&apos;|&apos;, &apos;/dynamic|&apos;) = 0) THEN
+&#x9;&#x9;SET scriptApplicationPath = scriptApplicationPath || &apos;/Dynamic&apos;;
+&#x9;END IF;
+&#x9;IF (scriptBusinessPath IS NOT NULL AND INSTR(LOWER(scriptBusinessPath)||&apos;|&apos;, &apos;/dynamic|&apos;) = 0) THEN
+&#x9;&#x9;SET scriptBusinessPath = scriptBusinessPath || &apos;/Dynamic&apos;;
+&#x9;END IF;
+&#x9;IF (scriptFormattingPath IS NOT NULL AND INSTR(LOWER(scriptFormattingPath)||&apos;|&apos;, &apos;/dynamic|&apos;) = 0) THEN
+&#x9;&#x9;SET scriptFormattingPath = scriptFormattingPath || &apos;/Dynamic&apos;;
+&#x9;END IF;
+&#x9;IF (scriptMetadataPath IS NOT NULL AND INSTR(LOWER(scriptMetadataPath)||&apos;|&apos;, &apos;/dynamic|&apos;) = 0) THEN
+&#x9;&#x9;SET scriptMetadataPath = scriptMetadataPath || &apos;/Dynamic&apos;;
+&#x9;END IF;
+
+&#x9;CALL PRINT(moduleName||&apos; : MODIFIED: &apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     scriptPublishedDBPath=[&apos;||NVL(scriptPublishedDBPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     scriptPublishedWSPath=[&apos;||NVL(scriptPublishedWSPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     scriptApplicationServicesPath=[&apos;||NVL(scriptApplicationServicesPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     scriptApplicationPath=[&apos;||NVL(scriptApplicationPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     scriptBusinessPath=[&apos;||NVL(scriptBusinessPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     scriptFormattingPath=[&apos;||NVL(scriptFormattingPath,&apos;null&apos;)||&apos;]&apos;);
+&#x9;CALL PRINT(moduleName||&apos; :     scriptMetadataPath=[&apos;||NVL(scriptMetadataPath,&apos;null&apos;)||&apos;]&apos;);
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;/**************************************
+&#x9; * Remove from Published DB Path
+&#x9; **************************************/
+&#x9;-- Remove the published dynamicFileCleanup PROCEDURE
+&#x9;SET resPath = publishDbPath||&apos;/dynamicFileCleanup&apos;;
+&#x9;SET resType = &apos;LINK&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the published dynamicFileList PROCEDURE
+&#x9;SET resPath = publishDbPath||&apos;/dynamicFileList&apos;;
+&#x9;SET resType = &apos;LINK&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the published dynamicFileCreate PROCEDURE
+&#x9;SET resPath = publishDbPath||&apos;/dynamicFileCreate&apos;;
+&#x9;SET resType = &apos;LINK&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the published dynamicFileRebuild PROCEDURE
+&#x9;SET resPath = publishDbPath||&apos;/dynamicFileRebuild&apos;;
+&#x9;SET resType = &apos;LINK&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the published dynamicFileRemove PROCEDURE
+&#x9;SET resPath = publishDbPath||&apos;/dynamicFileRemove&apos;;
+&#x9;SET resType = &apos;LINK&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+
+&#x9;/**************************************
+&#x9; * Remove from Shared Subject Area Path
+&#x9; **************************************/
+&#x9;-- Remove the DynamicFileFrameworkAutoPublishTrigger TRIGGER
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/DynamicFileFrameworkAutoPublishTrigger&apos;;
+&#x9;SET resType = &apos;TRIGGER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the DynamicFileFrameworkCleanupTrigger TRIGGER
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/DynamicFileFrameworkCleanupTrigger&apos;;
+&#x9;SET resType = &apos;TRIGGER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the dynamicFileAutoPublish PROCEDURE
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/dynamicFileAutoPublish&apos;;
+&#x9;SET resType = &apos;PROCEDURE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the dynamicFileCleanup PROCEDURE
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/dynamicFileCleanup&apos;;
+&#x9;SET resType = &apos;PROCEDURE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the constants PROCEDURE
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/constants&apos;;
+&#x9;SET resType = &apos;PROCEDURE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the dynamicFileList PROCEDURE
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/dynamicFileList&apos;;
+&#x9;SET resType = &apos;PROCEDURE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the dynamicFileCreate PROCEDURE
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/dynamicFileCreate&apos;;
+&#x9;SET resType = &apos;PROCEDURE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the dynamicFileRebuild PROCEDURE
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/dynamicFileRebuild&apos;;
+&#x9;SET resType = &apos;PROCEDURE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+&#x9;-- Remove the dynamicFileRemove PROCEDURE
+&#x9;SET resPath = scriptApplicationServicesPath||&apos;/dynamicFileRemove&apos;;
+&#x9;SET resType = &apos;PROCEDURE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+&#x9;&#x9;SET resPath = scriptApplicationServicesPath;
+&#x9;&#x9;SET resType = &apos;CONTAINER&apos;;
+&#x9;&#x9;SET i = 0;
+&#x9;&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;&#x9;FOR r AS SELECT * FROM /shared/ASAssets/Utilities/repository/getResourceListRecursive(resPath, resType) DO
+&#x9;&#x9;&#x9;&#x9;SET i = i + 1;
+&#x9;&#x9;&#x9;END FOR;
+&#x9;&#x9;&#x9;-- If there are no resources then destroy the /Dynamic folder.
+&#x9;&#x9;&#x9;IF (i = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;END IF;
+&#x9;END;
+
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;SET resPath = scriptMetadataPath||&apos;/&apos;||dsCSVName;
+&#x9;SET resType = &apos;DATA_SOURCE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;-- Remove all resources within CSV datasource lineage
+&#x9;&#x9;FOR d AS SELECT * FROM /shared/ASAssets/Utilities/generate/destroyDependentLineage(1, 1, resPath, debug) DO
+&#x9;&#x9;&#x9;CALL PRINT(moduleName||&apos; : CSV &quot;&apos;||dsCSVName||&apos;&quot;: REMOVED PATH=[&apos;||TRIM(NVL(d.resourcePath,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;END FOR;
+&#x9;END IF;
+
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;SET resPath = scriptMetadataPath||&apos;/&apos;||dsExcelName;
+&#x9;SET resType = &apos;DATA_SOURCE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;-- Remove all resources within Excel datasource lineage
+&#x9;&#x9;FOR d AS SELECT * FROM /shared/ASAssets/Utilities/generate/destroyDependentLineage(1, 1, resPath, debug) DO
+&#x9;&#x9;&#x9;CALL PRINT(moduleName||&apos; : EXCEL &quot;&apos;||dsExcelName||&apos;&quot;: REMOVED PATH=[&apos;||TRIM(NVL(d.resourcePath,&apos;  &apos;))||&apos;]&apos;);
+&#x9;&#x9;END FOR;
+&#x9;END IF;
+
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;-- Remove the published web service CONTAINER
+&#x9;SET resPath = publishWsPath||&apos;/Utilities&apos;;
+&#x9;SET resType = &apos;DATA_SOURCE&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;-- Remove the Application Views layer CONTAINER
+&#x9;SET resPath = scriptApplicationPath;
+&#x9;SET resType = &apos;CONTAINER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;-- Remove the Business Logical layer CONTAINER
+&#x9;SET resPath = scriptBusinessPath;
+&#x9;SET resType = &apos;CONTAINER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;-- Remove the Physical Formatting layer CONTAINER
+&#x9;SET resPath = scriptFormattingPath;
+&#x9;SET resType = &apos;CONTAINER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;-- Remove the Dynamic Datasource path folder containing the two datasources: DynamicTempFiles_CSV and DynamicTempFiles_Excel
+&#x9;SET resPath = scriptMetadataPath;
+&#x9;SET resType = &apos;CONTAINER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;END;
+
+&#x9;BEGIN INDEPENDENT TRANSACTION
+
+&#x9;-- Remove the published schema CONTAINER
+&#x9;SET resPath = publishDbPath;
+&#x9;SET resType = &apos;CONTAINER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;-- Remove the published web service CONTAINER
+&#x9;SET resPath = publishWsPath;
+&#x9;SET resType = &apos;CONTAINER&apos;;
+&#x9;CALL /lib/resource/ResourceExists(resPath, resType, null, Resource_Exists);
+&#x9;IF (Resource_Exists) THEN
+&#x9;&#x9;CALL /shared/ASAssets/Utilities/repository/destroyResource(resPath, null, resType, success, createResponse, faultResponse);
+&#x9;&#x9;CALL PRINT(moduleName||&apos; : REMOVED: &apos;||resPath);
+&#x9;END IF;
+
+&#x9;END;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1455284081799</attribute>
+  <attribute name="creatorUserDomain" type="STRING">ldap_im</attribute>
+  <attribute name="creatorUserId" type="INTEGER">1505</attribute>
+  <attribute name="creatorUserName" type="STRING">zkxl6un</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564179935355</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">1505</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">7/126</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/125</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/128</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/127</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">9/297</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/124</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/123</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/329</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/228</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">10/269</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/175</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/252</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/159</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/236</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/212</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/311</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/196</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/151</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/92</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/91</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/94</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/338</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/93</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/130</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/96</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/95</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/98</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">9/283</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/97</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/167</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/244</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/188</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/320</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/143</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/220</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/204</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/347</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/369</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/129</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">8/360</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1455284081799</attribute>
+</metadata>

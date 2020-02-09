@@ -1,0 +1,848 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="parseColumnExpression" path="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseColumnExpression" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="inColumnExpression" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inFunctionList" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inColumnList" direction="IN" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="inRecurseDepth" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="functionList" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="columnList" direction="OUT" nullable="true">
+      <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+    </parameter>
+    <parameter name="recurseDepth" direction="OUT" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/encodedValues" type="DEFINITION_SET">
+    <datatype name="Tree" type="TREE" refId="257"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedString" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inCodingType" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="inEncodingActions" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="codingList" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inModuleNameInvoking" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="inDebug" direction="IN">
+        <datatype type="STRING" minLength="1" maxLength="1"/>
+      </element>
+      <element name="inStringName" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="outString" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/isReservedColumnList" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="columnList" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseArithmeticOperators" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="columnList" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseCase" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnExpression" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="function" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="columnList" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseColumnExpression" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnExpression" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inFunctionList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inColumnList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="inRecurseDepth" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="functionList" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="columnList" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="recurseDepth" direction="OUT">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseConcat" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnExpression" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="concatVect" direction="OUT">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+          </itemDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseFunction" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnExpression" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="function" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="columnList" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseInterval" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnExpression" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="outColumnExpression" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/removeColumnListDuplicates" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inColumnList" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="columnList" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/log/logDebugMessage" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="moduleName" direction="IN">
+        <datatype referenceDefinitionSet="/shared/ASAssets/Utilities/TypeDefinitions" referenceType="moduleNameType" type="STRING" maxLength="4096"/>
+      </element>
+      <element name="debug" direction="IN">
+        <datatype type="STRING" maxLength="1"/>
+      </element>
+      <element name="messageText" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/TextUtils/RegexReplace" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="Input Text" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Regular Expression" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Replacement Text" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="Occurrence" direction="IN">
+        <datatype type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/string/extractDelimitedText" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="inputString" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="delimiter" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="occurrence" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseInputText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="reverseOutput" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="trimText" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="includeDelimiter" direction="IN">
+        <datatype type="INTEGER" minValue="-32768" maxValue="32767"/>
+      </element>
+      <element name="result" direction="OUT">
+        <datatype type="TABLE" refId="256">
+          <element name="object">
+            <datatype type="STRING" maxLength="2147483647"/>
+          </element>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/*
+&#x9;parseColumnExpression - parse the column expression and extract the function list and column list
+&#x9;&#x9;Assume no alias on the end of the expression as it has already been extracted from the text to simplify
+&#x9;&#x9;the extraction algorithm.
+
+&#x9;Exceptions:  none
+
+* Not Supported
+&#x9;1. &#x9;XML Functions
+
+* Supported column expressions:
+&#x9;1. Simple column expression (expr) - table.column or column [i.e. table.col]
+&#x9;&#x9;a. select column &#x9;&#x9;&#x9;&#x9;-- column name alone
+&#x9;&#x9;b. select column alias
+&#x9;&#x9;c. select table1.column
+&#x9;&#x9;d. select table1.column alias
+&#x9;2. Simple Composite or Custom Function with column expression - function(expr) [i.e. trim(col), myfunc(col1)]
+&#x9;3. Simple multi-expression Composite or Custom Function - function(expr1, expr2, expr3) [i.e. SUBSTRING(col,1,1), myfunc(col1,2,col2]
+&#x9;4. Simple case syntax
+&#x9;&#x9;CASE &lt;comparison-value&gt;
+&#x9;&#x9;&#x9;WHEN &lt;conditional-expression 1&gt; THEN &lt;scalar-expression 1&gt;
+&#x9;&#x9;&#x9;WHEN &lt;conditional-expression 2&gt; THEN &lt;scalar-expression 2&gt;
+&#x9;&#x9;&#x9;WHEN &lt;conditional-expression 3&gt; THEN &lt;scalar-expression 3&gt;
+&#x9;&#x9;&#x9;[ELSE &lt;default-scalar-expression&gt;]
+&#x9;&#x9;END
+&#x9;5. Simple case Searched Syntax
+&#x9;&#x9;CASE
+&#x9;&#x9;&#x9;WHEN &lt;conditional-expression 1&gt; THEN &lt;scalar-expression 1&gt;
+&#x9;&#x9;&#x9;WHEN &lt;conditional-expression 2&gt; THEN &lt;scalar-expression 2&gt;
+&#x9;&#x9;&#x9;WHEN &lt;conditional-expression 3&gt; THEN &lt;scalar-expression 3&gt;
+&#x9;&#x9;&#x9;[ELSE &lt;default-scalar-expression&gt;]
+&#x9;&#x9;END
+&#x9;6. Simple Concatenation syntax using pipes - expr1 || expr2 || expr3
+&#x9;7. Simple Position statement - POSITION(expr1 IN expr2) 
+&#x9;8. Simple Cast statement - CAST(expr AS TYPE)
+&#x9;9. Simple Extract statement - EXTRACT (&lt;field name&gt; FROM &lt;value&gt;)
+&#x9;10. Simple Interval Day statement - INTERVAL &apos;&lt;literal&gt;&apos; [DAY,HOUR,MINUTE,SECOND](precision) TO [HOUR,MINUTE,SECOND](precision)
+&#x9;11. Simple Interval Year statement - INTERVAL &apos;&lt;literal&gt;&apos; [YEAR,MONTH](precision) TO [MONTH](precision)
+&#x9;12. Multi-expression statements may contain any number of expressions embedded in other expressions.
+&#x9;&#x9;Multi-expression statements may begin with any valid composite or custom function
+&#x9;&#x9;i.e. case trim(CAST (TRIM(col1) as varchar(255))) when 1 then &apos;a&apos; when 2 then col2 else table.col3 end
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CSW Version:&#x9;Reason:
+&#x9;11/11/2011&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Created new
+&#x9;03/15/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;Modifications for Best Practices 7.0
+&#x9;11/20/2014&#x9;&#x9;Alex Dedov&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;8.1.5: Commented code that causes infinite recursion loop 
+&#x9;11/20/2014&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;8.1.5: Added &apos;P&apos; to getCodedString(&apos;D&apos;, &apos;P&apos;, ...) invocation because of a change to getCodedString.
+&#x9;03/02/2018&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Replaced RegexSplit with extractDelimitedText
+&#x9;04/15/2019&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.8&#x9;&#x9;&#x9;B.P. 2019.200: Added scriptsPath for flexibility of the location of the _scripts folder.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   Changed custom functions to explicit paths.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE parseColumnExpression(
+--Examples:
+-- position ( extract( year from orderdate )    in   upper( col2 ) )
+-- concat ( RPAD ( Orders.Phone_Number,&apos; &apos;,12 ) , LPAD ( Customers.Zip,&apos; &apos;,2 ) )
+-- TRIM(UPPER(SUBSTRING(col,1,10)))
+-- SUBSTRING(TRIM(UPPER(col)),1,10)
+-- RPAD(UPPER(col),5,&apos; &apos;)
+-- case col1 when 1 then &apos;a&apos; when 2 then &apos;b&apos; else &apos;c&apos; end 
+-- case col1 when col2 then &apos;a&apos; when 2 then col3 else col4 end 
+-- case trim(rpad(col1,&apos;-&apos;,3)) when 1 then &apos;a&apos; when 2 then &apos;b&apos; else &apos;c&apos; end
+-- case trim(CAST(TRIM(col1) as varchar(255) ))when 1 then &apos;a&apos; when 2 then &apos;b&apos; else &apos;c&apos; end
+&#x9;IN&#x9;inColumnExpression&#x9;LONGVARCHAR, -- The column text to pars
+&#x9;IN  inFunctionList&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  inColumnList&#x9;&#x9;LONGVARCHAR,
+&#x9;IN  inRecurseDepth&#x9;&#x9;INTEGER,&#x9;-- First time through, set to 0 indicating parent
+&#x9;OUT functionList&#x9;&#x9;LONGVARCHAR,
+&#x9;OUT columnList&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;OUT recurseDepth&#x9;&#x9;INTEGER
+)
+BEGIN
+&#x9;DECLARE moduleName&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;parseColumnExpression&apos;;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.debugSqlParser3;
+&#x9;DECLARE sep&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR DEFAULT &apos;^&apos;; -- separator
+&#x9;DECLARE columnExpressionTmp&#x9;LONGVARCHAR DEFAULT inColumnExpression;
+&#x9;DECLARE columnExpression&#x9;LONGVARCHAR DEFAULT &apos;&apos;;
+&#x9;DECLARE i,j&#x9;&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 1;
+&#x9;DECLARE ch_&#x9;&#x9;&#x9;&#x9;&#x9;CHAR(1);
+&#x9;DECLARE quote&#x9;&#x9;&#x9;&#x9;INTEGER DEFAULT 0; -- 0=off, 1=on -- quotes come in pairs so turn on when 1st one found and turn off when second one found.  Everything in between is ignored.
+&#x9;DECLARE doubleQuote&#x9;&#x9;&#x9;INTEGER DEFAULT 0; -- 0=off, 1=on -- quotes come in pairs so turn on when 1st one found and turn off when second one found.  Everything in between is ignored.
+&#x9;DECLARE pipePair&#x9;&#x9;&#x9;BOOLEAN DEFAULT FALSE;
+&#x9;DECLARE leftParenBeg&#x9;&#x9;INTEGER;
+&#x9;DECLARE rightParenEnd&#x9;&#x9;INTEGER;
+&#x9;DECLARE casePos&#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE caseEndPos&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE begPos &#x9;&#x9;&#x9;&#x9;INTEGER;
+&#x9;DECLARE body&#x9;&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE contents&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE function&#x9;&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE concatVect&#x9;&#x9;&#x9;VECTOR(LONGVARCHAR);
+&#x9;DECLARE exprVect&#x9;&#x9;&#x9;VECTOR(LONGVARCHAR) DEFAULT VECTOR[null];
+&#x9;DECLARE startTime&#x9;&#x9;&#x9;TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+&#x9;DECLARE debugTime&#x9;&#x9;&#x9;CHAR(1) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.debugTime;
+&#x9;DECLARE encodedComma &#x9;&#x9;VARCHAR DEFAULT /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/encodedValues.encodedComma;  &#x9;-- _002c -- &apos;,&apos; comma
+&#x9;DECLARE regexReplacePatternSingleQuote VARCHAR DEFAULT &apos;(?=[^&apos;&apos;]{0,255}&apos;&apos;(?:[^&apos;&apos;\r\n]{0,255}&apos;&apos;[^&apos;&apos;]{0,255}&apos;&apos;){0,1024}[^&apos;&apos;\r\n]{0,1024}$)&apos;;
+&#x9;DECLARE regexPattern&#x9;&#x9;LONGVARCHAR;
+&#x9;DECLARE regexReplaceChars&#x9;LONGVARCHAR;
+&#x9;DECLARE ascii_char&#x9;&#x9;&#x9;CHAR(1);
+
+&#x9;DECLARE x INTEGER;
+
+--------------------------------
+-- INITIALIZATION:
+--------------------------------
+&#x9;-- Initialize outgoing variables;
+&#x9;if (inFunctionList is not null) then
+&#x9;&#x9;set functionList = inFunctionList;
+&#x9;else
+&#x9;&#x9;set functionList = &apos;&apos;;
+&#x9;end if;
+&#x9;if (inColumnList is not null) then
+&#x9;&#x9;set columnList = inColumnList;
+&#x9;else
+&#x9;&#x9;set columnList = &apos;&apos;;
+&#x9;end if;
+&#x9;if (inRecurseDepth is not null) then
+&#x9;&#x9;set recurseDepth = inRecurseDepth;
+&#x9;else
+&#x9;&#x9;set recurseDepth = 0;
+&#x9;end if;
+
+&#x9;-- DEBUG
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;---------------------- INVOCATION -------------------&apos;);
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;Original:: Depth=&apos;||recurseDepth||
+&#x9;&#x9;&#x9;&#x9;&apos;  columnExpression=[&apos;||NVL(inColumnExpression,&apos;null&apos;)||&apos;]  inFunctionList=[&apos;||NVL(inFunctionList,&apos;null&apos;)||&apos;]  inColumnList=[&apos;||NVL(inColumnList,&apos;null&apos;)||&apos;]&apos;);
+&#x9;end if;
+
+--------------------------------
+-- PRE-PARSING PREPARATION:
+--------------------------------
+&#x9;/* DECODE encoded characters
+&#x9;&#x9;-- Replace any encoded characters with the decoded character as shown in the chart below
+&#x9;&#x9;&#x9;encodedSpace &#x9;-- _0020 -- &apos; &apos; space
+&#x9;&#x9;&#x9;encodedPeriod &#x9;-- _002e -- &apos;.&apos; period
+&#x9;&#x9;&#x9;encodedPipe &#x9;-- _007c -- &apos;|&apos; pipe
+&#x9;&#x9;&#x9;encodedComma &#x9;-- _002c -- &apos;,&apos; comma
+&#x9;&#x9;&#x9;encodedOpFact&#x9;-- _0021 -- &apos;!&apos; factorial operator
+&#x9;&#x9;&#x9;encodedOpMod&#x9;-- _0025 -- &apos;%&apos; modulo operator
+&#x9;&#x9;&#x9;encodedLParen&#x9;-- _0028 -- &apos;(&apos; left parenthesis
+&#x9;&#x9;&#x9;encodedRParen&#x9;-- _0029 -- &apos;)&apos; right parenthesis
+&#x9;&#x9;&#x9;encodedOpMult&#x9;-- _002a -- &apos;*&apos; multiply operator
+&#x9;&#x9;&#x9;encodedOpAdd&#x9;-- _002b -- &apos;+&apos; addition operator
+&#x9;&#x9;&#x9;encodedOpSub&#x9;-- _002d -- &apos;-&apos; subtraction operator
+&#x9;&#x9;&#x9;encodedOpDiv&#x9;-- _002f -- &apos;/&apos; division operator
+&#x9;*/
+
+&#x9;-- Remomve special characters only on the first invocation of this procedure
+&#x9;IF (recurseDepth = 0) THEN
+
+&#x9;&#x9;-- Decode the encoded values in the codingList for parenthesis only
+&#x9;&#x9;IF (POSITION(encodedComma IN columnExpressionTmp) &gt; 0) THEN
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/getCodedString(&apos;D&apos;, &apos;P&apos;, encodedComma, columnExpressionTmp, moduleName, &apos;N&apos;, &apos;columnExpressionTmp&apos;, columnExpressionTmp);
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;decode columnExpressionTmp=&apos;||columnExpressionTmp);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;END IF;
+&#x9;&#x9;-- Remove multiple spaces and trim the result
+&#x9;&#x9;set columnExpressionTmp = REPLACE(columnExpressionTmp,&apos;||&apos;,&apos; || &apos;);
+&#x9;&#x9;set columnExpressionTmp = REPLACE(columnExpressionTmp,&apos;(&apos;,&apos; ( &apos;);
+&#x9;&#x9;set columnExpressionTmp = REPLACE(columnExpressionTmp,&apos;)&apos;,&apos; ) &apos;);
+&#x9;&#x9;set columnExpressionTmp = REPLACE(columnExpressionTmp,&apos;  &apos;,&apos; &apos;);
+&#x9;&#x9;set columnExpression = TRIM(columnExpressionTmp);
+
+&#x9;&#x9;-- Remove all text contained within single quotes by first replace all ASCII values within single quotes with an empty character
+&#x9;&#x9;--   1. Create the list of characters to replace using regex.  They are placed within square brackets [].
+&#x9;&#x9;set regexReplaceChars = &apos; !&quot;#\$%&amp;\(\)\*+,-\.\/0-9:;&lt;=&gt;?@A-Za-z\[\\\]^_`\{\|\}~&apos;;
+&#x9;&#x9;--   2. Create the regex pattern by concatening the replace characters with the regex replace pattern for single quotes
+&#x9;&#x9;set regexPattern = &apos;[&apos;||regexReplaceChars||&apos;]&apos;||regexReplacePatternSingleQuote;
+&#x9;&#x9;--   3. Execute the regex replace
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;regex regexReplaceChars=&apos;||NVL(regexReplaceChars,&apos;null&apos;)||&apos;  regexReplacePatternSingleQuote=&apos;||NVL(regexReplacePatternSingleQuote,&apos;null&apos;));
+&#x9;&#x9;end if;
+&#x9;&#x9;call /shared/ASAssets/Utilities/string/TextUtils/RegexReplace(columnExpression, regexPattern, &apos;&apos;, 0, columnExpression);
+&#x9;&#x9;--   4. Print debug
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;modified1 regex columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;end if;
+&#x9;&#x9;--   5. Replace all single quote patterns &apos;&apos; with empty character
+&#x9;&#x9;set columnExpression = REPLACE(columnExpression, &apos;&apos;&apos;&apos;&apos;&apos;, &apos;&apos;);
+&#x9;&#x9;--   6. Print debug
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;modified1 replace columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;end if;
+
+&#x9;&#x9;--   7. Check to see if there is still a single quote that exists
+&#x9;&#x9;IF (POSITION(&apos;&apos;&apos;&apos; IN columnExpression) &gt; 0) THEN
+&#x9;&#x9;&#x9;set regexReplaceChars = &apos;&apos;;
+&#x9;&#x9;&#x9;set i = 128;
+&#x9;&#x9;&#x9;WHILE (i &lt;= 255) DO
+&#x9;&#x9;&#x9;&#x9;set ascii_char = CHR(i);
+&#x9;&#x9;&#x9;&#x9;if (ascii_char is not null and LENGTH(ascii_char) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;&#x9;set regexReplaceChars = regexReplaceChars || ascii_char;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set i = i + 1;
+&#x9;&#x9;&#x9;END WHILE;
+&#x9;&#x9;&#x9;set regexPattern = &apos;[&apos;||regexReplaceChars||&apos;]&apos;||regexReplacePatternSingleQuote;
+&#x9;&#x9;&#x9;--   8. Execute the regex replace
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;regex extended regexReplaceChars=&apos;||NVL(regexReplaceChars,&apos;null&apos;)||&apos;  regexReplacePatternSingleQuote=&apos;||NVL(regexReplacePatternSingleQuote,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/string/TextUtils/RegexReplace(columnExpression, regexPattern, &apos;&apos;, 0, columnExpression);
+&#x9;&#x9;&#x9;--   9. Print debug
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;modified2 regex columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;--   10. Replace all single quote patterns &apos;&apos; with empty character
+&#x9;&#x9;&#x9;set columnExpression = REPLACE(columnExpression, &apos;&apos;&apos;&apos;&apos;&apos;, &apos;&apos;);
+&#x9;&#x9;&#x9;--   11. Print debug
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;modified2 replace columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;END IF;
+/*
+&#x9;&#x9;-- Remove all contents with single quotes &apos;&apos;.  These literal values are not captured.  Makes parsing easier to remove up front.
+&#x9;&#x9;-- Remove all horizontal tab, newline, vertical tab or carriage return
+&#x9;&#x9;WHILE (i &lt;= LENGTH(columnExpressionTmp) ) DO
+&#x9;&#x9;&#x9;set ch = SUBSTRING(columnExpressionTmp,i,1);
+
+&#x9;&#x9;&#x9;-- When a single quote is found turn off processing until the end quote is found.  Nothing should be processed in between quotes
+&#x9;&#x9;&#x9;IF (ch = &apos;&apos;&apos;&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;IF (quote = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;set quote = 1;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;set quote = 0;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;-- When a double quote is found replace all spaces within the double quotes with an encoded space (_0020) so the parsing works.
+&#x9;&#x9;&#x9;-- If the double quote is inside a single quote like &apos;&quot;&apos; || var || &apos;&quot;&apos; then it is a constant not a qualifier
+&#x9;&#x9;&#x9;IF (ch = &apos;&quot;&apos; and quote = 0) THEN
+&#x9;&#x9;&#x9;&#x9;IF (doubleQuote = 0) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;set doubleQuote = 1;
+&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;set doubleQuote = 0;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+
+&#x9;&#x9;&#x9;-- Double Quote takes precedence over sinqle quote as you cannot have a single quote within the boundaries of a double quote
+&#x9;&#x9;&#x9;IF (doubleQuote = 1) THEN
+&#x9;&#x9;&#x9;&#x9;/*
+&#x9;&#x9;&#x9;&#x9;&#x9;Encode any special characters that are contained inside the double quotes which are actually column names.
+&#x9;&#x9;&#x9;&#x9;&#x9;e.g.  sheet1.&quot;Physical Name (Table/Column)&quot; -- without the encoding, this would actually be interpreted as a function
+&#x9;&#x9;&#x9;&#x9;&#x9;       because of the left and right parenthesis and an arithmetic operation because of the forward slash (division operater).
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedSpace&#x9;- &apos;_0020&apos;; -- &apos; &apos; space
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedOpFact&#x9;- &apos;_0021&apos;; -- &apos;!&apos; factorial operator
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedOpMod&#x9;- &apos;_0025&apos;; -- &apos;%&apos; modulo operator
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedLParen&#x9;- &apos;_0028&apos;; -- &apos;(&apos; left parenthesis
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedRParen&#x9;- &apos;_0029&apos;; -- &apos;)&apos; right parenthesis
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedOpMult&#x9;- &apos;_002a&apos;; -- &apos;*&apos; multiply operator
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedOpAdd&#x9;- &apos;_002b&apos;; -- &apos;+&apos; addition operator
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedOpSub&#x9;- &apos;_002d&apos;; -- &apos;-&apos; subtraction operator
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;encodedOpDiv&#x9;- &apos;_002f&apos;; -- &apos;/&apos; division operator
+&#x9;&#x9;&#x9;&#x9;* /
+&#x9;&#x9;&#x9;&#x9;CASE ch
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos; &apos; THEN set ch_ = encodedSpace; &#x9;-- &apos;_0020&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;!&apos; THEN set ch_ = encodedOpFact; &#x9;-- &apos;_0021&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;%&apos; THEN set ch_ = encodedOpMod; &#x9;-- &apos;_0025&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;(&apos; THEN set ch_ = encodedLParen; &#x9;-- &apos;_0028&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;)&apos; THEN set ch_ = encodedRParen; &#x9;-- &apos;_0029&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;*&apos; THEN set ch_ = encodedOpMult; &#x9;-- &apos;_002a&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;+&apos; THEN set ch_ = encodedOpAdd; &#x9;-- &apos;_002b&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;-&apos; THEN set ch_ = encodedOpSub; &#x9;-- &apos;_002d&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;WHEN &apos;/&apos; THEN set ch_ = encodedOpDiv; &#x9;-- &apos;_002f&apos;
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set ch_ = ch;
+&#x9;&#x9;&#x9;&#x9;END CASE;
+&#x9;&#x9;&#x9;&#x9;-- Concat the normal or encoded character
+&#x9;&#x9;&#x9;&#x9;set columnExpression = columnExpression || ch_;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;IF (quote = 0 and ch &lt;&gt; &apos;&apos;&apos;&apos;) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;-- append the character as long as it is not a horizontal tab, newline, vertical tab or carriage return
+&#x9;&#x9;&#x9;&#x9;&#x9;-- otherwise replace the following with a space: 
+&#x9;&#x9;&#x9;&#x9;&#x9;--     chr(9)=horizontal tab, chr(10)=newline, chr(11)=vertical tab, chr(13)=carriage return
+&#x9;&#x9;&#x9;&#x9;&#x9;IF (ch = chr(9) or ch = chr(10) or ch = chr(11) or ch = chr(13)) THEN
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnExpression = columnExpression || &apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;ELSE
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If there are any functions present, make sure there are spaces around the begin/end parenthesis.  
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- If pipe symbols, make sure the concat symbol is surrounded by spaces for parsing
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--    Both actions will become important during parsing
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if ( ch = &apos;(&apos; or ch = &apos;)&apos; or ch = &apos;|&apos; ) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (ch = &apos;|&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (not pipePair) then -- found the first pipePair so put a space before it
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnExpression = columnExpression || &apos; &apos;||ch;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set pipePair = true; -- turn on the pipe pair
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else -- found the second pipePair so put a space after it
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnExpression = columnExpression || ch||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set pipePair = false; -- turn off the pipe pair
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;if (pipePair) then -- Make sure to turn off any single pipes found in the text
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set pipePair = false;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnExpression = columnExpression || &apos; &apos;||ch||&apos; &apos;;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;set columnExpression = columnExpression || ch;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;END IF;
+&#x9;&#x9;&#x9;set i = i + 1;
+&#x9;&#x9;END WHILE;
+*/
+&#x9;&#x9;-- DEBUG
+--&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;modified1 columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]&apos;);
+
+&#x9;&#x9;-- parseInterval(): 
+&#x9;&#x9;-- Parse out the INTERVAL expression and set to blanks as INTERVAL does not contain any relevant column data.
+&#x9;&#x9;-- This only has to be done once for the incoming expression when depth=0
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseInterval(columnExpression, columnExpression);
+
+&#x9;&#x9;-- DEBUG
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;modified3 columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;end if;
+&#x9;ELSE
+&#x9;&#x9;set columnExpression = TRIM(columnExpressionTmp);
+&#x9;END IF;
+--------------------------------
+-- CONCATENTATION PARSING:
+--------------------------------
+&#x9;-- Split the incoming column expression by the carat symbol &apos;^&apos;
+&#x9;-- Since this procedure is recursive, this procedure may be producing carat separate expressions for example:
+&#x9;--     [Depth-0]columnExpression=concat(trim(col1),trim(col2)) --&gt; 
+&#x9;--        [Depth-1]columnExpression=trim(col1)^trim(col2)
+&#x9;--           [Depth-2]columnExpression=col1
+&#x9;--           [Depth-2]columnExpression=col2
+&#x9;set i = 1;
+&#x9;for r as 
+&#x9;&#x9;select * from /shared/ASAssets/Utilities/string/extractDelimitedText(columnExpression,sep,0,0,0,1,0)
+&#x9;&#x9;where object is not null and length(object) &gt; 0
+&#x9;do
+&#x9;&#x9;set columnExpression = r.object;
+
+&#x9;&#x9;-- DEBUG
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;split...columnExpression=&apos;||NVL(columnExpression,&apos;null&apos;));
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- parseConcat(): Parse the column expression and extract the concatenation parts if they exist.  
+&#x9;&#x9;--   concatFound &gt; 0 if concat &apos;||&apos; is primary
+&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseConcat(columnExpression, concatVect);
+
+&#x9;&#x9;-- DEBUG
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;after parseConcat - concat vector len=&apos;||CARDINALITY(concatVect));
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- Add the results of the concatenation parsing vector to the existing expression vector
+&#x9;&#x9;if (CARDINALITY(concatVect) = 0) then
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;exprVect size=0&apos;);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set exprVect[i] = columnExpression;
+&#x9;&#x9;&#x9;set exprVect = extend(exprVect,1);
+&#x9;&#x9;&#x9;set i = i + 1;
+&#x9;&#x9;else
+&#x9;&#x9;&#x9;set j = 1;
+&#x9;&#x9;&#x9;while (j &lt;= CARDINALITY(concatVect)) do
+&#x9;&#x9;&#x9;&#x9;set exprVect[i] = concatVect[j];
+&#x9;&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;exprVect[&apos;||j||&apos;]=&apos;||NVL(exprVect[i],&apos;null&apos;));
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set exprVect = extend(exprVect,1);
+&#x9;&#x9;&#x9;&#x9;set j = j + 1;
+&#x9;&#x9;&#x9;&#x9;set i = i + 1;
+&#x9;&#x9;&#x9;end while;
+&#x9;&#x9;end if;
+&#x9;end for;
+&#x9;-- truncate the extra entry.
+&#x9;set exprVect = truncate(exprVect,1);
+
+--------------------------------
+-- RECURSIVE EXPRESSION ITERATION:
+--------------------------------
+&#x9;-- Loop through the list of concatenations or the single expression if no concat expressions
+&#x9;set j = 1;
+&#x9;while (j &lt;= CARDINALITY(exprVect)) do
+&#x9;&#x9;set columnExpression = TRIM(exprVect[j]); -- Get the columnExpression from the vector
+&#x9;&#x9;set leftParenBeg =  POSITION(&apos;(&apos; IN columnExpression);&#x9;-- determine the beginning of a function
+&#x9;&#x9;set rightParenEnd =  POSITION(&apos;)&apos; IN columnExpression);&#x9;-- determine the end of a function
+&#x9;&#x9;set casePos = POSITION(&apos;CASE &apos; IN UPPER(columnExpression)); -- determine if the expression contains CASE
+&#x9;&#x9;if leftParenBeg is null then set leftParenBeg = 0; end if;
+&#x9;&#x9;if rightParenEnd is null then set rightParenEnd = 0; end if;
+&#x9;&#x9;if casePos is null then set casePos = 0; end if;
+
+&#x9;&#x9;-- DEBUG
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;while loop being: vector...columnExpression=[&apos;||NVL(columnExpression,&apos;null&apos;)||&apos;]  leftParenBeg=&apos;||leftParenBeg||&apos;  rightParenEnd=&apos;||rightParenEnd||&apos;  casePos=&apos;||casePos);
+&#x9;&#x9;end if;
+
+-- USE CASE: [no function, no case]
+&#x9;&#x9;if (leftParenBeg = 0 and casePos = 0) then &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;pattern found: [table.col1 or col1]&apos;);
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;-- Simple table.column alias or column alias or column use case
+&#x9;&#x9;&#x9;set function = &apos;&apos;;
+&#x9;&#x9;&#x9;-- parseArithmeticOperators(): Parse out the Arithmetic expressions
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseArithmeticOperators(TRIM(columnExpression),contents);
+&#x9;&#x9;&#x9;-- isReservedColumnList(): Parse out the reserved words
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/isReservedColumnList(contents,contents);
+
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;[no function, no case] function=[&apos;||NVL(function,&apos;null&apos;)||&apos;] contents=[&apos;||NVL(contents,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;end if;
+
+-- USE CASE: [HAS FUNCTION, no case]
+&#x9;&#x9;elseif (leftParenBeg &gt; 0 and casePos = 0) then &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;pattern found: [FUNCTION(table.col1 or col1)]&apos;);
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;-- parseFunction(): parse out the functions
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseFunction(columnExpression,function,contents);
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;[HAS FUNCTION, no case] function=[&apos;||NVL(function,&apos;null&apos;)||&apos;] contents=[&apos;||NVL(contents,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;end if;
+
+-- USE CASE: [no function, HAS CASE]
+&#x9;&#x9;elseif (leftParenBeg = 0 and casePos &gt; 0) then &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;pattern found: [CASE expression]&apos;);
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;-- parseCase(): Handle both styles of CASE
+&#x9;&#x9;&#x9;--   &quot;Simple Case&quot; Pattern: CASE expr1 WHEN expr2 THEN res1 WHEN val2 THEN res2 ELSE res3 END
+&#x9;&#x9;&#x9;--   &quot;Searched Case&quot; Pattern: CASE WHEN expr1 [&lt;, =, &gt;, &lt;=, &gt;=, &lt;&gt;] expr2 THEN res1 ELSE res2 END
+&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseCase(columnExpression,function,contents);
+
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;[no function, HAS CASE] function=[&apos;||NVL(function,&apos;null&apos;)||&apos;] contents=[&apos;||NVL(contents,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;end if;
+
+&#x9;/***************************
+&#x9;NEED TO WORK ON THIS USE CASE
+&#x9;***************************/
+-- USE CASE: [HAS FUNCTION, HAS CASE]
+&#x9;&#x9;else --(leftParenBeg &gt; 0 and casePos &gt; 0) then &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;set begPos = POSITION(&apos;(&apos; IN columnExpression);
+&#x9;&#x9;&#x9;set caseEndPos = POSITION(&apos;END&apos; IN UPPER(columnExpression));
+
+-- USE CASE: [HAS FUNCTION (precendence), has case]
+&#x9;&#x9;&#x9;if (begPos &lt; casePos) then -- function takes precedence over case&#x9;
+&#x9;&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;pattern found function([case]): [FUNCTION(CASE expr WHEN x THEN y ELSE z END)]&apos;);
+&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;-- parseFunction(): parse out the functions
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseFunction(columnExpression,function,contents);
+
+&#x9;&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;[HAS FUNCTION (precendence), has case] function=[&apos;||NVL(function,&apos;null&apos;)||&apos;] contents=[&apos;||NVL(contents,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;end if;
+
+-- USE CASE: [has function, HAS CASE (precendence)]
+&#x9;&#x9;&#x9;else -- (begPos &gt; casePos) function is contained within the case, therefore CASE takes precendence 
+&#x9;&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;pattern found (case [concat] end): [CASE expr||expr WHEN x THEN y ELSE z END]&apos;);
+&#x9;&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;&#x9;-- parseCase(): Handle both styles of CASE
+&#x9;&#x9;&#x9;&#x9;--   &quot;Simple Case&quot; Pattern: CASE expr1 WHEN expr2 THEN res1 WHEN val2 THEN res2 ELSE res3 END
+&#x9;&#x9;&#x9;&#x9;--   &quot;Searched Case&quot; Pattern: CASE WHEN expr1 [&lt;, =, &gt;, &lt;=, &gt;=, &lt;&gt;] expr2 THEN res1 ELSE res2 END
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseCase(columnExpression,function,contents);
+
+&#x9;&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;[has function, HAS CASE (precendence)] function=[&apos;||NVL(function,&apos;null&apos;)||&apos;] contents=[&apos;||contents||&apos;]&apos;);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- Capture the function in the function list
+&#x9;&#x9;if (function IS NOT NULL AND LENGTH(&apos;|&apos;||function||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;if (functionList IS NOT NULL AND LENGTH(&apos;|&apos;||functionList||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;set functionList = functionList || sep;
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;set functionList = functionList || function;
+&#x9;&#x9;end if;
+
+&#x9;&#x9;-- Capture the contents from the above invocations into the column list
+&#x9;&#x9;-- May need to recursively invoke &quot;parseColumnExpression&quot; again if there are more functions or case statements to parse.
+&#x9;&#x9;if (contents IS NOT NULL AND LENGTH(&apos;|&apos;||contents||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;-- DEBUG
+&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;contents=&apos;||NVL(contents,&apos;null&apos;));
+&#x9;&#x9;&#x9;end if;
+
+&#x9;&#x9;&#x9;-- Look for spaces or functions and keep parsing recursively
+&#x9;&#x9;&#x9;if (POSITION(&apos; &apos; IN contents) &gt; 0 OR POSITION(&apos;(&apos; IN contents) &gt; 0) then
+&#x9;&#x9;&#x9;&#x9;-- Increment the recursion depth which provides an inidicator of how many times this function is invoked recursively
+&#x9;&#x9;&#x9;&#x9;set recurseDepth = recurseDepth + 1;
+
+-- 20141112#DA Begin# Commented code causes infinite recursion loop 
+-- RECURSIVE INVOCATION to &quot;parseColumnExpression()&quot;
+&#x9;&#x9;&#x9;&#x9;--call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseColumnExpression(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--contents,functionList,columnList,recurseDepth, &#x9;-- INPUT
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--functionList,columnList,recurseDepth);&#x9;&#x9;&#x9;-- OUTPUT
+
+&#x9;&#x9;&#x9;&#x9;SET x = POSITION(&apos; &apos; IN contents) ;
+&#x9;&#x9;&#x9;&#x9;IF x = 0 THEN 
+&#x9;&#x9;&#x9;&#x9;&#x9;SET x = POSITION(&apos;(&apos; IN contents) ;
+&#x9;&#x9;&#x9;&#x9;END IF ;
+&#x9;&#x9;&#x9;&#x9;--CALL PRINT (&apos;parseColumnExpression calling itself with &apos;||SUBSTRING(contents,1,x-1));
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseColumnExpression(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SUBSTRING(contents,1,x-1),
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;functionList,columnList,recurseDepth,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;functionList,columnList,recurseDepth) ;
+&#x9;&#x9;&#x9;&#x9;&#x9;
+&#x9;&#x9;&#x9;&#x9;--CALL PRINT(&apos;parseColumnExpression calling itself with &apos;||SUBSTRING(contents,x));
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseColumnExpression(
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SUBSTRING(contents,x),
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;functionList,columnList,recurseDepth, 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;functionList,columnList,recurseDepth);
+-- 20141112#DA End#
+
+&#x9;&#x9;&#x9;else
+&#x9;&#x9;&#x9;&#x9;-- Add a separator &apos;^&apos; to the column list and the contents
+&#x9;&#x9;&#x9;&#x9;if (columnList IS NOT NULL AND LENGTH(&apos;|&apos;||columnList||&apos;|&apos;) &gt; 2) then  --notEmpty
+&#x9;&#x9;&#x9;&#x9;&#x9;set columnList = columnList || sep;
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;set columnList = columnList ||contents;
+&#x9;
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;call parseArithmeticOperators(columnList=&apos;||NVL(columnList,&apos;null&apos;)||&apos;)&apos;);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;-- parseArithmeticOperators(): Parse out the Arithmetic expression
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/parseArithmeticOperators(columnList,columnList);
+
+&#x9;&#x9;&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;call isReservedColumnList(columnList=&apos;||NVL(columnList,&apos;null&apos;)||&apos;)&apos;);
+&#x9;&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;&#x9;&#x9;-- isReservedColumnList(): Parse out the reserved words
+&#x9;&#x9;&#x9;&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/isReservedColumnList(columnList,columnList);
+&#x9;&#x9;&#x9;end if;
+&#x9;&#x9;end if;
+&#x9;&#x9;-- DEBUG
+&#x9;&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;columnList=[&apos;||NVL(columnList,&apos;null&apos;)||&apos;]&apos;);
+&#x9;&#x9;end if;
+&#x9;&#x9;set j = j + 1;
+&#x9;end while;
+--------------------------------
+-- FINALIZE COLUMN LIST:
+--------------------------------
+&#x9;-- removeColumnListDuplicates(): Remove column list duplicates
+&#x9;call /shared/ASAssets/BestPractices_v81/Procedures/sqlParser/utility/removeColumnListDuplicates(columnList,columnList);
+
+&#x9;-- DEBUG
+&#x9;if (debug = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debug,&apos;Return columnList=[&apos;||columnList||&apos;] functionList=[&apos;||functionList||&apos;]&apos;);
+&#x9;end if;
+&#x9;if (debugTime = &apos;Y&apos;) then
+&#x9;&#x9;call /shared/ASAssets/Utilities/log/logDebugMessage(moduleName,debugTime,&apos;duration=&apos;||cast(CURRENT_TIMESTAMP - startTime as varchar)||&apos; recurseDepth=&apos;||recurseDepth||&apos;  columnList=&apos;||NVL(columnList,&apos;null&apos;));
+&#x9;end if;
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="impactLevel" type="INTEGER">0</attribute>
+  <attribute name="impactMessage" type="NULL"/>
+  <attribute name="lastModifiedDate" type="LONG">1557255222723</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>

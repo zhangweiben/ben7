@@ -1,0 +1,267 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="test_rebindResource" path="/shared/ASAssets/Utilities/examples/repository/test_rebindResource" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[
+    (c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="testOption" direction="IN" nullable="true">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="direction" direction="IN" nullable="true">
+      <datatype name="CHAR" type="STRING" minLength="1" maxLength="1"/>
+    </parameter>
+    <parameter name="success" direction="OUT" nullable="true">
+      <datatype name="BIT" type="INTEGER" minValue="0" maxValue="1"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/lib/debug/Print" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="textToPrint" direction="IN">
+        <datatype referenceDefinitionSet="/lib/util/System" referenceType="Text" type="STRING" maxLength="2147483647"/>
+      </element>
+    </datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/TypeDefinitions" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <dependency target="/shared/ASAssets/Utilities/repository/rebindResource" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258">
+      <element name="resourcePath" direction="IN">
+        <datatype type="STRING" maxLength="2147483647"/>
+      </element>
+      <element name="resourceType" direction="IN">
+        <datatype type="STRING" maxLength="255"/>
+      </element>
+      <element name="rebindVector" direction="IN">
+        <datatype type="ARRAY" maxLength="0">
+          <itemDatatype>
+            <datatype name="rebindVector" type="TREE" refId="257">
+              <element name="oldPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="oldType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+              <element name="newPath">
+                <datatype name="LONGVARCHAR" type="STRING" maxLength="2147483647"/>
+              </element>
+              <element name="newType">
+                <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+              </element>
+            </datatype>
+          </itemDatatype>
+        </datatype>
+      </element>
+      <element name="success" direction="OUT">
+        <datatype type="INTEGER" minValue="0" maxValue="1"/>
+      </element>
+      <element name="createResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="513"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="faultResponse" direction="OUT">
+        <datatype name="XML" referenceType="XML" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="513"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* test_rebindResource:
+&#x9;Test rebindResource.
+
+&#x9;Release:&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;DV Version:&#x9;&#x9;Reason:
+&#x9;2013.2&#x9;&#x9;04/27/2013&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;5.2.0&#x9;&#x9;&#x9;created new for testing
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+*/
+PROCEDURE test_rebindResource(
+&#x9;IN testOption&#x9;&#x9;INTEGER,
+&#x9;IN direction&#x9;&#x9;CHAR(1), -- O=original, C=copy of data source
+&#x9;OUT success&#x9;&#x9;&#x9;BIT
+)
+BEGIN
+&#x9;DECLARE resourcePath&#x9;&#x9;/shared/ASAssets/Utilities/TypeDefinitions.pathType; 
+&#x9;DECLARE resourceType&#x9;&#x9;VARCHAR;
+&#x9;DECLARE rebindVector &#x9;&#x9;VECTOR(
+&#x9;&#x9;ROW (
+&#x9;&#x9;oldPath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;oldType&#x9;&#x9;&#x9;&#x9;VARCHAR(255),
+&#x9;&#x9;newPath&#x9;&#x9;&#x9;&#x9;LONGVARCHAR,
+&#x9;&#x9;newType&#x9;&#x9;&#x9;&#x9;VARCHAR(255))
+&#x9;);
+&#x9;DECLARE createResponse &#x9;&#x9;XML;
+&#x9;DECLARE faultResponse&#x9;&#x9;XML;
+&#x9;DECLARE debug&#x9;&#x9;&#x9;&#x9;CHAR(1) DEFAULT &apos;Y&apos;;
+&#x9;DECLARE ex&#x9;&#x9;&#x9;&#x9;&#x9;EXCEPTION;
+
+&#x9;set success = 0;
+&#x9;if (testOption is null or testOption &lt; 1 or testOption &gt; 6) then
+&#x9;&#x9;raise ex value &apos;Invalid test option=&apos;||NVL(CAST(testOption AS VARCHAR),&apos;null&apos;);
+&#x9;end if;
+&#x9;if (direction is null or (UPPER(direction) != &apos;C&apos; and UPPER(direction) != &apos;O&apos;)) then
+&#x9;&#x9;raise ex value &apos;Invalid direction=&apos;||NVL(direction,&apos;null&apos;);
+&#x9;end if;
+&#x9;call print(&apos;-------------------------------&apos;);
+&#x9;call print(&apos;test option=&apos;||testOption);
+&#x9;call print(&apos;  direction=&apos;||direction);
+&#x9;call print(&apos;-------------------------------&apos;);
+&#x9;
+&#x9;-- VIEW
+&#x9;if (testOption = 1) then
+&#x9;&#x9;SET resourcePath = &apos;/shared/ASAssets/Utilities/examples/repository/source/Rebind/RebindResource/Views/Customers&apos;;
+&#x9;&#x9;SET resourceType = &apos;TABLE&apos;;
+&#x9;&#x9;if (UPPER(direction) = &apos;C&apos;) then
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_orders/tutorial/customers&apos;,&apos;TABLE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_ordersCopy/tutorial/customers&apos;,&apos;TABLE&apos;)];
+&#x9;&#x9;else -- original
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_ordersCopy/tutorial/customers&apos;,&apos;TABLE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_orders/tutorial/customers&apos;,&apos;TABLE&apos;)];
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;-- PROCEDURE
+&#x9;if (testOption = 2) then
+&#x9;&#x9;SET resourcePath = &apos;/shared/ASAssets/Utilities/examples/repository/source/Rebind/RebindResource/Procedures/getCustomerById&apos;;
+&#x9;&#x9;SET resourceType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;if (UPPER(direction) = &apos;C&apos;) then
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_orders/tutorial/customers&apos;,&apos;TABLE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_ordersCopy/tutorial/customers&apos;,&apos;TABLE&apos;)];
+&#x9;&#x9;else -- original
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_ordersCopy/tutorial/customers&apos;,&apos;TABLE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_orders/tutorial/customers&apos;,&apos;TABLE&apos;)];
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;-- PACKAGED QUERY
+&#x9;if (testOption = 3) then
+&#x9;&#x9;SET resourcePath = &apos;/shared/ASAssets/Utilities/examples/repository/source/Rebind/RebindResource/Procedures/packagedCustomerQuery&apos;;
+&#x9;&#x9;SET resourceType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;if (UPPER(direction) = &apos;C&apos;) then
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_orders&apos;,&apos;DATA_SOURCE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_ordersCopy&apos;,&apos;DATA_SOURCE&apos;)];
+&#x9;&#x9;else -- original
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_ordersCopy&apos;,&apos;DATA_SOURCE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_orders&apos;,&apos;DATA_SOURCE&apos;)];
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;-- BASIC XSLT
+&#x9;if (testOption = 4) then
+&#x9;&#x9;SET resourcePath = &apos;/shared/ASAssets/Utilities/examples/repository/source/Rebind/RebindResource/Procedures/basicXSLT&apos;;
+&#x9;&#x9;SET resourceType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;if (UPPER(direction) = &apos;C&apos;) then
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XML/productCatalog.xml&apos;,&apos;TREE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XMLCopy/productCatalog.xml&apos;,&apos;TREE&apos;)];
+&#x9;&#x9;else -- original
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XMLCopy/productCatalog.xml&apos;,&apos;TREE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XML/productCatalog.xml&apos;,&apos;TREE&apos;)];
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;-- CUSTOM XSLT
+&#x9;if (testOption = 5) then
+&#x9;&#x9;SET resourcePath = &apos;/shared/ASAssets/Utilities/examples/repository/source/Rebind/RebindResource/Procedures/customXSLT&apos;;
+&#x9;&#x9;SET resourceType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;if (UPPER(direction) = &apos;C&apos;) then
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XML/productCatalog.xml&apos;,&apos;TREE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XMLCopy/productCatalog.xml&apos;,&apos;TREE&apos;)];
+&#x9;&#x9;else -- original
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XMLCopy/productCatalog.xml&apos;,&apos;TREE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XML/productCatalog.xml&apos;,&apos;TREE&apos;)];
+&#x9;&#x9;end if;
+&#x9;end if;
+&#x9;-- STREAMING XSLT
+&#x9;if (testOption = 6) then
+&#x9;&#x9;SET resourcePath = &apos;/shared/ASAssets/Utilities/examples/repository/source/Rebind/RebindResource/Procedures/streamingXSLT&apos;;
+&#x9;&#x9;SET resourceType = &apos;PROCEDURE&apos;;
+&#x9;&#x9;if (UPPER(direction) = &apos;C&apos;) then
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XML/productCatalog.xml&apos;,&apos;TREE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XMLCopy/productCatalog.xml&apos;,&apos;TREE&apos;)];
+&#x9;&#x9;else -- original
+&#x9;&#x9;&#x9;SET rebindVector = VECTOR [(&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XMLCopy/productCatalog.xml&apos;,&apos;TREE&apos;,
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&apos;/shared/ASAssets/Utilities/examples/repository/source/ds_XML/productCatalog.xml&apos;,&apos;TREE&apos;)];
+&#x9;&#x9;end if;
+&#x9;end if;
+
+&#x9;CALL /shared/ASAssets/Utilities/repository/rebindResource(resourcePath,resourceType,rebindVector,success,createResponse,faultResponse);
+END</attribute>
+  <attribute name="creationDate" type="LONG">0</attribute>
+  <attribute name="creatorUserDomain" type="STRING"/>
+  <attribute name="creatorUserName" type="STRING"/>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1564752786150</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="MAP">
+    <item>
+      <key type="STRING">7/50</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/52</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/51</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+    <item>
+      <key type="STRING">7/53</key>
+      <value type="STRING_ARRAY">
+        <item>lib</item>
+        <item>debug</item>
+        <item>Print</item>
+      </value>
+    </item>
+  </attribute>
+</metadata>

@@ -1,0 +1,232 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:e931daa6-7fda-456a-badf-4cdb1c228a1a -->
+<metadata name="getPrivilegeDatasourceToScriptMapping" path="/shared/ASAssets/BestPractices_v81/PrivilegeScripts/Helpers/getPrivilegeDatasourceToScriptMapping" type="PROCEDURE" subtype="SQL_SCRIPT_PROCEDURE" changeToken="0">
+  <annotation>&lt;![CDATA[&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+]]&gt;</annotation>
+  <parameters>
+    <parameter name="scriptType" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="datasource" direction="IN" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+    <parameter name="scriptMapping" direction="OUT" nullable="true">
+      <datatype name="VARCHAR" type="STRING" maxLength="255"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+    <privilege group="all" domain="composite" privileges="READ"/>
+  </security>
+  <dependency target="/shared/ASAssets/BestPractices_v81/_ProjectMaintenance/defaultValues" type="PROCEDURE">
+    <datatype type="PROCEDURE" refId="258"></datatype>
+  </dependency>
+  <attribute name="Script" type="STRING">/* getPrivilegeDatasourceToScriptMapping:
+&#x9;This script is used to map a sql script or view with a script type [Privileges, Groups, Users] and a datasource [Excel, DB for LLE, DB for PROD].
+&#x9;There is a formatting layer script or view for each script type and each datasource.  The output of the script or view for a given script type is
+&#x9;the same even though the data source is different.  The formatting layer views or scripts create an abstraction on top of the datasource creating
+&#x9;a uniform access point for the single common scripts:
+&#x9;&#x9;get_Composite_Resource_Privileges&#x9;- invokes a view or script that returns a list of privileges based on applied SQL filters.
+&#x9;&#x9;get_Composite_Resource_Groups&#x9;&#x9;- invokes a view or script that returns a list of groups based on applied SQL filters.
+&#x9;&#x9;get_Composite_Resource_Users&#x9;&#x9;- invokes a view or script that returns a list of users based on applied SQL filters.
+
+&#x9;Modified Date:&#x9;Modified By:&#x9;&#x9;CIS Version:&#x9;Reason:
+&#x9;01/30/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;6.2.6&#x9;&#x9;&#x9;Created new
+&#x9;06/12/2015&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.1&#x9;&#x9;&#x9;Added mappings to redirect DB_PROD and DB_LLE from Sql Server to Oracle in preparation for cutover to Oracle.
+&#x9;05/08/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Removed references to SQL Server.  It is no longer supported.
+&#x9;05/16/2017&#x9;&#x9;Mike Tinius&#x9;&#x9;&#x9;7.0.5&#x9;&#x9;&#x9;Adapted for Data Abstraction Best Practices.
+
+&#x9;(c) 2017 TIBCO Software Inc.  All rights reserved.
+&#x9;
+&#x9;Except as specified below, this software is licensed pursuant to the Eclipse Public License v. 1.0.
+&#x9;The details can be found in the file LICENSE.
+&#x9;
+&#x9;The following proprietary files are included as a convenience, and may not be used except pursuant
+&#x9;to valid license to Composite Information Server or TIBCO® Data Virtualization Server:
+&#x9;csadmin-XXXX.jar, csarchive-XXXX.jar, csbase-XXXX.jar, csclient-XXXX.jar, cscommon-XXXX.jar,
+&#x9;csext-XXXX.jar, csjdbc-XXXX.jar, csserverutil-XXXX.jar, csserver-XXXX.jar, cswebapi-XXXX.jar,
+&#x9;and customproc-XXXX.jar (where -XXXX is an optional version number).  Any included third party files
+&#x9;are licensed under the terms contained in their own accompanying LICENSE files, generally named .LICENSE.txt.
+&#x9;
+&#x9;This software is licensed AS-IS. Support for this software is not covered by standard maintenance agreements with TIBCO.
+&#x9;If you would like to obtain assistance with this software, such assistance may be obtained through a separate paid consulting
+&#x9;agreement with TIBCO.
+
+*/
+PROCEDURE getPrivilegeDatasourceToScriptMapping(
+&#x9;IN scriptType&#x9;&#x9;VARCHAR,&#x9;-- P=privileges, G=groups, U=users
+&#x9;IN datasource&#x9;&#x9;VARCHAR,&#x9;-- EXCEL, DB_LLE, DB_PROD
+&#x9;OUT scriptMapping&#x9;VARCHAR
+)
+BEGIN
+&#x9;DECLARE bestPracticesRootPath&#x9;&#x9;VARCHAR(4000) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.bestPracticesRootPath;
+&#x9;DECLARE privilegesBasePath &#x9;&#x9;&#x9;VARCHAR(4000) DEFAULT bestPracticesRootPath||&apos;/PrivilegeScripts&apos;;
+&#x9;DECLARE defaultDatabaseLLEMapping &#x9;VARCHAR(4000) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.defaultDatabaseLLEMapping;
+&#x9;DECLARE defaultDatabasePRODMapping &#x9;VARCHAR(4000) DEFAULT /shared/ASAssets/BestPractices_v81/&quot;_ProjectMaintenance&quot;/defaultValues.defaultDatabasePRODMapping;
+&#x9;DECLARE datasource_&#x9;&#x9;&#x9;&#x9;&#x9;VARCHAR;
+&#x9;--Exceptions
+&#x9;DECLARE exResourceNotFound &#x9;&#x9;&#x9;EXCEPTION;
+&#x9;DECLARE exNotNullParameter &#x9;&#x9;&#x9;EXCEPTION;
+
+&#x9;-- Set the default database mapping to Oracle
+&#x9;CASE datasource
+&#x9;&#x9;WHEN &apos;DB_LLE&apos;&#x9;&#x9;THEN SET datasource_ = upper(defaultDatabaseLLEMapping);
+&#x9;&#x9;WHEN &apos;DB_PROD&apos;&#x9;&#x9;THEN SET datasource_ = upper(defaultDatabasePRODMapping);
+&#x9;&#x9;ELSE &#x9;&#x9;&#x9;&#x9;&#x9; SET datasource_ = upper(datasource);
+&#x9;END CASE;
+
+&#x9;-- Mapping for Privileges
+&#x9;IF UPPER(scriptType) = &apos;P&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;EXCEL&apos;&#x9;&#x9;THEN SET scriptMapping = &apos;/Formatting/Excel/pPrivileges_All_Excel()&apos;;&#x9;-- Excel data source formatting layer script
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_vPrivileges&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_vPrivileges&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_vPrivileges&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_vPrivileges&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for Groups
+&#x9;ELSEIF UPPER(scriptType) = &apos;G&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;EXCEL&apos;&#x9;&#x9;THEN SET scriptMapping = &apos;/Formatting/Excel/pGroups_All_Excel()&apos;;&#x9;-- Excel data source formatting layer script
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_vGroups&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_vGroups&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_vGroups&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_vGroups&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for Users
+&#x9;ELSEIF UPPER(scriptType) = &apos;U&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;EXCEL&apos;&#x9;&#x9;THEN SET scriptMapping = &apos;/Formatting/Excel/pUsers_All_Excel()&apos;;&#x9;-- Excel data source formatting layer script
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_vUsers&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_vUsers&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_vUsers&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_vUsers&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for DOMAIN_TYPE
+&#x9;ELSEIF UPPER(scriptType) = &apos;DT&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_DOMAIN_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_DOMAIN_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_DOMAIN_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_DOMAIN_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for ENVIRONMENT_TYPE
+&#x9;ELSEIF UPPER(scriptType) = &apos;ET&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_ENVIRONMENT_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_ENVIRONMENT_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_ENVIRONMENT_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_ENVIRONMENT_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for ORGANIZATION_TYPE
+&#x9;ELSEIF UPPER(scriptType) = &apos;OT&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_ORGANIZATION_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_ORGANIZATION_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_ORGANIZATION_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_ORGANIZATION_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for PROJECT_TYPE
+&#x9;ELSEIF UPPER(scriptType) = &apos;PT&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_PROJECT_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_PROJECT_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_PROJECT_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_PROJECT_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for SUBPROJECT_TYPE
+&#x9;ELSEIF UPPER(scriptType) = &apos;ST&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_SUBPROJECT_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_SUBPROJECT_TYPE&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_SUBPROJECT_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_SUBPROJECT_TYPE&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for COMPOSITE_PRIVILEGES
+&#x9;ELSEIF UPPER(scriptType) = &apos;CP&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_COMPOSITE_PRIVILEGES&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_COMPOSITE_PRIVILEGES&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_COMPOSITE_PRIVILEGES&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_COMPOSITE_PRIVILEGES&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for COMPOSITE_STUDIO_RIGHTS (GROUPS)
+&#x9;ELSEIF UPPER(scriptType) = &apos;CG&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_COMPOSITE_STUDIO_RIGHTS&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_COMPOSITE_STUDIO_RIGHTS&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_COMPOSITE_STUDIO_RIGHTS&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_COMPOSITE_STUDIO_RIGHTS&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;-- Mapping for COMPOSITE_USER
+&#x9;ELSEIF UPPER(scriptType) = &apos;CU&apos; THEN
+&#x9;&#x9;CASE datasource_
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/LLE_COMPOSITE_USER&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_ORA&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/Oracle/PROD_COMPOSITE_USER&apos;;&#x9;&#x9;&#x9;-- Privilege DB for Oracle PROD data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_LLE_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/LLE_COMPOSITE_USER&apos;;&#x9;&#x9;-- Privilege DB for SQL Server lower level environments (LLE) data source formatting layer view
+&#x9;&#x9;&#x9;WHEN &apos;DB_PROD_SS&apos;&#x9;THEN SET scriptMapping = &apos;/Formatting/SQLServer/PROD_COMPOSITE_USER&apos;;&#x9;&#x9;-- Privilege DB for SQL Server PROD data source formatting layer view
+&#x9;&#x9;&#x9;ELSE 
+&#x9;&#x9;&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;&#x9;&#x9;VALUE &apos;The datasource [&apos;||TRIM(NVL(datasource_,&apos;  &apos;))||&apos;] for the scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;&#x9;END CASE;
+&#x9;ELSE 
+&#x9;&#x9;RAISE &#x9;exResourceNotFound 
+&#x9;&#x9;&#x9;VALUE &apos;The scriptType [&apos;||TRIM(NVL(scriptType,&apos;  &apos;))||&apos;] is invalid.&apos;;
+&#x9;END IF;
+&#x9;set scriptMapping = privilegesBasePath || scriptMapping;
+END</attribute>
+  <attribute name="creationDate" type="LONG">1422645124409</attribute>
+  <attribute name="creatorUserDomain" type="STRING">ldap</attribute>
+  <attribute name="creatorUserName" type="STRING">zkxl6un</attribute>
+  <attribute name="explicitly.designed" type="BOOLEAN">false</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1572986829591</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">na</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">asp5665</attribute>
+  <attribute name="model" type="NULL"/>
+  <attribute name="native_only" type="STRING">false</attribute>
+  <attribute name="references" type="NULL"/>
+</metadata>
