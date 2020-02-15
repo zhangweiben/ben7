@@ -1,0 +1,102 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:c56fdef2-e7c5-4574-b39e-e18c13f795bb -->
+<metadata name="HMON_COLLECTION" path="/shared/ds-caps/db2_luwv_11/SYSTOOLS/HMON_COLLECTION" type="TABLE" subtype="DATABASE_TABLE" changeToken="0" tableType="TABLE">
+  <columns>
+    <column name="HI_ID" nullable="false">
+      <datatype name="BIGINT" extendedName="BIGINT" subType="DATASOURCE_TYPE" type="INTEGER"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="OBJ_NAME1" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="OBJ_NAME2" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="OBJ_NAME3" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="OBJ_DETAIL" nullable="true">
+      <datatype name="VARCHAR" extendedName="VARCHAR(512)" subType="DATASOURCE_TYPE" type="STRING" maxLength="512"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="OBJ_STATE" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="OBJ_REFRESH_TIME" nullable="false">
+      <datatype name="TIMESTAMP" extendedName="TIMESTAMP" subType="DATASOURCE_TYPE" type="DATETIME"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="NOTIFY" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="HISTORY" nullable="true">
+      <datatype name="VARBINARY" extendedName="VARCHAR(200)" subType="DATASOURCE_TYPE" type="BINARY" maxLength="200"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+  </columns>
+  <indexes>
+    <index name="HI_OBJ_UNIQ" type="OTHER" unique="true">
+      <indexColumn name="HI_ID" sortOrder="ASCENDING"/>
+      <indexColumn name="OBJ_NAME1" sortOrder="ASCENDING"/>
+      <indexColumn name="OBJ_NAME2" sortOrder="ASCENDING"/>
+      <indexColumn name="OBJ_NAME3" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">SYSTOOLS</attribute>
+    </index>
+  </indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="test" domain="composite"/>
+    <privilege user="test" domain="composite" privileges="READ WRITE SELECT UPDATE INSERT DELETE"/>
+  </security>
+  <attribute name="c:0:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:1:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:2:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:3:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:4:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:5:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:6:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:7:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:8:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="creationDate" type="LONG">1578948682037</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">18085</attribute>
+  <attribute name="creatorUserName" type="STRING">test</attribute>
+  <attribute name="i:0:indexSchema" type="STRING">SYSTOOLS</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1578948682037</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">18085</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">test</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1578948682037</attribute>
+</metadata>

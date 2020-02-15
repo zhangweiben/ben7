@@ -1,0 +1,119 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:c56fdef2-e7c5-4574-b39e-e18c13f795bb -->
+<metadata name="PURCHASEORDER" path="/shared/ds-caps/db2_luwv_10/DB2INST1/PURCHASEORDER" type="TABLE" subtype="DATABASE_TABLE" changeToken="0" tableType="TABLE">
+  <columns>
+    <column name="POID" nullable="false">
+      <datatype name="BIGINT" extendedName="BIGINT" subType="DATASOURCE_TYPE" type="INTEGER"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATUS" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(10)" subType="DATASOURCE_TYPE" type="STRING" maxLength="10"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="CUSTID" nullable="true">
+      <datatype name="BIGINT" extendedName="BIGINT" subType="DATASOURCE_TYPE" type="INTEGER"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="ORDERDATE" nullable="true">
+      <datatype name="DATE" extendedName="DATE" subType="DATASOURCE_TYPE" type="DATE"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="PORDER" nullable="true">
+      <datatype name="XML" extendedName="XML" referenceType="XML" subType="DATASOURCE_TYPE" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+        <schemaDatatype>
+          <datatype name="XML" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="COMMENTS" nullable="true">
+      <datatype name="VARCHAR" extendedName="VARCHAR(1000)" subType="DATASOURCE_TYPE" type="STRING" maxLength="1000"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+  </columns>
+  <indexes>
+    <index name="PK_PURCHASEORDER" type="PRIMARY_KEY" unique="true">
+      <indexColumn name="POID" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+    <index name="PO_CID_XMLIDX" type="OTHER" unique="false">
+      <indexColumn name="PORDER" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+    <index name="PO_PRODS_XMLIDX" type="OTHER" unique="false">
+      <indexColumn name="PORDER" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+    <index name="PO_ZIP_XMLIDX" type="OTHER" unique="false">
+      <indexColumn name="PORDER" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+  </indexes>
+  <foreignKeys>
+    <foreignKey name="FK_PO_CUST" primaryKeyName="PK_CUSTOMER" primaryKeyTableName="/shared/ds-caps/db2_luwv_10/DB2INST1/CUSTOMER">
+      <foreignKeyColumn primaryColumnName="CID" foreignColumnName="CUSTID"/>
+    </foreignKey>
+  </foreignKeys>
+  <security>
+    <owner user="test" domain="composite"/>
+    <privilege user="test" domain="composite" privileges="READ WRITE SELECT UPDATE INSERT DELETE"/>
+  </security>
+  <dependency target="/shared/ds-caps/db2_luwv_10/DB2INST1/CUSTOMER" type="TABLE">
+    <datatype type="TABLE" refId="256">
+      <element name="CID" nullable="false">
+        <datatype type="INTEGER"/>
+      </element>
+      <element name="INFO">
+        <datatype name="XML" extendedName="XML" referenceType="XML" subType="DATASOURCE_TYPE" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <datatype name="XML" type="TREE" refId="257"></datatype>
+          </schemaDatatype>
+        </datatype>
+      </element>
+      <element name="HISTORY">
+        <datatype name="XML" extendedName="XML" referenceType="XML" subType="DATASOURCE_TYPE" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+          <schemaDatatype>
+            <reference refId="257"/>
+          </schemaDatatype>
+        </datatype>
+      </element>
+    </datatype>
+  </dependency>
+  <attribute name="c:0:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:1:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:2:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:3:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:4:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:5:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="creationDate" type="LONG">1578948687801</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">18085</attribute>
+  <attribute name="creatorUserName" type="STRING">test</attribute>
+  <attribute name="i:0:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="i:1:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="i:2:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="i:3:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1578948687801</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">18085</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">test</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1578948687801</attribute>
+</metadata>

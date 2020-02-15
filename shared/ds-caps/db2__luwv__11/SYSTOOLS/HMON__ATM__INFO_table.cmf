@@ -1,0 +1,260 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:c56fdef2-e7c5-4574-b39e-e18c13f795bb -->
+<metadata name="HMON_ATM_INFO" path="/shared/ds-caps/db2_luwv_11/SYSTOOLS/HMON_ATM_INFO" type="TABLE" subtype="DATABASE_TABLE" changeToken="0" tableType="TABLE">
+  <columns>
+    <column name="SCHEMA" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="NAME" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="CREATE_TIME" nullable="false">
+      <datatype name="TIMESTAMP" extendedName="TIMESTAMP" subType="DATASOURCE_TYPE" type="DATETIME"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_FLAG" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_LOCK" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_OPTS" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="LAST_WAIT" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="TO_WAIT" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="SIGNAL" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="LEO_TAB" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="EXEC_COUNT" nullable="false">
+      <datatype name="BIGINT" extendedName="BIGINT" subType="DATASOURCE_TYPE" type="INTEGER"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_STATE" nullable="false">
+      <datatype name="SMALLINT" extendedName="SMALLINT" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-32768" maxValue="32767"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_NOTIFY" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_DETAIL" nullable="true">
+      <datatype name="VARCHAR" extendedName="VARCHAR(200)" subType="DATASOURCE_TYPE" type="STRING" maxLength="200"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_HISTORY" nullable="true">
+      <datatype name="VARBINARY" extendedName="VARCHAR(200)" subType="DATASOURCE_TYPE" type="BINARY" maxLength="200"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="STATS_TIME" nullable="true">
+      <datatype name="TIMESTAMP" extendedName="TIMESTAMP" subType="DATASOURCE_TYPE" type="DATETIME"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_FLAG" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_LOCK" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_STATE" nullable="false">
+      <datatype name="SMALLINT" extendedName="SMALLINT" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-32768" maxValue="32767"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_TIME" nullable="true">
+      <datatype name="TIMESTAMP" extendedName="TIMESTAMP" subType="DATASOURCE_TYPE" type="DATETIME"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_NOTIFY" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_DETAIL" nullable="true">
+      <datatype name="VARCHAR" extendedName="VARCHAR(200)" subType="DATASOURCE_TYPE" type="STRING" maxLength="200"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_HISTORY" nullable="true">
+      <datatype name="VARBINARY" extendedName="VARCHAR(200)" subType="DATASOURCE_TYPE" type="BINARY" maxLength="200"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_AVG_RUNTIME" nullable="true">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_INDEX_SCHEMA" nullable="true">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_INDEX_NAME" nullable="true">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REORG_INDEX_ONLINE" nullable="true">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="ROWSDEL_LAST_RETRIEVED" nullable="false">
+      <datatype name="BIGINT" extendedName="BIGINT" subType="DATASOURCE_TYPE" type="INTEGER"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="ROWSDEL_LAST_CHECKED" nullable="false">
+      <datatype name="BIGINT" extendedName="BIGINT" subType="DATASOURCE_TYPE" type="INTEGER"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+  </columns>
+  <indexes>
+    <index name="ATM_UNIQ" type="OTHER" unique="true">
+      <indexColumn name="SCHEMA" sortOrder="ASCENDING"/>
+      <indexColumn name="NAME" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">SYSTOOLS</attribute>
+    </index>
+  </indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="test" domain="composite"/>
+    <privilege user="test" domain="composite" privileges="READ WRITE SELECT UPDATE INSERT DELETE"/>
+  </security>
+  <attribute name="c:0:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:10:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:11:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:12:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:13:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:14:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:15:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:16:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:17:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:18:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:19:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:1:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:20:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:21:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:22:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:23:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:24:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:25:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:26:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:27:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:28:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:2:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:3:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:4:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:5:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:6:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:7:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:8:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:9:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="creationDate" type="LONG">1578948682036</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">18085</attribute>
+  <attribute name="creatorUserName" type="STRING">test</attribute>
+  <attribute name="i:0:indexSchema" type="STRING">SYSTOOLS</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1578948682036</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">18085</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">test</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1578948682036</attribute>
+</metadata>

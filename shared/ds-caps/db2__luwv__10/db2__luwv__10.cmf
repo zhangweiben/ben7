@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:c56fdef2-e7c5-4574-b39e-e18c13f795bb -->
+<metadata name="db2_luwv_10" path="/shared/ds-caps/db2_luwv_10" type="DATA_SOURCE" subtype="RELATIONAL" changeToken="0">
+  <annotation>&lt;![CDATA[This data source was originally created by test.introspect.task.NewIntrospectTask
+on Mon Jan 13 12:51:22 PST 2020]]&gt;</annotation>
+  <security>
+    <owner user="test" domain="composite"/>
+    <privilege user="test" domain="composite" privileges="READ WRITE"/>
+  </security>
+  <attribute name="EnableBulkLoad" type="BOOLEAN">true</attribute>
+  <attribute name="LowerBoundForDataShip" type="LONG">50000</attribute>
+  <attribute name="UpperBoundForDataShip" type="LONG">5000000</attribute>
+  <attribute name="authentication" type="STRING">BASIC</attribute>
+  <attribute name="collationSensitive" type="BOOLEAN">false</attribute>
+  <attribute name="concurrentRequestLimit" type="INTEGER">0</attribute>
+  <attribute name="connPoolMaxSize" type="INTEGER">10</attribute>
+  <attribute name="connPoolMinSize" type="INTEGER">0</attribute>
+  <attribute name="connPoolTimeout" type="INTEGER">30</attribute>
+  <attribute name="connProperties" type="MAP"></attribute>
+  <attribute name="connStaleTimeout" type="INTEGER">60</attribute>
+  <attribute name="creationDate" type="LONG">1578948682408</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">18085</attribute>
+  <attribute name="creatorUserName" type="STRING">test</attribute>
+  <attribute name="dataShipTempTablePrefix" type="STRING">T</attribute>
+  <attribute name="driverName" type="STRING">DB2 v10 (Type 4)</attribute>
+  <attribute name="execTimeout" type="INTEGER">0</attribute>
+  <attribute name="isPassThrough" type="STRING">Disabled</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1578948687854</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">18085</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">test</attribute>
+  <attribute name="login" type="STRING">qa1</attribute>
+  <attribute name="maxNumberForOrSyntax" type="INTEGER">2147483647</attribute>
+  <attribute name="maxSourceSideCardinalityForSJ" type="STRING"/>
+  <attribute name="maximumContainerDepth" type="INTEGER">1</attribute>
+  <attribute name="minTargetToSourceRatioForSJ" type="STRING"/>
+  <attribute name="name" type="STRING">db2_luwv_10</attribute>
+  <attribute name="nativeDataLoadingEnabled" type="BOOLEAN">true</attribute>
+  <attribute name="password" type="PASSWORD_STRING">ENC(TIwtabr1EIP/Q+G0OmduZg==$NjOT/DSh4sLBvInfXVx/OA==)</attribute>
+  <attribute name="persistPassword" type="BOOLEAN">true</attribute>
+  <attribute name="reintrospection_recommended" type="BOOLEAN">true</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1578948682408</attribute>
+  <attribute name="supportsDataship" type="BOOLEAN">false</attribute>
+  <attribute name="supportsDatashipAsTarget" type="BOOLEAN">false</attribute>
+  <attribute name="supportsStarSchema" type="BOOLEAN">false</attribute>
+  <attribute name="txnIsolationLevel" type="STRING">Read Committed</attribute>
+  <attribute name="type" type="STRING">DB2</attribute>
+  <attribute name="urlDatabaseName" type="STRING">SAMPLE</attribute>
+  <attribute name="urlIP" type="STRING">172.23.7.214</attribute>
+  <attribute name="urlPatternStr" type="STRING">jdbc:db2://&lt;HOST&gt;:&lt;PORT&gt;/&lt;DATABASE_NAME&gt;</attribute>
+  <attribute name="urlPort" type="INTEGER">50000</attribute>
+  <attribute name="useTempSpace" type="BOOLEAN">false</attribute>
+</metadata>

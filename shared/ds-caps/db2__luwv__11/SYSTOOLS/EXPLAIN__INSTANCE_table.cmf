@@ -1,0 +1,233 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:c56fdef2-e7c5-4574-b39e-e18c13f795bb -->
+<metadata name="EXPLAIN_INSTANCE" path="/shared/ds-caps/db2_luwv_11/SYSTOOLS/EXPLAIN_INSTANCE" type="TABLE" subtype="DATABASE_TABLE" changeToken="0" tableType="TABLE">
+  <columns>
+    <column name="EXPLAIN_REQUESTER" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="EXPLAIN_TIME" nullable="false">
+      <datatype name="TIMESTAMP" extendedName="TIMESTAMP" subType="DATASOURCE_TYPE" type="DATETIME"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="SOURCE_NAME" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="SOURCE_SCHEMA" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(128)" subType="DATASOURCE_TYPE" type="STRING" maxLength="128"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="SOURCE_VERSION" nullable="false">
+      <datatype name="VARCHAR" extendedName="VARCHAR(64)" subType="DATASOURCE_TYPE" type="STRING" maxLength="64"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="EXPLAIN_OPTION" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="SNAPSHOT_TAKEN" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="DB2_VERSION" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(7)" subType="DATASOURCE_TYPE" type="STRING" minLength="7" maxLength="7"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="SQL_TYPE" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="QUERYOPT" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="BLOCK" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="ISOLATION" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(2)" subType="DATASOURCE_TYPE" type="STRING" minLength="2" maxLength="2"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="BUFFPAGE" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="AVG_APPLS" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="SORTHEAP" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="LOCKLIST" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="MAXLOCKS" nullable="false">
+      <datatype name="SMALLINT" extendedName="SMALLINT" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-32768" maxValue="32767"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="LOCKS_AVAIL" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="CPU_SPEED" nullable="false">
+      <datatype name="DOUBLE" extendedName="DOUBLE" subType="DATASOURCE_TYPE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="REMARKS" nullable="true">
+      <datatype name="VARCHAR" extendedName="VARCHAR(254)" subType="DATASOURCE_TYPE" type="STRING" maxLength="254"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="DBHEAP" nullable="false">
+      <datatype name="INTEGER" extendedName="INTEGER" subType="DATASOURCE_TYPE" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="COMM_SPEED" nullable="false">
+      <datatype name="DOUBLE" extendedName="DOUBLE" subType="DATASOURCE_TYPE" type="FLOAT" minValue="2.2250738585072014E-308" maxValue="1.7976931348623157E308"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="PARALLELISM" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(2)" subType="DATASOURCE_TYPE" type="STRING" minLength="2" maxLength="2"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="DATAJOINER" nullable="false">
+      <datatype name="CHARACTER" extendedName="CHARACTER(1)" subType="DATASOURCE_TYPE" type="STRING" minLength="1" maxLength="1"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="EXECUTABLE_ID" nullable="true">
+      <datatype name="VARBINARY" extendedName="VARCHAR(32)" subType="DATASOURCE_TYPE" type="BINARY" maxLength="32"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="EXECUTION_TIME" nullable="true">
+      <datatype name="TIMESTAMP" extendedName="TIMESTAMP" subType="DATASOURCE_TYPE" type="DATETIME"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+  </columns>
+  <indexes>
+    <index name="SQL180717131702120" type="PRIMARY_KEY" unique="true">
+      <indexColumn name="EXPLAIN_REQUESTER" sortOrder="ASCENDING"/>
+    </index>
+  </indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="test" domain="composite"/>
+    <privilege user="test" domain="composite" privileges="READ WRITE SELECT UPDATE INSERT DELETE"/>
+  </security>
+  <attribute name="c:0:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:10:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:11:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:12:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:13:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:14:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:15:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:16:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:17:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:18:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:19:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:1:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:20:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:21:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:22:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:23:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:24:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:25:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:2:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:3:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:4:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:5:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:6:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:7:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:8:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:9:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="creationDate" type="LONG">1578948682030</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">18085</attribute>
+  <attribute name="creatorUserName" type="STRING">test</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1578948682030</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">18085</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">test</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1578948682030</attribute>
+</metadata>

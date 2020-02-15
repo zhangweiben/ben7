@@ -1,0 +1,79 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:c56fdef2-e7c5-4574-b39e-e18c13f795bb -->
+<metadata name="CUSTOMER" path="/shared/ds-caps/db2_luwv_11/DB2INST1/CUSTOMER" type="TABLE" subtype="DATABASE_TABLE" changeToken="0" tableType="TABLE">
+  <columns>
+    <column name="CID" nullable="false">
+      <datatype name="BIGINT" extendedName="BIGINT" subType="DATASOURCE_TYPE" type="INTEGER"/>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="INFO" nullable="true">
+      <datatype name="XML" extendedName="XML" referenceType="XML" subType="DATASOURCE_TYPE" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+        <schemaDatatype>
+          <datatype name="XML" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+    <column name="HISTORY" nullable="true">
+      <datatype name="XML" extendedName="XML" referenceType="XML" subType="DATASOURCE_TYPE" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="XML">
+        <schemaDatatype>
+          <datatype name="XML" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+      <attribute name="mandatory" type="BOOLEAN">false</attribute>
+      <security>
+        <owner user="test" domain="composite"/>
+      </security>
+    </column>
+  </columns>
+  <indexes>
+    <index name="CUST_CID_XMLIDX" type="OTHER" unique="true">
+      <indexColumn name="INFO" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+    <index name="CUST_NAME_XMLIDX" type="OTHER" unique="false">
+      <indexColumn name="INFO" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+    <index name="CUST_PHONES_XMLIDX" type="OTHER" unique="false">
+      <indexColumn name="INFO" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+    <index name="CUST_PHONET_XMLIDX" type="OTHER" unique="false">
+      <indexColumn name="INFO" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+    <index name="PK_CUSTOMER" type="PRIMARY_KEY" unique="true">
+      <indexColumn name="CID" sortOrder="ASCENDING"/>
+      <attribute name="indexSchema" type="STRING">DB2INST1</attribute>
+    </index>
+  </indexes>
+  <foreignKeys></foreignKeys>
+  <security>
+    <owner user="test" domain="composite"/>
+    <privilege user="test" domain="composite" privileges="READ WRITE SELECT UPDATE INSERT DELETE"/>
+  </security>
+  <attribute name="c:0:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:1:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="c:2:mandatory" type="BOOLEAN">false</attribute>
+  <attribute name="creationDate" type="LONG">1578948682095</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">18085</attribute>
+  <attribute name="creatorUserName" type="STRING">test</attribute>
+  <attribute name="i:0:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="i:1:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="i:2:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="i:3:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="i:4:indexSchema" type="STRING">DB2INST1</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1578948682095</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">18085</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">test</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1578948682095</attribute>
+</metadata>
