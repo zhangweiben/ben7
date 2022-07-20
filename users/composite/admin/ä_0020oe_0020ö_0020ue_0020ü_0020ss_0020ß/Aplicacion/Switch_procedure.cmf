@@ -1,0 +1,41 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:f3b762f8-2605-4a4f-b6de-912c56b1dc89 -->
+<metadata name="Switch" path="/users/composite/admin/ä oe ö ue ü ss ß/Aplicacion/Switch" type="PROCEDURE" subtype="TRANSFORM_PROCEDURE" changeToken="0">
+  <parameters>
+    <parameter name="switch" direction="OUT" nullable="true">
+      <datatype name="Union" referenceType="Union" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="Union">
+        <schemaDatatype>
+          <datatype name="Union" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+    </parameter>
+    <parameter name="cast" direction="OUT" nullable="false">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="x" direction="IN" nullable="false">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="y" direction="IN" nullable="false">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="z" direction="IN" nullable="false">
+      <datatype name="CHAR" type="STRING" minLength="255" maxLength="255"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+  </security>
+  <attribute name="creationDate" type="LONG">1655832656672</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="impactLevel" type="INTEGER">1</attribute>
+  <attribute name="impactMessage" type="STRING">Cast operation &quot;cast&quot; is trying to covert Union type &quot;Union&quot; into &quot;INTEGER&quot;.  Unions may not be directly converted.  Map from union child projection or use a conversion function instead.</attribute>
+  <attribute name="lastModifiedDate" type="LONG">1658346175061</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1655832656672</attribute>
+  <attribute name="transformModel" type="BYTE_ARRAY">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</attribute>
+  <attribute name="transformSource" type="NULL"/>
+</metadata>

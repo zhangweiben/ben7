@@ -1,0 +1,331 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!-- salt:f3b762f8-2605-4a4f-b6de-912c56b1dc89 -->
+<metadata name="Switch_Copy_1" path="/users/composite/admin/ä oe ö ue ü ss ß/Aplicacion/Switch_Copy_1" type="PROCEDURE" subtype="TRANSFORM_PROCEDURE" changeToken="0">
+  <parameters>
+    <parameter name="switch2" direction="OUT" nullable="true">
+      <datatype name="Union" referenceType="Union" type="XML" contentConstraint="SEQUENCE" schemaConstraint="ANY" componentType="TYPE" componentName="Union">
+        <schemaDatatype>
+          <datatype name="Union" type="TREE" refId="257"></datatype>
+        </schemaDatatype>
+      </datatype>
+    </parameter>
+    <parameter name="x" direction="IN" nullable="false">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="y" direction="IN" nullable="false">
+      <datatype name="INTEGER" type="INTEGER" minValue="-2147483648" maxValue="2147483647"/>
+    </parameter>
+    <parameter name="z" direction="IN" nullable="false">
+      <datatype name="CHAR" type="STRING" minLength="255" maxLength="255"/>
+    </parameter>
+  </parameters>
+  <security>
+    <owner user="admin" domain="composite"/>
+  </security>
+  <attribute name="creationDate" type="LONG">1655832656672</attribute>
+  <attribute name="creatorUserDomain" type="STRING">composite</attribute>
+  <attribute name="creatorUserId" type="INTEGER">-1973</attribute>
+  <attribute name="creatorUserName" type="STRING">admin</attribute>
+  <attribute name="impactLevel" type="INTEGER">0</attribute>
+  <attribute name="impactMessage" type="NULL"/>
+  <attribute name="lastModifiedDate" type="LONG">1658346175061</attribute>
+  <attribute name="lastModifiedUserDomain" type="STRING">composite</attribute>
+  <attribute name="lastModifiedUserId" type="INTEGER">-1973</attribute>
+  <attribute name="lastModifiedUserName" type="STRING">admin</attribute>
+  <attribute name="resourceModifiedDateOnSourceCISSite" type="LONG">1655832656672</attribute>
+  <attribute name="transformModel" type="STRING">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;transformModel targetLanguage=&quot;XQUERY&quot; id=&quot;model&quot; xmlns:ns1=&quot;http://www.compositesw.com/transform/expr/types&quot;&gt;
+    &lt;parameter nullable=&quot;true&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;OUT&quot; id=&quot;switch2&quot;&gt;
+        &lt;dataType xsi:type=&quot;unionType&quot; serializationId=&quot;1&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+            &lt;ns1:properties/&gt;
+            &lt;ns1:qualifications&gt;
+                &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;true&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+            &lt;/ns1:qualifications&gt;
+            &lt;ns1:componentTypes xsi:type=&quot;projectedValueType&quot; ns1:name=&quot;z&quot; serializationId=&quot;2&quot;&gt;
+                &lt;ns1:properties/&gt;
+                &lt;ns1:qualifications&gt;
+                    &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                    &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                    &lt;ns1:qualification xsi:type=&quot;direction&quot; ns1:direction=&quot;INPUT&quot; ns1:name=&quot;Direction&quot;/&gt;
+                    &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                &lt;/ns1:qualifications&gt;
+                &lt;ns1:baseType xsi:type=&quot;stringType&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:CHAR&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;stringRegex&quot; ns1:regex=&quot;\i\c*&quot; ns1:name=&quot;StringRegex&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;stringTrimmed&quot; ns1:trimmed=&quot;false&quot; ns1:name=&quot;StringTrimmed&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueLengthFixed&quot; ns1:length=&quot;255&quot; ns1:name=&quot;ValueLengthFixed&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                    &lt;/ns1:qualifications&gt;
+                &lt;/ns1:baseType&gt;
+            &lt;/ns1:componentTypes&gt;
+            &lt;ns1:componentTypes xsi:type=&quot;projectedValueType&quot; ns1:name=&quot;switch&quot; serializationId=&quot;3&quot;&gt;
+                &lt;ns1:properties/&gt;
+                &lt;ns1:qualifications&gt;
+                    &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                    &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                    &lt;ns1:qualification xsi:type=&quot;direction&quot; ns1:direction=&quot;INPUT&quot; ns1:name=&quot;Direction&quot;/&gt;
+                    &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                &lt;/ns1:qualifications&gt;
+                &lt;ns1:baseType xsi:type=&quot;integerType&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                    &lt;/ns1:qualifications&gt;
+                &lt;/ns1:baseType&gt;
+            &lt;/ns1:componentTypes&gt;
+        &lt;/dataType&gt;
+    &lt;/parameter&gt;
+    &lt;parameter nullable=&quot;false&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;IN&quot; id=&quot;x&quot;&gt;
+        &lt;dataType xsi:type=&quot;integerType&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+            &lt;ns1:properties/&gt;
+            &lt;ns1:qualifications&gt;
+                &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+            &lt;/ns1:qualifications&gt;
+        &lt;/dataType&gt;
+    &lt;/parameter&gt;
+    &lt;parameter nullable=&quot;false&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;IN&quot; id=&quot;y&quot;&gt;
+        &lt;dataType xsi:type=&quot;integerType&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+            &lt;ns1:properties/&gt;
+            &lt;ns1:qualifications&gt;
+                &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+            &lt;/ns1:qualifications&gt;
+        &lt;/dataType&gt;
+    &lt;/parameter&gt;
+    &lt;parameter nullable=&quot;false&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;IN&quot; id=&quot;z&quot;&gt;
+        &lt;dataType xsi:type=&quot;stringType&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+            &lt;ns1:properties/&gt;
+            &lt;ns1:qualifications&gt;
+                &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:CHAR&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;stringRegex&quot; ns1:regex=&quot;\i\c*&quot; ns1:name=&quot;StringRegex&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;stringTrimmed&quot; ns1:trimmed=&quot;false&quot; ns1:name=&quot;StringTrimmed&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueLengthFixed&quot; ns1:length=&quot;255&quot; ns1:name=&quot;ValueLengthFixed&quot;/&gt;
+                &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+            &lt;/ns1:qualifications&gt;
+        &lt;/dataType&gt;
+    &lt;/parameter&gt;
+    &lt;imports&gt;
+        &lt;import&gt;/lib/types/sql&lt;/import&gt;
+        &lt;import&gt;/lib/types/extendedSql&lt;/import&gt;
+        &lt;import&gt;/lib/types/xmlSchema2001&lt;/import&gt;
+    &lt;/imports&gt;
+    &lt;links&gt;
+        &lt;link xsi:type=&quot;tmAssignLink&quot; target=&quot;/out/switch2&quot; source=&quot;/switch2/result&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+        &lt;link xsi:type=&quot;tmAssignLink&quot; target=&quot;/switch/x&quot; source=&quot;/in/x&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+        &lt;link xsi:type=&quot;tmAssignLink&quot; target=&quot;/switch/y&quot; source=&quot;/in/y&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+        &lt;link xsi:type=&quot;tmAssignLink&quot; target=&quot;/switch2/switch&quot; source=&quot;/switch/result&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+        &lt;link xsi:type=&quot;tmAssignLink&quot; target=&quot;/switch2/z&quot; source=&quot;/in/z&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+    &lt;/links&gt;
+    &lt;nodes&gt;
+        &lt;node xsi:type=&quot;tmInputNode&quot; id=&quot;in&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+        &lt;node xsi:type=&quot;tmOutputNode&quot; id=&quot;out&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+        &lt;node xsi:type=&quot;tmSwitchNode&quot; id=&quot;switch&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+            &lt;parameter nullable=&quot;false&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;IN&quot; id=&quot;x&quot;&gt;
+                &lt;dataType xsi:type=&quot;integerType&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                    &lt;/ns1:qualifications&gt;
+                &lt;/dataType&gt;
+            &lt;/parameter&gt;
+            &lt;parameter nullable=&quot;false&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;IN&quot; id=&quot;y&quot;&gt;
+                &lt;dataType xsi:type=&quot;integerType&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                    &lt;/ns1:qualifications&gt;
+                &lt;/dataType&gt;
+            &lt;/parameter&gt;
+            &lt;parameter nullable=&quot;true&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;OUT&quot; id=&quot;result&quot;&gt;
+                &lt;dataType xsi:type=&quot;integerType&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications&gt;
+                        &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                    &lt;/ns1:qualifications&gt;
+                &lt;/dataType&gt;
+            &lt;/parameter&gt;
+            &lt;sourceName&gt;x&lt;/sourceName&gt;
+            &lt;sourceName&gt;y&lt;/sourceName&gt;
+            &lt;case&gt;x &amp;gt; 5&lt;/case&gt;
+            &lt;case&gt;x &amp;lt;= 5&lt;/case&gt;
+        &lt;/node&gt;
+        &lt;node xsi:type=&quot;tmSwitchNode&quot; id=&quot;switch2&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+            &lt;parameter nullable=&quot;true&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;IN&quot; id=&quot;switch&quot;&gt;
+                &lt;dataType xsi:type=&quot;integerType&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;true&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                    &lt;/ns1:qualifications&gt;
+                &lt;/dataType&gt;
+            &lt;/parameter&gt;
+            &lt;parameter nullable=&quot;false&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;IN&quot; id=&quot;z&quot;&gt;
+                &lt;dataType xsi:type=&quot;stringType&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:CHAR&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;stringRegex&quot; ns1:regex=&quot;\i\c*&quot; ns1:name=&quot;StringRegex&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;stringTrimmed&quot; ns1:trimmed=&quot;false&quot; ns1:name=&quot;StringTrimmed&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueLengthFixed&quot; ns1:length=&quot;255&quot; ns1:name=&quot;ValueLengthFixed&quot;/&gt;
+                        &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                    &lt;/ns1:qualifications&gt;
+                &lt;/dataType&gt;
+            &lt;/parameter&gt;
+            &lt;parameter nullable=&quot;true&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot; direction=&quot;OUT&quot; id=&quot;result&quot;&gt;
+                &lt;dataType xsi:type=&quot;unionType&quot; serializationId=&quot;4&quot;&gt;
+                    &lt;ns1:properties/&gt;
+                    &lt;ns1:qualifications/&gt;
+                    &lt;ns1:componentTypes xsi:type=&quot;projectedValueType&quot; ns1:name=&quot;switch&quot; serializationId=&quot;5&quot;&gt;
+                        &lt;ns1:properties/&gt;
+                        &lt;ns1:qualifications&gt;
+                            &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                            &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                            &lt;ns1:qualification xsi:type=&quot;direction&quot; ns1:direction=&quot;INPUT&quot; ns1:name=&quot;Direction&quot;/&gt;
+                            &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;true&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                        &lt;/ns1:qualifications&gt;
+                        &lt;ns1:baseType xsi:type=&quot;integerType&quot;&gt;
+                            &lt;ns1:properties/&gt;
+                            &lt;ns1:qualifications&gt;
+                                &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:INTEGER&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;numberPrecision&quot; ns1:precision=&quot;0&quot; ns1:name=&quot;NumberPrecision&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;valueMaximum&quot; ns1:maximum=&quot;2147483647&quot; ns1:name=&quot;ValueMaximum&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;valueMinimum&quot; ns1:minimum=&quot;-2147483648&quot; ns1:name=&quot;ValueMinimum&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;true&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                            &lt;/ns1:qualifications&gt;
+                        &lt;/ns1:baseType&gt;
+                    &lt;/ns1:componentTypes&gt;
+                    &lt;ns1:componentTypes xsi:type=&quot;projectedValueType&quot; ns1:name=&quot;z&quot; serializationId=&quot;6&quot;&gt;
+                        &lt;ns1:properties/&gt;
+                        &lt;ns1:qualifications&gt;
+                            &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                            &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                            &lt;ns1:qualification xsi:type=&quot;direction&quot; ns1:direction=&quot;INPUT&quot; ns1:name=&quot;Direction&quot;/&gt;
+                            &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                        &lt;/ns1:qualifications&gt;
+                        &lt;ns1:baseType xsi:type=&quot;stringType&quot;&gt;
+                            &lt;ns1:properties/&gt;
+                            &lt;ns1:qualifications&gt;
+                                &lt;ns1:qualification xsi:type=&quot;countMaximum&quot; ns1:limit=&quot;1&quot; ns1:name=&quot;CountMaximum&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;countMinimum&quot; ns1:minCount=&quot;1&quot; ns1:name=&quot;CountMinimum&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;nativeType&quot; ns1:typeName=&quot;CIS:/lib/types/sql:CHAR&quot; ns1:name=&quot;NativeType&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;stringRegex&quot; ns1:regex=&quot;\i\c*&quot; ns1:name=&quot;StringRegex&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;stringTrimmed&quot; ns1:trimmed=&quot;false&quot; ns1:name=&quot;StringTrimmed&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;valueLengthFixed&quot; ns1:length=&quot;255&quot; ns1:name=&quot;ValueLengthFixed&quot;/&gt;
+                                &lt;ns1:qualification xsi:type=&quot;valueNillable&quot; ns1:nillable=&quot;false&quot; ns1:name=&quot;ValueNillable&quot;/&gt;
+                            &lt;/ns1:qualifications&gt;
+                        &lt;/ns1:baseType&gt;
+                    &lt;/ns1:componentTypes&gt;
+                &lt;/dataType&gt;
+            &lt;/parameter&gt;
+            &lt;sourceName&gt;switch&lt;/sourceName&gt;
+            &lt;sourceName&gt;z&lt;/sourceName&gt;
+            &lt;case&gt;z != &apos;ddd&apos;&lt;/case&gt;
+            &lt;case&gt;true&lt;/case&gt;
+        &lt;/node&gt;
+    &lt;/nodes&gt;
+    &lt;prefixMap&gt;
+        &lt;namespaceToPrefix&gt;
+            &lt;entry value=&quot;xmlns&quot; key=&quot;http://www.w3.org/2000/xmlns/&quot;/&gt;
+            &lt;entry value=&quot;custom&quot; key=&quot;http://compositesw.com/transform/custom&quot;/&gt;
+            &lt;entry value=&quot;xquery&quot; key=&quot;http://compositesw.com/transform/xquery&quot;/&gt;
+            &lt;entry value=&quot;xsi&quot; key=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;
+            &lt;entry value=&quot;xs&quot; key=&quot;http://www.w3.org/2001/XMLSchema&quot;/&gt;
+            &lt;entry value=&quot;sql&quot; key=&quot;http://compositesw.com/transform/sql&quot;/&gt;
+        &lt;/namespaceToPrefix&gt;
+    &lt;/prefixMap&gt;
+    &lt;transformOptions&gt;
+        &lt;rootElementNamesapce&gt;false&lt;/rootElementNamesapce&gt;
+    &lt;/transformOptions&gt;
+&lt;/transformModel&gt;
+</attribute>
+  <attribute name="transformSource" type="STRING">declare copy-namespaces no-preserve,inherit;
+declare namespace xquery =  &quot;http://compositesw.com/transform/xquery&quot;;
+declare namespace custom =  &quot;http://compositesw.com/transform/custom&quot;;
+declare namespace xs =  &quot;http://www.w3.org/2001/XMLSchema&quot;;
+declare namespace ext2 =  &quot;http://www.compositesw.com/extensions2&quot;;
+declare namespace sql =  &quot;http://compositesw.com/transform/sql&quot;;
+
+declare variable $x external;
+declare variable $y external;
+declare variable $z external;
+declare function local:switch2( $switch,  $z)
+{
+  if ($z != &apos;ddd&apos;) then $switch
+   else if (fn:true()) then $z
+   else ()
+};
+
+declare function local:switch( $x,  $y)
+{
+  if ($x &gt; 5) then $x
+   else if ($x &lt;= 5) then $y
+   else ()
+};
+
+let $nodes := 
+(
+  let $var4 := $x
+  let $var5 := $y
+  let $var3:= local:switch($var4,$var5)
+  return
+  let $var2 := $var3
+  let $var6 := $z
+  let $var1:= local:switch2($var2,$var6)
+  return
+  element switch2
+  {
+    if (fn:string-length(fn:string($var1)) &gt; 0)
+    then
+      ()
+    else
+      attribute xsi:nil {&quot;true&quot;}
+    ,
+    $var1/*
+  }
+)
+return
+$nodes</attribute>
+</metadata>
